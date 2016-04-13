@@ -36,16 +36,50 @@ fetchSequence <- function(IDs, type="entrezgene", anchorAA=NULL, anchorPos,
     if(length(IDs)!=length(anchorPos)){
         stop("length of IDs and anchorPos are not identical.", call.=FALSE)
     }
-    if(class(anchorPos)=="character"){
-        anchorPos <- toupper(anchorPos)
-        if(any(!grepl("^[A-Z]\\d+$", anchorPos))){
-            stop("anchorPos should be the amino acide followed by the position,
-                 eg. K123", call.=FALSE)
+    if(length(anchorAA)>0){
+        if(any(nchar(anchorAA)!=1)){
+            stop("anchorAA must be a single amino acid or *", call.=FALSE)
         }
-        anchorAA <- substr(anchorPos, 1, 1)
-        anchorPos <- as.numeric(substring(anchorPos, 2))
     }
-    inputs <- data.frame(IDs, anchorAA, anchorPos)
+    searchAnchor <- FALSE
+    if(class(anchorPos)=="character"){
+        anchorPos <- gsub("^\\-+", "", anchorPos)
+        anchorPos <- gsub("\\-+$", "", anchorPos)
+        if(any(!grepl("^[A-Z]\\d+$", toupper(anchorPos)))){
+            if(length(anchorAA)<1 || any(grepl("[^*A-Z]", toupper(anchorPos)))){
+                stop("anchorPos should be the amino acid followed by the position, eg. K123", 
+                     "Otherwise, anchorPos should be the strings of amino acid and anchorAA is the anchor amino acid", call.=FALSE)
+            }
+            searchAnchor <- TRUE
+            anchorPos <- strsplit(anchorPos, "")
+            anchor <- mapply(function(x, y){
+                which(x==y)
+            }, anchorPos, anchorAA, SIMPLIFY = FALSE)
+            if(any(anchorAA=="*")){
+                ## asterisk
+                if(length(anchorAA)==length(anchorPos)){
+                    anchor[anchorAA=="*"] <- 
+                        lapply(anchor[anchorAA=="*"], function(.ele) 
+                            .ele - 1:length(.ele))
+                }else{
+                    if(length(anchorAA)==1){
+                        anchor <- lapply(anchor, function(.ele) 
+                            .ele - 1:length(.ele))
+                    }else{
+                        stop("length of anchorAA must be 1 or equal to anchorPos")
+                    }
+                }
+                anchorPos <- lapply(anchorPos, function(.ele) .ele[.ele!="*"])
+            }
+            anchorPos <- sapply(anchorPos, paste, collapse="")
+            anchorPos <- toupper(anchorPos)
+        }else{
+            anchorPos <- toupper(anchorPos)
+            anchorAA <- substr(anchorPos, 1, 1)
+            anchorPos <- as.numeric(substring(anchorPos, 2))
+        }
+    }
+    inputs <- data.frame(IDs, anchorAA, anchorPos, oid=1:length(anchorPos))
     ## retreive sequence
     if(!missing(mart)){
         protein <- getSequence(id=unique(as.character(IDs)), 
@@ -69,12 +103,30 @@ fetchSequence <- function(IDs, type="entrezgene", anchorAA=NULL, anchorPos,
     
     dat <- merge(inputs, protein, by.x=1, by.y=2)
     dat$peptide <- toupper(dat$peptide)
+    
+    if(searchAnchor){
+        anchorPos <- mapply(function(.ele, .pep){
+            start(matchPattern(AAString(toupper(.ele)), .pep))
+        }, dat$anchorPos, dat$peptide, SIMPLIFY = FALSE)
+        anchorPos <- mapply(function(.pos, .anchor){
+            if(length(.pos)==0){
+                return(integer())
+            }
+            .pos[1] + .anchor - 1
+        }, anchorPos, anchor[dat$oid], SIMPLIFY=FALSE)
+        dat <- dat[rep(1:nrow(dat), sapply(anchorPos, length)), ]
+        dat$anchorPos <- unlist(anchorPos)
+        dat$anchorAA <- 
+            unlist(mapply(function(pep, pos){substr(pep, pos, pos)},
+                          dat$peptide, dat$anchorPos))
+    }
+    
     dat$anchor <- unlist(mapply(function(pep, pos){substr(pep, pos, pos)},
-                              dat[, 4], dat$anchorPos))
+                              dat$peptide, dat$anchorPos))
     ##colnames(dat)==c("IDs", "anchorAA", "anchorPos", "peptide", "anchor")
     ## check sequence of NCBIsites
     if(!is.null(anchorAA)[1]){
-        dat <- dat[dat$anchorAA==dat$anchor, ]
+        dat <- dat[toupper(dat$anchorAA)==dat$anchor, ]
     }
     ## extract sequences for logo
     upstreamGuard <- paste0( rep.int( "?", upstreamOffset ), collapse = '' )
@@ -82,6 +134,10 @@ fetchSequence <- function(IDs, type="entrezgene", anchorAA=NULL, anchorPos,
     peptide.guarded <- paste0( upstreamGuard, dat$peptide, downstreamGuard )
     dat$upstream <- substr(peptide.guarded, dat$anchorPos, dat$anchorPos+upstreamOffset-1)
     dat$downstream <- substr(peptide.guarded, dat$anchorPos+upstreamOffset+1, dat$anchorPos+upstreamOffset+downstreamOffset)
+    # unique dat by oid and upstream/anchor/downstream sequence
+    dat <- dat[!duplicated(paste(dat$oid, dat$upstream, dat$downstream)), ]
+    dat$oid <- NULL
+    rownames(dat) <- NULL
     # convert logo sequences into character matrix
     seqchar.upstream <- do.call(rbind, strsplit(dat$upstream, "", fixed=TRUE))
     seqchar.upstream[ seqchar.upstream == '?' ] <- NA

@@ -14,7 +14,8 @@ fetchSequence(IDs, type="entrezgene", anchorAA=NULL, anchorPos,
   \item{IDs}{A vector of Identifiers to retrieve peptides}
   \item{type}{type of identifiers}
   \item{anchorAA}{a vector of character, anchor Amino Acid}
-  \item{anchorPos}{a vector of character or numeric, anchor position, for example, K121}
+  \item{anchorPos}{a vector of character or numeric, anchor position, for example, K121. Or a vector of character with amino acid sequences. If AA 
+  sequences is used, the anchorAA must be the a vector of character with single AA for each.}
   \item{mart}{an object of Mart}
   \item{proteome}{an object of Proteome, output of \code{\link{prepareProteome}}}
   \item{upstreamOffset}{an integer, upstream offset position}
@@ -38,5 +39,24 @@ fetchSequence(IDs, type="entrezgene", anchorAA=NULL, anchorPos,
                 mart=mart, 
                 upstreamOffset=7, 
                 downstreamOffset=7)
+    ## sample: use sequence as anchorPos
+    sequences <- seq@peptides
+    sequences[, 8] <- "k"
+    sequences <- apply(sequences, 1, paste, collapse="")
+    seq <- fetchSequence(as.character(seq@data$IDs),
+                        anchorAA="k",
+                        anchorPos=sequences,
+                        mart=mart,
+                        upstreamOffset=7,
+                        downstreamOffset=7)
+    ## sample: use sequence as anchorPos 2
+    sequences <- cbind(seq@peptides[, 1:8], "*", seq@peptides[, 9:15])
+    sequences <- apply(sequences, 1, paste, collapse="")
+    seq <- fetchSequence(as.character(seq@data$IDs),
+                        anchorAA="*",
+                        anchorPos=sequences,
+                        mart=mart,
+                        upstreamOffset=7,
+                        downstreamOffset=7)
 }
 \keyword{ misc }

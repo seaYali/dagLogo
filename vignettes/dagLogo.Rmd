@@ -43,6 +43,7 @@ Sys.setenv(R_GSCMD=file.path("C:", "Program Files", "gs",
 ```
 
 # Examples of using dagLogo
+## Sample 1, start from given peptides positions
 ## Step 1, fetch sequences
 You should have interesting peptides position info and the identifiers for fetching
 sequences via biomaRt.
@@ -64,7 +65,41 @@ try({
 })
 ```
 
-Sometimes you may already have the peptides sequences in hand. You will use 
+Sometimes you don't have the exactly postions. You have only the interesting peptides and the identifiers.
+
+```{r fetchSequences2}
+try({
+    seq <- fetchSequence(as.character(dat$entrez_geneid), 
+                         anchorAA="*",
+                         anchorPos=as.character(dat$peptide), 
+                         mart=mart, 
+                         upstreamOffset=7, 
+                         downstreamOffset=7)
+    head(seq@peptides)
+})
+```
+
+In above sample, anchorAA is represented by asterisk. In following sample,
+anchorAA is represented by lower case of amino acid.
+```{r fetchSequences3}
+if(interactive()){
+    dat <- read.csv(system.file("extdata", "peptides4dagLogo.csv",
+                package="dagLogo"))
+
+    tail(dat)
+    mart <- useMart("ensembl", "hsapiens_gene_ensembl")
+    seq <- fetchSequence(toupper(as.character(dat$symbol)), 
+                         type="hgnc_symbol",
+                         anchorAA="s",
+                         anchorPos=as.character(dat$peptides), 
+                         mart=mart, 
+                         upstreamOffset=7, 
+                         downstreamOffset=7)
+    head(seq@peptides)
+}
+```
+
+Sometimes you may already have the aligned peptides sequences in hand. You will use 
 formatSequence function to prepare an object of dagPeptides for further testing. To use 
 formatSequence, you need prepare the proteome by prepareProteome function.
 ```{r formatSequence}
@@ -93,7 +128,7 @@ proteome via UniProt webservice.
 ```{r prepareProteome0}
 if(interactive()){
     library(UniProt.ws)
-    taxId(UniProt.ws) <- 9606
+    UniProt.ws <- UniProt.ws(taxId=9606)
     proteome <- prepareProteome(UniProt.ws=UniProt.ws)
 }
 ```
