@@ -14,6 +14,10 @@ output:
   BiocStyle::html_document
 ---
 
+```{r echo=FALSE, results='hide', warning=FALSE}
+library(dagLogo)
+```
+
 # introduction
 A sequence logo has been widely used as a graphical representation of an alignment of multiple amino acid or nucleic acid sequences.
 There is a package seqlogo[@Oliver2006] implemented in R to draw DNA sequence logos. 
@@ -48,14 +52,14 @@ Sys.setenv(R_GSCMD=file.path("C:", "Program Files", "gs",
 You should have interesting peptides position info and the identifiers for fetching
 sequences via biomaRt.
 ```{r fetchSequences}
-suppressPackageStartupMessages(library(dagLogo))
+library(dagLogo)
 library(biomaRt)
-mart <- useMart("ensembl", "dmelanogaster_gene_ensembl")
-dat <- read.csv(system.file("extdata", "dagLogoTestData.csv", 
-                            package="dagLogo"))
-dat <- dat[1:5,] ##subset to speed sample
-dat
-try({
+try({##just in case biomaRt server does not response
+    mart <- useMart("ensembl", "dmelanogaster_gene_ensembl")
+    dat <- read.csv(system.file("extdata", "dagLogoTestData.csv", 
+                                package="dagLogo"))
+    dat <- dat[1:5,] ##subset to speed sample
+    dat
     seq <- fetchSequence(as.character(dat$entrez_geneid), 
                          anchorPos=as.character(dat$NCBI_site), 
                          mart=mart, 

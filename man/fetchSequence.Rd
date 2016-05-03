@@ -32,6 +32,7 @@ fetchSequence(IDs, type="entrezgene", anchorAA=NULL, anchorPos,
 \code{\link{formatSequence}}
 }
 \examples{
+if(interactive()){
     mart <- useMart("ensembl", "dmelanogaster_gene_ensembl")
     dat <- read.csv(system.file("extdata", "dagLogoTestData.csv", package="dagLogo"))
     seq <- fetchSequence(as.character(dat$entrez_geneid[1:5]), 
@@ -58,5 +59,6 @@ fetchSequence(IDs, type="entrezgene", anchorAA=NULL, anchorPos,
                         mart=mart,
                         upstreamOffset=7,
                         downstreamOffset=7)
+}
 }
 \keyword{ misc }
