@@ -109,13 +109,13 @@ dagLogo <- function(testDAUresults, type=c("diff", "zscore"),
     }
     key<-paste("x", ncha, font, paste(colset[rname], collapse=""), 
                paste(rname, collapse=""), sep="_")
-    symbolsCache <- if(exists("tmp_motifStack_symbolsCache", where=".GlobalEnv")) get("tmp_motifStack_symbolsCache", pos=".GlobalEnv") else list()
+    symbolsCache <- if(exists("tmp_motifStack_symbolsCache", envir=.globals)) get("tmp_motifStack_symbolsCache", envir=.globals) else list()
     if(!is.null(symbolsCache[[key]])){
         symbols<-symbolsCache[[key]]
     } else {
         symbols<-motifStack:::coloredSymbols(ncha, font, colset[rname], rname)
         symbolsCache[[key]]<-symbols
-        assign("tmp_motifStack_symbolsCache", symbolsCache, pos=".GlobalEnv")
+        assign("tmp_motifStack_symbolsCache", symbolsCache, envir=.globals)
     }
     
     dw <- 1/(npos+2)

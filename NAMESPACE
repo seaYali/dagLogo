@@ -1,5 +1,5 @@
 import(methods)
-import(grDevices)
+importFrom(grDevices, "dev.size")
 importFrom(graphics, "plot.new")
 import(stats)
 import(grid)

@@ -14,7 +14,7 @@ output:
   BiocStyle::html_document
 ---
 
-```{r echo=FALSE, results='hide', warning=FALSE}
+```{r echo=FALSE, results='hide', warning=FALSE, message=FALSE}
 library(dagLogo)
 ```
 

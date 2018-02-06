@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.17.1
+-----------------------
+    o add .globals environment.
+    
 CHANGES IN VERSION 1.9.3
 -----------------------
     o To catch the error when biomaRt server does not response correctly in 
