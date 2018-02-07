@@ -6,6 +6,9 @@ formatSequence <- function(seq, proteome, upstreamOffset, downstreamOffset){
     if(missing(seq)){
         stop("seq is required parameter.", call.=FALSE)
     }
+  if(!is.character(seq)){
+    seq <- as.character(seq)
+  }
     width <- unique(unlist(lapply(seq, nchar)))
     if(length(width)>1){
         stop("seq must be characters with same length", call.=FALSE)

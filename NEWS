@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.17.2
+-----------------------
+    o Fix the bug for formatSequence.R when seq is not character.
+    
 CHANGES IN VERSION 1.17.1
 -----------------------
     o add .globals environment.
