@@ -1,3 +1,7 @@
+CHANGES IN VERSION 1.16.1
+-----------------------
+    o Fix the bug when seq in not character for formatSequence.R
+
 CHANGES IN VERSION 1.9.3
 -----------------------
     o To catch the error when biomaRt server does not response correctly in 
