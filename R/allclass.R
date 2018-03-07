@@ -1,3 +1,20 @@
+#' Class dagPeptides
+#' 
+#' An S4 class to represent formatted, aligned peptides for DAGlogo analysis
+#' 
+#' @slot data 
+#' @slot peptides 
+#' @slot upstreamOffset 
+#' @slot downstreamOffset 
+#' @slot type 
+#' 
+#' @name dagPeptides-class
+#' @rdname dagPeptides-class
+#' @exportClass dagPeptides
+#' @import methods
+#' 
+#' @author Jianhong Ou
+
 setClass("dagPeptides",
          representation(data="data.frame",
                         peptides="matrix",
@@ -15,6 +32,22 @@ setClass("dagPeptides",
              re
          })
 
+#' Class Proteome
+#' 
+#' An S4 class to represent a whole proteome for DAGlogo analysis
+#' 
+#' @slot proteome 
+#' @slot type 
+#' @slot species 
+#'
+#' @name Proteome-class
+#' @rdname Proteome-class
+#' @exportClass Proteome
+#' 
+#' @import methods
+#' 
+#' @author Jianhong Ou
+
 setClass("Proteome",
          representation(proteome="data.frame", type="character", species="character"),
          validity=function(object){
@@ -28,9 +61,48 @@ setClass("Proteome",
              re
          })
 
+#' Class dagBackground
+#' 
+#' An S4 class to represent a background of a formatted, aligned peptide for DAGlogo analysis
+#' 
+#' @slot background A list of 
+#' @slot pnumSubsamples An integer, the number of subsampling
+#'
+#' @name dagBackground-class
+#' @rdname dagBackground-class
+#' @exportClass dagBackground
+#' @import methods
+#' 
+#' @author Jianhong Ou 
+
 setClass("dagBackground",
          representation(background="list", 
-                        permutationSize="integer"))
+                        numSubsamples="integer"))
+
+
+#' Class testDAUresults
+#' 
+#' An S4 class to represent a DAU statistical test result from DAGlogo analysis
+#' 
+#' @slot group A character vector of length 1, the type of method for grouping amino
+#' acid
+#' @slot difference A numeric matrix consisting of differences of amino acid 
+#' proportions between the test set and the background set of aligned, formatted 
+#' peptides at each position
+#' @slot zscore A numeric matrix consisting of Z-scores
+#' @slot pvalue A numeric matrix consisting of p-values
+#' @slot background A numeric matrix consisting mino acid proportions in the 
+#' background set of aligned, formatted peptides at each position
+#' @slot motif A numeric matrix consisting of proportions for DAGLogo 
+#' @slot upstream A numeric vector of length 1
+#' @slot downstream A numeric vector of length 1
+#'
+#' @name testDAUresults-class
+#' @rdname testDAUresults-class
+#' @exportClass testDAUresults
+#' @import methods
+#' 
+#' @author Jianhong Ou
 
 setClass("testDAUresults",
          representation(group="character",
