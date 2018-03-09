@@ -1,5 +1,5 @@
 ## create a cached environment to store those package-wide accessible constants.
-cacheEnv <- new.env(parent = emptyenv())
+cachedEnv <- new.env(parent = emptyenv())
 
 ## color coding for amino acids
 auto <- c('A' = '#CCFF00',
@@ -130,9 +130,9 @@ charge <- list(
     )
 )    
 
-cacheEnv$auto <- auto
-cacheEnv$namehash <- namehash
-cacheEnv$classic <- classic
-cacheEnv$chemistry <- chemistry
-cacheEnv$hydrophobicity <- hydrophobicity
-cacheEnv$charge <- charge
+cachedEnv$auto <- auto
+cachedEnv$namehash <- namehash
+cachedEnv$classic <- classic
+cachedEnv$chemistry <- chemistry
+cachedEnv$hydrophobicity <- hydrophobicity
+cachedEnv$charge <- charge
