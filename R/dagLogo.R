@@ -40,7 +40,7 @@ dagHeatmap <-function(testDAUresults, type = c("diff", "zscore"), ...)
 #' Create color encoding for visualization of a peptide sequence logo.
 #'
 #' @param colorScheme A character vecto of length 1, determining the color scheme
-#' based on amino acid classification methods. Available color schemes are "null",
+#' based on amino acid classification methods. Available color schemes are "no",
 #' "classic", "charge", "chemistry", and "hydrophobicity".
 #'
 #' @return A named character vector of colors
@@ -49,13 +49,13 @@ dagHeatmap <-function(testDAUresults, type = c("diff", "zscore"), ...)
 #' @examples
 #' colorsets("classic")
 
-colorsets <-function(colorScheme = c("null", "classic", "charge", "chemistry", 
+colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry", 
                                      "hydrophobicity")) 
 {
     colorScheme <- match.arg(colorScheme)
 
     switch(colorScheme,
-           null = get("auto", envir = cachedEnv),
+           no = get("no", envir = cachedEnv)$color,
            classic = get("classic", envir = cachedEnv)$color,
            charge = get("charge", envir = cachedEnv)$color,
            chemistry = get("chemistry", envir = cachedEnv)$color,
@@ -64,9 +64,9 @@ colorsets <-function(colorScheme = c("null", "classic", "charge", "chemistry",
 
 #' Get character symbols for grouped amino acids
 #'
-#' @param nameScheme A character vecto of length 1, determining the character
+#' @param groupingScheme A character vecto of length 1, determining the character
 #' symbols used to represent amino acids grouped by their physical and chemical
-#' properties. The available \code{nameScheme} are "classic", "charge", 
+#' properties. The available \code{groupingScheme} are "no", classic", "charge", 
 #' "chemistry", and "hydrophobicity".
 #'
 #' @return A named character vector of character symbols
@@ -74,20 +74,20 @@ colorsets <-function(colorScheme = c("null", "classic", "charge", "chemistry",
 #' @author Jianhong Ou, Haibo Liu
 #'
 #' @examples
-#' getNameHash("charge")
+#' getGroupingSymbol("charge")
 
-getNameHash <-function(nameScheme = c("null", "classic", "charge", "chemistry", 
+getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chemistry", 
                                       "hydrophobicity"))
 {
-        nameScheme <- match.arg(nameScheme)
-        switch(
-            nameScheme,
-            null = NULL,
-            classic = get("classic", envir = cachedEnv)$symbol,
-            charge = get("charge", envir = cachedEnv)$symbol,
-            chemistry = get("chemistry", envir = cachedEnv)$symbol,
-            hydrophobicity = get("hydrophobicity", envir = cachedEnv)$symbol
-        )
+    groupingScheme <- match.arg(groupingScheme)
+    switch(
+        groupingScheme,
+        no = get("no", envir = cachedEnv)$symbol,
+        classic = get("classic", envir = cachedEnv)$symbol,
+        charge = get("charge", envir = cachedEnv)$symbol,
+        chemistry = get("chemistry", envir = cachedEnv)$symbol,
+        hydrophobicity = get("hydrophobicity", envir = cachedEnv)$symbol
+    )
 }
 
 #' Create sequence logo
@@ -100,7 +100,7 @@ getNameHash <-function(nameScheme = c("null", "classic", "charge", "chemistry",
 #' @param type A character vector of length 1. Type of statistics to display 
 #' on y-axis, available choices are "diff" or "zscore".
 #' @param pvalueCutoff A numeric vector of length 1. A cutoff of p-value.
-#' @param namehash A named character vector, with 3-letter symbols of amino acids
+#' @param groupingSymbol A named character vector, with 3-letter symbols of amino acids
 #' as names and single-letter symbols as values.
 #' @param font A character vector of length 1. Font type for displaying sequence
 #' Logo
@@ -129,16 +129,16 @@ getNameHash <-function(nameScheme = c("null", "classic", "charge", "chemistry",
 #' t3 <- testDAU(seq.example, bg, group="chemistry")
 #' t4 <- testDAU(seq.example, bg, group="hydrophobicity")
 #' dagLogo(t0)
-#' dagLogo(t1, namehash = getNameHash(t1@group))
-#' dagLogo(t2, namehash = getNameHash(t2@group))
-#' dagLogo(t3, namehash = getNameHash(t3@group))
-#' dagLogo(t4, namehash = getNameHash(t4@group))
+#' dagLogo(t1, groupingSymbol = getGroupingSymbol(t1@group))
+#' dagLogo(t2, groupingSymbol = getGroupingSymbol(t2@group))
+#' dagLogo(t3, groupingSymbol = getGroupingSymbol(t3@group))
+#' dagLogo(t4, groupingSymbol = getGroupingSymbol(t4@group))
 
 
 dagLogo <- function(testDAUresults,
                     type = c("diff", "zscore"),
                     pvalueCutoff = 0.05,
-                    namehash = getNameHash(testDAUresults@group),
+                    groupingSymbol = getGroupingSymbol(testDAUresults@group),
                     font = "Helvetica-Bold",
                     fontface = "bold",
                     fontsize= 5,
@@ -168,22 +168,22 @@ dagLogo <- function(testDAUresults,
     {
         if (length(labels) < npos) 
         {
-            stop("The length of labels is too short!")
+            stop("The length of labels is too short!", call. = FALSE)
         }
     }
     colset <- colorsets(testDAUresults@group)
     colset <- colset[rownames(dat)]
     if (any(is.na(colset)))
-        stop("Not every symbol has its color setting.",call. = FALSE)
-    if (!is.null(namehash)) 
+        stop("Not every symbol has its color setting.", call. = FALSE)
+    if (!is.null(groupingSymbol)) 
     {
-        rownames(dat) <- namehash[rownames(dat)]
-        names(colset) <- namehash[names(colset)]
+        rownames(dat) <- groupingSymbol[rownames(dat)]
+        names(colset) <- groupingSymbol[names(colset)]
     }
     rname <- rownames(dat)
     if (max(nchar(rname)) > 1) 
     {
-        stop("Please using the namehash to convert the symbols into single letters.",
+        stop("Please using the groupingSymbol to convert the symbols into single letters.",
              call. = FALSE)
     }
     key <- paste("x",
@@ -192,9 +192,15 @@ dagLogo <- function(testDAUresults,
                  paste(colset[rname], collapse = ""),
                  paste(rname, collapse = ""),
                  sep = "_")
-    symbolsCache <- ifelse(exists("tmp_motifStack_symbolsCache", envir = cachedEnv), 
-                get("tmp_motifStack_symbolsCache", envir = cachedEnv), list())
-
+    
+    ## can't use ifelse here
+    if(exists("tmp_motifStack_symbolsCache", envir = cachedEnv))
+    {
+        symbolsCache = get("tmp_motifStack_symbolsCache", envir = cachedEnv)   
+    } else
+    {
+        symbolsCache = list()
+    }
     if (!is.null(symbolsCache[[key]])) 
     {
         symbols <- symbolsCache[[key]]
@@ -202,6 +208,8 @@ dagLogo <- function(testDAUresults,
     {
         symbols <- motifStack:::coloredSymbols(ncha, font, colset[rname], rname)
         symbolsCache[[key]] <- symbols
+        
+        ## save symbolsCache to the environment variable for future use
         assign("tmp_motifStack_symbolsCache", symbolsCache, envir = cachedEnv)
     }
     
@@ -372,24 +380,24 @@ dagLogo <- function(testDAUresults,
     ## plot legend
     if (legend) 
     {
-        if (is.null(namehash)) 
+        if (is.null(groupingSymbol)) 
         {
-            namehash <- get("namehash", envir = cachedEnv)
+            groupingSymbol <- get("no", envir = cachedEnv)$symbol
         }
-        for (i in 1:length(namehash)) 
+        for (i in 1:length(groupingSymbol)) 
         {
             grid.text(
-                namehash[i],
+                groupingSymbol[i],
                 x = (npos+2)*dw,
                 y = .95 - i * 0.05 * lwd/2,
                 just = c(.5, .5),
-                gp = gpar(col = colset[namehash[i]], fontsize=fontsize, fontface = fontface))
+                gp = gpar(col = colset[groupingSymbol[i]], fontsize=fontsize, fontface = fontface))
             grid.text(
-                names(namehash)[i],
+                names(groupingSymbol)[i],
                 x = (npos+2)*dw + 0.03 * lwd/2,
                 y = .95 - i * 0.05 * lwd/2,
                 just = c(0, .5),
-                gp = gpar(col = colset[namehash[i]], fontsize=fontsize, fontface = fontface))
+                gp = gpar(col = colset[groupingSymbol[i]], fontsize=fontsize, fontface = fontface))
         }
     }
 }

@@ -1,49 +1,21 @@
 ## create a cached environment to store those package-wide accessible constants.
 cachedEnv <- new.env(parent = emptyenv())
 
-## color coding for amino acids
-auto <- c('A' = '#CCFF00',
-          'C' = '#FFFF00',
-          'D' = '#FF0000',
-          'E' = '#FF0066',
-          'F' = '#00FF66',
-          'G' = '#FF9900',
-          'H' = '#0066FF',
-          'I' = '#66FF00',
-          'K' = '#6600FF',
-          'L' = '#33FF00',
-          'M' = '#00FF00',
-          'N' = '#CC00FF',
-          'P' = '#FFCC00',
-          'Q' = '#FF00CC',
-          'R' = '#0000FF',
-          'S' = '#FF3300',
-          'T' = '#FF6600',
-          'V' = '#99FF00',
-          'W' = '#00CCFF',
-          'Y' = '#00FFCC')
-
-namehash <- c(
-    "Ala" = "A",
-    "Arg" = "R",
-    "Asn" = "N",
-    "Asp" = "D",
-    "Cys" = "C",
-    "Glu" = "E",
-    "Gln" = "Q",
-    "Gly" = "G",
-    "His" = "H",
-    "Ile" = "I",
-    "Leu" = "L",
-    "Lys" = "K",
-    "Met" = "M",
-    "Phe" = "F",
-    "Pro" = "P",
-    "Ser" = "S",
-    "Thr" = "T",
-    "Trp" = "W",
-    "Tyr" = "Y",
-    "Val" = "V")
+## color and character symbol encodings and grouping for amino acids
+no <- list(
+    color = c('A' = '#CCFF00', 'C' = '#FFFF00', 'D' = '#FF0000',
+              'E' = '#FF0066', 'F' = '#00FF66', 'G' = '#FF9900',
+              'H' = '#0066FF', 'I' = '#66FF00', 'K' = '#6600FF',
+              'L' = '#33FF00', 'M' = '#00FF00', 'N' = '#CC00FF',
+              'P' = '#FFCC00', 'Q' = '#FF00CC', 'R' = '#0000FF',
+              'S' = '#FF3300', 'T' = '#FF6600', 'V' = '#99FF00',
+              'W' = '#00CCFF', 'Y' = '#00FFCC'),
+    symbol = c("Ala" = "A", "Arg" = "R", "Asn" = "N", "Asp" = "D",
+               "Cys" = "C", "Glu" = "E", "Gln" = "Q", "Gly" = "G",
+               "His" = "H", "Ile" = "I", "Leu" = "L", "Lys" = "K",
+               "Met" = "M", "Phe" = "F", "Pro" = "P", "Ser" = "S",
+               "Thr" = "T", "Trp" = "W", "Tyr" = "Y", "Val" = "V"),
+    group = NULL)
 
 classic <- list(
     color = c(
@@ -130,9 +102,9 @@ charge <- list(
     )
 )    
 
-cachedEnv$auto <- auto
-cachedEnv$namehash <- namehash
+cachedEnv$no <- no
 cachedEnv$classic <- classic
+cachedEnv$charge <- charge
 cachedEnv$chemistry <- chemistry
 cachedEnv$hydrophobicity <- hydrophobicity
-cachedEnv$charge <- charge
+

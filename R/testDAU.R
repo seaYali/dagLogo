@@ -1,11 +1,17 @@
-#' Title
+#' Conduct differential usage test of amino acids.
 #'
-#' @param dagPeptides 
-#' @param dagBackground 
-#' @param group 
-#' @param bgNoise 
+#' Test differential usage of amino acids with or without grouping in
+#' experimental sets and background sets.
 #'
-#' @return
+#' @param dagPeptides An object of Class \code{\link{dagPeptides}}
+#' @param dagBackground An object of Class \code{\link{dagBackground}}
+#' @param groupingScheme A character vector of length 1. Available choices are
+#' "no", "classic", "charge", "chemistry",and "hydrophobicity". It is used
+#' to group amino acids into groups.
+#' @param bgNoise A numeric vector of length 1. It should be between 0 and 1,
+#' exclusively.
+#'
+#' @return An object of Class \code{\link{testDAUresults}}.
 #' @export
 #' @author Jianhong Ou, Haibo Liu
 #' @examples
@@ -13,43 +19,48 @@
 #' 
 testDAU <- function(dagPeptides,
                     dagBackground,
-                    group = c("null", "classic", "charge", "chemistry", "hydrophobicity"),
+                    groupingScheme = c("no", "classic", "charge", 
+                                       "chemistry", "hydrophobicity"),
                     bgNoise = NA) 
 {
-    if (missing(dagPeptides) || class(dagPeptides) != "dagPeptides") {
+    if (missing(dagPeptides) || class(dagPeptides) != "dagPeptides") 
+    {
         stop(
             "dagPeptides should be an object of dagPeptides class.\n
             Please try ?fetchSequence to get help.",
-            call. = FALSE
-        )
+            call. = FALSE)
     }
-    if (missing(dagBackground) ||
-        class(dagBackground) != "dagBackground") {
+    if (missing(dagBackground) || class(dagBackground) != "dagBackground") 
+    {
         stop(
             "dagBackground should be an object of dagBackground class .\n
             Please try ?buildBackgroundModel to get help.",
-            call. = FALSE
-        )
+            call. = FALSE)
     }
-    if (!is.na(bgNoise)) {
+    if (!is.na(bgNoise)) 
+    {
         if (bgNoise < 0 || bgNoise > 1)
+        {
             stop("The background noise is a number in the range of 0 to 1", 
                  call. = FALSE)
+        }
     }
-    group <- match.arg(group)
-    
+
     exp <- dagPeptides@peptides
     bg <- dagBackground@background
     
-    AA <- get("namehash", envir = cacheEnv)
-    classic <- get("classic", envir = cacheEnv)$group
-    charge <- get("charge", envir = cacheEnv)$group
-    chemistry <-get("chemistry", envir = cacheEnv)$group
-    hydrophobicity <- get("hydrophobicity", envir = cacheEnv)$group
+    groupingScheme <- match.arg(groupingScheme)
+    AA <- get("no", envir = cachedEnv)$symbol
     
-    coln <- if (group == "null") as.character(AA) else names(get(group))
+    if(groupingScheme == "no")
+    {
+        coln <- as.character(AA)
+    } else 
+    {
+        coln <- names(get(groupingScheme, envir = cachedEnv)$group)    
+    } 
     
-    ##convert by group
+    ## helper function used to group AAs based on groupingScheme
     convert <- function(x, gtype) 
     {
         d <- dim(x)
@@ -70,23 +81,25 @@ testDAU <- function(dagPeptides,
             charge = convert(dat, charge),
             hydrophobicity = convert(dat, hydrophobicity),
             chemistry = convert(dat, chemistry),
-            null = dat
+            no = dat
         )
         dat
     }
+    
     bg <- lapply(bg, function(.bg)
-        groupAA(.bg, group))
-    exp <- groupAA(exp, group)
+        groupAA(.bg, groupingScheme))
+    
+    exp <- groupAA(exp, groupingScheme)
     if (ncol(exp) != ncol(bg[[1]]))
     {
-        stop("The length of background is different from inputs",
-             call. = FALSE)
+        stop("The length of background is different from inputs", call. = FALSE)
     }
     counts <- function(mat, coln) 
     {
         num <- apply(mat, 2, function(.ele) {
             cnt <- table(.ele)[coln]
-            names(cnt) <- coln ## just in case not all coln in the dataset
+            ## just in case not all coln in the dataset
+            names(cnt) <- coln 
             cnt[is.na(cnt)] <- 0
             total <- sum(cnt)
             cnt / total})
@@ -100,13 +113,12 @@ testDAU <- function(dagPeptides,
         }))
     })
     
-    ## Add background noise to the background models
+    ## Add background noise to the background model
     if (!is.na(bgNoise)) 
     {
         rdirichlet <- function (n, alpha) {
             l <- length(alpha)
-            x <-
-                matrix(rgamma(l * n, alpha),
+            x <-matrix(rgamma(l * n, alpha),
                        ncol = n,
                        byrow = TRUE)
             sm <- x %*% rep(1, n)
@@ -126,7 +138,6 @@ testDAU <- function(dagPeptides,
         apply(.bg, 1, mean, na.rm = TRUE)
     }))
     
-    
     ##difference
     exp[is.na(exp)] <- 0
     diff <- exp - mu
@@ -136,6 +147,7 @@ testDAU <- function(dagPeptides,
     
     rownames(diff) <- coln
     rownames(zscore) <- coln
+    
     coln <- c()
     if (dagPeptides@upstreamOffset > 0) 
     {
@@ -161,7 +173,7 @@ testDAU <- function(dagPeptides,
     ## return the test results as an object of testDAUresults class
     new(
         "testDAUresults",
-        group = group,
+        group = groupingScheme,
         difference = diff,
         zscore = zscore,
         pvalue = pvalue,
