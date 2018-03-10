@@ -1,10 +1,83 @@
+#' Build a background model for Z-test.
+#'
+#' @param dagPeptides An object of \code{\link{dagPeptides}} class containing 
+#' peptide sequences as the input set.
+#' @param matches A character vector with the matched subsequences
+#' @param numSubsamples An integer, the number of random sampling.
+#' @param rand.seed An integer, the seed used to perform random sampling
+#' @param uniqueSeq A logical vector indicating whether only unique peptide sequences
+#' are included in a background model.
+#' @param replacement A logical vector of length 1, indicating whether replacement 
+#' is allowed for random sampling.
+#'
+#' @return An object of \code{\link{dagBackground}} class.
+#' @export
+#' @keywords internal
+#'
+#' @examples
+#' 
+buildZTestBackgroundModel <- function(dagPeptides,
+                                      matches,
+                                      numSubsamples = 30L,
+                                      rand.seed = 1,
+                                      uniqueSeq = TRUE,
+                                      replacement = FALSE)
+{
+    numSubsamples <- as.integer(numSubsamples)
+    if (numSubsamples < 2)
+    {
+        stop("numSubsamples should be greater than 1", call. = FALSE)
+    }
+    
+    #### sampling the same number of sequences from background as the experiment set
+    set.seed(rand.seed)
+    n <- nrow(dagPeptides@data)
+    
+    if (length(matches) < n)
+    {
+        stop("Too few matches in the background. Please try different parameters.",
+             call. = FALSE)
+    }
+    
+    #### bootstrap: samplesize = n; number of samples = numSubsamples
+    background <- lapply(seq_len(numSubsamples), function(p) {
+        s <- sample(matches, n, replace = replacement, prob = NULL)
+        do.call(rbind, strsplit(s, "", fixed = TRUE))
+    })
+    
+    initiateBackgroundModel(background = background, numSubsamples = numSubsamples)
+}
+
+
+
+#' Create a new background model for DAU test
+#'
+#' @param background A character vector with defaults: "wholeProteome" and "inputSet", 
+#' "nonInputSet", indicating what set of peptide sequences should be considered to 
+#' generate a background model.
+#' @param numSubsamples An integer, the number of random sampling.
+#'
+#' @return An object of \code{\link{dagBackground}} class.
+#' @export
+#' @keywords internal
+#'
+#' @examples
+initiateBackgroundModel <- function(background, numSubsamples = 1L)
+{
+    new("dagBackground",
+        background = background,
+        numSubsamples = numSubsamples)
+}
+
+
+
 #' Build background models for DAU tests
 #' 
 #' A method used to build background models for testing differential amino acid usage
 #'
-#' @param dagPeptides An object of \link[dagPeptides]{dagPeptides} class containing 
+#' @param dagPeptides An object of \code{\link{dagPeptides}} class containing 
 #' peptide sequences as the input set.
-#' @param bg A character vector with defaults: "wholeProteome" and "inputSet", 
+#' @param background A character vector with defaults: "wholeProteome" and "inputSet", 
 #' "nonInputSet", indicating what set of peptide sequences should be considered to 
 #' generate a background model.
 #' @param model A character vector with defaults: "any" and "anchored", indicating 
@@ -18,43 +91,56 @@
 #' @param rand.seed An integer, the seed used to perform random sampling
 #' @param replacement A logical vector of length 1, indicating whether replacement 
 #' is allowed for random sampling.
-#' @param proteome An object of \link[Proteome]{Proteome} class containing a whole
-#' set of peptide sequences used for building background model using restriction of
-#' choice.
+#' @param testType A character vector of length 1. Available options are "ztest" 
+#' and "fisher".
+
 #' @import 
 #' @importFrom
 #'
-#' @return An object of \link[dagBackground]{dagBackground} class.
+#' @return An object of \code{\link{dagBackground}} class.
 #' @export
 #' @author Jianhong Ou, Haibo Liu
 #' @examples
-#' 
+#' dat <- unlist(read.delim(system.file("extdata", "grB.txt", package="dagLogo"), 
+#'                                      header=F, as.is=TRUE))
+#' ##prepare proteome from a fasta file
+#' proteome <- prepareProteome(fasta=system.file("extdata", 
+#'                                              "HUMAN.fasta",
+#'                                              package="dagLogo"))
+#' ##prepare object of dagPeptides
+#' seq <- formatSequence(seq=dat, proteome=proteome, 
+#'                      upstreamOffset=14, downstreamOffset=15)
+#' background <- buildBackgroundModel(seq, background="wholeProteome", proteome=proteome)
 
 buildBackgroundModel <- function(dagPeptides,
-                                 bg = c("wholeProteome", "inputSet", "nonInputSet"),
+                                 background = c("wholeProteome", "inputSet", "nonInputSet"),
                                  model = c("any", "anchored"),
                                  targetPosition = c("any", "Nterminus", "Cterminus"),
                                  uniqueSeq = TRUE,
                                  numSubsamples = 30L,
                                  rand.seed = 1,
                                  replacement = FALSE,
+                                 testType = c("ztest", "fisher"),
                                  proteome) 
 {
     if (missing(dagPeptides) || class(dagPeptides) != "dagPeptides") 
     {
         stop("dagPeptides should be an object of dagPeptides.", call. = FALSE)
     }
-    bg <- match.arg(bg)
+    background <- match.arg(background)
     targetPosition <- match.arg(targetPosition)
     model <- match.arg(model)
+    testType <- match.arg(testType)
     numSubsamples <- as.integer(numSubsamples)
     if (numSubsamples < 2)
     {
         stop("numSubsamples should be greater than 1")
     }
-
+    
+    length <- dagPeptides@upstreamOffset + dagPeptides@downstreamOffset + 1
+    
     ## Decide what set of peptide sequences should be used to build the background model
-    if (bg != "inputSet") 
+    if (background != "inputSet") 
     {
         if (missing(proteome) || class(proteome) != "Proteome") 
         {
@@ -62,7 +148,8 @@ buildBackgroundModel <- function(dagPeptides,
                 Try ?prepareProteome to get help", call. = FALSE)
         }
         
-        if (bg == "wholeProteome") 
+        ## Whole proteome as background
+        if (background == "wholeProteome") 
         {
             SequenceStr <- proteome@proteome$SEQUENCE
         } else
@@ -87,7 +174,8 @@ buildBackgroundModel <- function(dagPeptides,
         {
             model <- "any"
             warning("Anchor amino acid is not unique. Model is set to 'any'.")
-            anchorAA <- paste("[", paste(names(anchorAA), collapse = ""), "]", sep = "")
+            anchorAA <- paste("[", paste(names(anchorAA), collapse = ""), "]",
+                              sep = "")
         } else
         {
             anchorAA <- names(anchorAA)[1]
@@ -117,24 +205,29 @@ buildBackgroundModel <- function(dagPeptides,
     }
     matches <- gregexpr(pattern, SequenceStr)
     matches <- unlist(regmatches(SequenceStr, matches))
-    set.seed(rand.seed)
-    
-
-    if (length(matches) <= n)
+    if(uniqueSeq)
     {
-        stop("too less matches in background. Please try different parameters.",
-             call. = FALSE)
+        matches <- unique(matches)
     }
     
-    ##  subsampling size
-    n <- nrow(dagPeptides@data)
-    background <- lapply(seq_len(numSubsamples), function(p) {
-        s <- sample(matches, n, replace = replacement, prob = NULL)
-        if (uniqueSeq) { s <- unique(s)}
-        do.call(rbind, strsplit(s, "", fixed = TRUE))
-    })
-    
-    new("dagBackground",
-        background = background,
-        numSubsamples = numSubsamples)
+    ## build background model based on the type of hypothesis test
+    if (testType == "fisher")
+    {
+        matches <- as.list(matches)
+        backgroundModel <-
+            initiateBackgroundModel(background = matches, numSubsamples = 1L)
+        
+    } else
+    {
+        backgroundModel <-
+            buildZTestBackgroundModel(
+                dagPeptides = dagPeptides,
+                matches = matches,
+                numSubsamples = numSubsamples,
+                rand.seed = rand.seed,
+                uniqueSeq = uniqueSeq,
+                replacement = replacement
+            )
     }
+    backgroundModel
+}
