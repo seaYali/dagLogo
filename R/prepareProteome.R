@@ -1,19 +1,20 @@
-
-#' Create an object of Proteome class
+#' Create an object of Proteome class.
 #'
 #' Create an object of Proteome class by downloading a whole proteome data from 
 #' Uniprot for a given organism of an NCBI taxonomy ID or by using peptide sequences
 #' in a fasta file.
 #'
-#' @param source A database source from where the proteome sequences are to 
-#' downloaded. By default, currently it is "Uniprot". If it is NULL, then 
-#' fastaFile has to be specified. The priority of source is higher than dataFile.
-#' @param destDir A destination directory with writing permission for saving 
-#' downloaded sequences.
-#' @param fastaFile A fasta file name from which to read in protein sequences.
+#' @param source A character vector of length 1 or NULL. A database source from 
+#' where the proteome sequences are to downloaded. By default, currently it is
+#' "Uniprot". If it is NULL, then \code{fastaFile} has to be specified. The 
+#' priority of \code{source} is higher than \code{fastaFile}.
+#' @param destDir A character vector of length 1. A destination directory with 
+#' writing permission for saving downloaded sequences.
+#' @param fastaFile A character vector of length 1. A fasta file name from which
+#' to read in protein sequences.
 #' @param ... other parameters passing to \link{download.file}.
-#' @param species The Latin name of a species confirming to the Linnaean taxonomy 
-#' nomenclature system.
+#' @param species A character vector of length 1. The Latin name of a species 
+#' confirming to the Linnaean taxonomy nomenclature system.
 #'
 #' @improt UniProt.ws
 #' @importFrom utils download.file
@@ -21,16 +22,17 @@
 #' @export
 #'
 #' @examples 
-#' proteome <- prepareProteome(source = "Uniprot", species = "Drosophila melanogaster")
+#' proteome <- prepareProteome(source = "UniProt", species = "Drosophila melanogaster")
 #' 
 #' fasta <- system.file("extdata", "Drosophila.melanogaster.fa", package="dagLogo")
 #' proteome <- prepareProteome(source = NULL, species = "Drosophila melanogaster", fastaFile=fasta)
 
-prepareProteome <- function(source = "Uniprot", species = "unknown", destDir=getwd(), fastaFile, ...) 
+prepareProteome <- function(source = "UniProt", species = NULL, 
+                            destDir=getwd(), fastaFile, ...) 
 {
-    if (missing(species))
+    if (is.null(species))
     {
-        stop("Argument species is necessary!", call. = FALSE)
+        stop("Parameter species must be specified!", call. = FALSE)
     }
     if (!is.null(source))
     {
@@ -40,38 +42,53 @@ prepareProteome <- function(source = "Uniprot", species = "unknown", destDir=get
         speciesInfo <- availableUniprotSpecies(pattern = paste0("^", species, "$"))
         if (nrow(speciesInfo) != 1) 
         {
-            stop("Argument species is wrong. Please specify a correct Latin name for the species!")
+            stop("Parameter species is wrong. Please specify a correct Latin name 
+                 for the species!", call. = FALSE)
         } else 
         {
             taxonID <- speciesInfo[1, 1]
         }
         
-        url <- paste0("http://www.uniprot.org/uniprot/?query=organism:", taxonID,"&format=fasta")
+        ## UniProt url for downloading the proteome of a given species
+        url <- paste0("http://www.uniprot.org/uniprot/?query=organism:", 
+                      taxonID,"&format=fasta")
+        
         download.file(url = url, destfile = tempFile, ...)
         fasta <- readAAStringSet(tempFile)
-    } else if (!missing(fastaFile)) 
+        proteome <- data.frame(
+            SEQUENCE = as.character(fasta),
+            ID = gsub("^>.+?\\|(.+?)\\|.+", ">\\1", names(fasta), perl = TRUE),
+            stringsAsFactors = FALSE)
+        return(new(
+            "Proteome",
+            proteome = proteome,
+            type = "UniProt",
+            species = species))
+    } else if (!missing(fastaFile)) ## prepare Proteome from a fasta file
     {
         if (length(fastaFile) == 1 && class(fastaFile) == "character") 
         {
             fasta <- readAAStringSet(fastaFile)
         }
+        if (class(fasta) != "AAStringSet") 
+        {
+            stop("fasta should be an object AAStringSet",
+                 call. = FALSE)
+        }
+        proteome <- data.frame(
+            SEQUENCE = as.character(fasta),
+            
+            ## ID may be simplified by using gsub
+            ID = names(fasta),
+            stringsAsFactors = FALSE)
+        return(new(
+            "Proteome",
+            proteome = proteome,
+            type = "fasta",
+            species = species))
     } else
     {
-        stop("At least one of arguments source and fastaFile should be provided!", call. = FALSE)
-    }
-    
-    if (class(fasta) != "AAStringSet") 
-    {
-        stop("fasta should be an object AAStringSet",
+        stop("At least one of arguments source and fastaFile should be provided!",
              call. = FALSE)
     }
-    proteome <- data.frame(
-        SEQUENCE = as.character(fasta),
-        ID = names(fasta),
-        stringsAsFactors = FALSE)
-    return(new(
-        "Proteome",
-        proteome = proteome,
-        type = "fasta",
-        species = species))
 }
