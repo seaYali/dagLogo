@@ -7,8 +7,9 @@
 #'
 #' @param IDs  A character vector containing protein/peptide IDs used to fecth 
 #' sequences from a Biomart database or a \code{Proteome} object.
-#' @param type A character vector of length 1. The available option are 
-#' "entrezgene" and "UniProtKB_ID".
+#' @param type A character vector of length 1. The available options are 
+#' "entrezgene" and "UniProtKB_ID" if parameter \code{mart} is missing; otherwise
+#' it can be any type of IDs aavailable in Biomart databases.
 #' @param anchorAA A character vector of length 1 or the same length as that of
 #' anchorPos, each element of which is a single character amino acid, for example,
 #' "K" for lysine.
@@ -239,7 +240,8 @@ fetchSequence <-function(IDs,
         {
             protein <-
                 proteome@proteome[proteome@proteome[, "ID"] %in% 
-                                      unique(as.character(IDs)), c("SEQUENCE", "ID")]
+                                      unique(as.character(IDs)),
+                                  c("SEQUENCE", "ID")]
             colnames(protein) <- c("peptide", "UniProtKB_ID")
         }
         protein <- protein[!is.na(protein[, 2]), ]
@@ -305,7 +307,7 @@ fetchSequence <-function(IDs,
         )
     
     # unique dat by oid and upstream/anchor/downstream sequence
-    dat <- dat[!duplicated(paste(dat$oid, dat$upstream, dat$downstream)),]
+    dat <- dat[!duplicated(paste(dat$oid, dat$upstream, dat$downstream)), ]
     dat$oid <- NULL
     rownames(dat) <- NULL
     
