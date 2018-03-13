@@ -137,7 +137,7 @@ setClass(
     representation(
         group = "character",
         difference = "matrix",
-        test = "character"
+        test = "character",
         zscore = "matrix",
         pvalue = "matrix",
         background = "matrix",
