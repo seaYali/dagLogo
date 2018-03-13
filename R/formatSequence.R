@@ -74,8 +74,9 @@ formatSequence <-function(seq,
     center <- upstreamOffset + 1
     anchorAA <- unlist(lapply(seq, function(.ele)
                                    substr(.ele, center, center)))
-    type <- ifelse (proteome@type == "UniProt", "Uniprot", "fasta") 
     
+    ## find the IDs and the starting positions of peptide sequences in Proteome 
+    ## which match the sequences in seq
     m <- do.call(rbind, lapply(seq, function(.seq) {
         ## a numeric vector: starting positions of the matches, -1 if no match
         .m <- regexpr(.seq, proteome@proteome$SEQUENCE) 
@@ -89,24 +90,22 @@ formatSequence <-function(seq,
         c(.id, .pos)
     }))
     
-    ## starting position of the first match for each aligned subsequence from seq
+    ## starting positions of the first match in sequences in Proteome for each 
+    ## aligned sequence from seq
     anchorPos <- m[, 2]
     
+    ## IDs of sequences in Proteome, matching each aligned sequence in seq
+    IDs <- proteome@proteome[m[, 1], "ID"]
     
-    if (proteome@type == "UniProt") {
-        IDs <- proteome@proteome[m[, 1], "ID"]
-    } else
-    {
-        IDs <- NA
-    }
+    ## full sequences in Proteome, matching each aligned sequence in seq
     peptide <- proteome@proteome[m[, 1], "SEQUENCE"]
-    anchor <- anchorAA
     dat <- data.frame(IDs = IDs,
                       anchorAA = anchorAA,
                       anchorPos = anchorPos,
                       peptide = peptide,
-                      anchor = anchor)
+                      anchor = anchorAA)
     
+    ## upstream and downstrean sequences and characters
     dat$upstream <- substr(seq, 1, upstreamOffset)
     dat$downstream <-
         substr(seq, upstreamOffset + 2, upstreamOffset + downstreamOffset + 1)
@@ -136,6 +135,6 @@ formatSequence <-function(seq,
         peptides = seqchar,
         upstreamOffset = upstreamOffset,
         downstreamOffset = downstreamOffset,
-        type = type
+        type = proteome@type
     )
 }
