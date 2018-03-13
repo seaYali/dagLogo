@@ -7,9 +7,8 @@
 #'
 #' @param IDs  A character vector containing protein/peptide IDs used to fecth 
 #' sequences from a Biomart database or a \code{Proteome} object.
-#' @param type A character vector of length 1, the type of input IDs.It must be
-#' specified as either "entrezProtein_ID" or "UniProtKB_ID" if \code{mart} is 
-#' missing.
+#' @param type A character vector of length 1. The available option are 
+#' "entrezgene" and "UniProtKB_ID".
 #' @param anchorAA A character vector of length 1 or the same length as that of
 #' anchorPos, each element of which is a single character amino acid, for example,
 #' "K" for lysine.
@@ -84,7 +83,7 @@
 #' }
 
 fetchSequence <-function(IDs,
-                        type = c("entrezProtein_ID", "UniProtKB_ID"),
+                        type = c("entrezgene", "UniProtKB_ID"),
                         anchorAA = NULL,
                         anchorPos,
                         mart,
@@ -225,17 +224,17 @@ fetchSequence <-function(IDs,
     } else  ## retreive sequence from Proteome
     {
         type <- match.arg(type)
-         if (!(type %in% c("entrezProtein_ID", "UniProtKB_ID"))) 
+         if (!(type %in% c("entrezgene", "UniProtKB_ID"))) 
         {
-            stop( "Only accept 'entrezProtein_ID' or 'UniProtKB_ID' for type when 
+            stop( "Only accept 'entrezgene' or 'UniProtKB_ID' for type when 
                   using proteome for fetching sequences.", call. = FALSE)
         }
-        if (type == "entrezProtein_ID") 
+        if (type == "entrezgene") 
         {
             protein <-
                 proteome@proteome[proteome@proteome[, "ID"] %in% 
                                       unique(as.character(IDs)), c(2, 1)]
-            colnames(protein) <- c("peptide", "entrezProtein_ID")
+            colnames(protein) <- c("peptide", "entrezgene")
         } else
         {
             protein <-
