@@ -70,6 +70,14 @@ formatSequence <-function(seq,
         }
     }
     
+    ## check validity of upstreamOffset and downstreamOffset
+    if (upstreamOffset <0 || upstreamOffset > 20 || 
+        downstreamOffset < 0 || downstreamOffset >20)
+    {
+        stop("upstreamOffset and downstreamOffset must be in the 
+             interval (0, 20).", call. = FALSE)
+    }
+    
     ## retrieve anchorAA and anchorPos
     center <- upstreamOffset + 1
     anchorAA <- unlist(lapply(seq, function(.ele)
