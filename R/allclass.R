@@ -120,10 +120,10 @@ setClass("dagBackground",
 #' @slot background A numeric matrix consisting mino acid proportions in the 
 #' background set of aligned, formatted peptides at each position.
 #' @slot motif A numeric matrix consisting of proportions for DAGLogo. 
-#' @slot upstreamOffset A positive integer: the upstream offset relative to the 
-#' anchoring position.
-#' @slot downstreamOffset A positive integer: the upstream offset relative to 
-#' the anchoring position.
+#' @slot upstreamOffset A positive integer between (0, 20): the upstream offset
+#' relative to the anchoring position.
+#' @slot downstreamOffset A positive integer between (0, 20): the upstream offset
+#' relative to the anchoring position.
 #'
 #' @name testDAUresults-class
 #' @rdname testDAUresults-class
