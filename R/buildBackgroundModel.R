@@ -1,8 +1,28 @@
+#' Create a new \code{backgroundModel} object for \code{testDAU}.
+#'
+#' @param background A list each element of which is a vector of aligned peptide
+#' sequences of the same length..
+#' @param numSubsamples An integer, the number of random sampling to get 
+#' background sequence sets.
+#'
+#' @return An object of \code{\link{dagBackground}} class.
+#' @export
+#' @keywords internal
+#'
+#' @examples
+initiateBackgroundModel <- function(background, numSubsamples = 1L)
+{
+    new("dagBackground",
+        background = background,
+        numSubsamples = numSubsamples)
+}
+
+
 #' Build a background model for Z-test.
 #'
 #' @param dagPeptides An object of \code{\link{dagPeptides}} class containing 
 #' peptide sequences as the input set.
-#' @param matches A character vector with the matched subsequences
+#' @param matches A character vector with the matched subsequences.
 #' @param numSubsamples An integer, the number of random sampling.
 #' @param rand.seed An integer, the seed used to perform random sampling
 #' @param uniqueSeq A logical vector indicating whether only unique peptide sequences
@@ -47,29 +67,6 @@ buildZTestBackgroundModel <- function(dagPeptides,
     
     initiateBackgroundModel(background = background, numSubsamples = numSubsamples)
 }
-
-
-
-#' Create a new background model for DAU test
-#'
-#' @param background A character vector with defaults: "wholeProteome" and "inputSet", 
-#' "nonInputSet", indicating what set of peptide sequences should be considered to 
-#' generate a background model.
-#' @param numSubsamples An integer, the number of random sampling.
-#'
-#' @return An object of \code{\link{dagBackground}} class.
-#' @export
-#' @keywords internal
-#'
-#' @examples
-initiateBackgroundModel <- function(background, numSubsamples = 1L)
-{
-    new("dagBackground",
-        background = background,
-        numSubsamples = numSubsamples)
-}
-
-
 
 #' Build background models for DAU tests
 #' 
@@ -213,9 +210,9 @@ buildBackgroundModel <- function(dagPeptides,
     ## build background model based on the type of hypothesis test
     if (testType == "fisher")
     {
-        matches <- as.list(matches)
+        matches <- list(matches) ## a list of length 1 
         backgroundModel <-
-            initiateBackgroundModel(background = matches, numSubsamples = 1L)
+            initiateBackgroundModel(background = matches, numSubsamples = 1)
         
     } else
     {
