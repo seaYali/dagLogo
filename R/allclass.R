@@ -1,13 +1,13 @@
-#' Class dagPeptides
-#' An S4 class to represent formatted, aligned peptides for DAGlogo analysis
+#' Class dagPeptides.
+#' An S4 class to represent formatted, aligned peptides for DAGlogo analysis.
 #' 
-#' @slot data A data frame with columns: IDs, anchorAA, anchorPos, peptide and anchor
+#' @slot data A data frame with columns: IDs, anchorAA, anchorPos, peptide and anchor.
 #' @slot peptides A matrix of character, each element is a single-character symbol
-#' for a amino acid
+#' for a amino acid.
 #' @slot upstreamOffset An integer in the interval (0, 20): the upstream offset
-#' relative to the anchoring position
+#' relative to the anchoring position.
 #' @slot downstreamOffset An integer in the interval (0, 20): the downstream 
-#' offset relative to the anchoring position
+#' offset relative to the anchoring position.
 #' @slot type A character vector of length 1. Available options :"Uniprot", and 
 #' "fasta".
 #' 
@@ -44,11 +44,11 @@ setClass(
     }
 )
 
-#' Class Proteome
+#' Class Proteome.
 #' 
-#' An S4 class to represent a whole proteome for DAGlogo analysis
+#' An S4 class to represent a whole proteome for DAGlogo analysis.
 #' 
-#' @slot proteome A data frame
+#' @slot proteome A data frame.
 #' @slot type A character vector of length 1. Available options :"Uniprot", and 
 #' "fasta".
 #' @slot species A character vector of length 1, a conventional Latin name for 
@@ -83,10 +83,10 @@ setClass(
     }
 )
 
-#' Class dagBackground
+#' Class dagBackground.
 #' 
 #' An S4 class to represent a background of a formatted, aligned peptide for 
-#' dagoLogo analysis
+#' dagoLogo analysis.
 #' 
 #' @slot background A list of data frame. Within each n-by-1 dataframe is a the 
 #' aligned pedtide of same length.
@@ -105,9 +105,9 @@ setClass("dagBackground",
                         numSubsamples = "integer"))
 
 
-#' Class testDAUresults
+#' Class testDAUresults.
 #' 
-#' An S4 class to represent a DAU statistical test result from DAGlogo analysis
+#' An S4 class to represent a DAU statistical test result from DAGlogo analysis.
 #' 
 #' @slot group A character vector of length 1, the type of method for grouping 
 #' amino acid.
@@ -120,8 +120,10 @@ setClass("dagBackground",
 #' @slot background A numeric matrix consisting mino acid proportions in the 
 #' background set of aligned, formatted peptides at each position.
 #' @slot motif A numeric matrix consisting of proportions for DAGLogo. 
-#' @slot upstream A numeric vector of length 1.
-#' @slot downstream A numeric vector of length 1.
+#' @slot upstreamOffset A positive integer: the upstream offset relative to the 
+#' anchoring position.
+#' @slot downstreamOffset A positive integer: the upstream offset relative to 
+#' the anchoring position.
 #'
 #' @name testDAUresults-class
 #' @rdname testDAUresults-class
@@ -140,15 +142,15 @@ setClass(
         pvalue = "matrix",
         background = "matrix",
         motif = "matrix",
-        upstream = "numeric",
-        downstream = "numeric"
+        upstreamOffset = "numeric",
+        downstreamOffset = "numeric"
     ),
     validity = function(object) {
         re <- TRUE
-        if (object@upstream < 0 || object@downstream < 0)
+        if (object@upstreamOffset < 0 || object@downstreamOffset < 0)
         {
             re <-
-                "upstream and downstream should be a integer greater than 0"
+                "upstreamOffset and downstreamOffset should be a integer greater than 0"
         }
 
         if(!test %in% c("fisher", "ztest"))
