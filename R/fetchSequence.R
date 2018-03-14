@@ -8,7 +8,7 @@
 #' @param IDs  A character vector containing protein/peptide IDs used to fecth 
 #' sequences from a Biomart database or a \code{Proteome} object.
 #' @param type A character vector of length 1. The available options are 
-#' "entrezgene" and "UniProtKB_ID" if parameter \code{mart} is missing; otherwise
+#' "entrezgene" and "uniprotsptrembl" if parameter \code{mart} is missing; otherwise
 #' it can be any type of IDs aavailable in Biomart databases.
 #' @param anchorAA A character vector of length 1 or the same length as that of
 #' anchorPos, each element of which is a single character amino acid, for example,
@@ -84,7 +84,7 @@
 #' }
 
 fetchSequence <-function(IDs,
-                        type = c("entrezgene", "UniProtKB_ID"),
+                        type = "entrezgene",
                         anchorAA = NULL,
                         anchorPos,
                         mart,
@@ -214,7 +214,6 @@ fetchSequence <-function(IDs,
     }
     inputs <- data.frame(IDs, anchorAA, anchorPos, oid = 1:length(anchorPos))
     
-    
     if (!missing(mart))  ## retreive sequence from biomart
     {
         protein <- getSequence(
@@ -224,10 +223,10 @@ fetchSequence <-function(IDs,
             mart = mart)
     } else  ## retreive sequence from Proteome
     {
-        type <- match.arg(type)
-         if (!(type %in% c("entrezgene", "UniProtKB_ID"))) 
+        
+         if (!(type %in% c("entrezgene", "uniprotsptrembl"))) 
         {
-            stop( "Only accept 'entrezgene' or 'UniProtKB_ID' for type when 
+            stop( "Only accept 'entrezgene' or 'uniprotsptrembl' for type when 
                   using proteome for fetching sequences.", call. = FALSE)
         }
         if (type == "entrezgene") 
@@ -242,7 +241,7 @@ fetchSequence <-function(IDs,
                 proteome@proteome[proteome@proteome[, "ID"] %in% 
                                       unique(as.character(IDs)),
                                   c("SEQUENCE", "ID")]
-            colnames(protein) <- c("peptide", "UniProtKB_ID")
+            colnames(protein) <- c("peptide", "uniprotsptrembl")
         }
         protein <- protein[!is.na(protein[, 2]), ]
     }
