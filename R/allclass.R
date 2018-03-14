@@ -116,6 +116,8 @@ setClass("dagBackground",
 #' peptides at each position.
 #' @slot zscore A numeric matrix consisting of Z-scores. This slot is \code{NULL}
 #' for an Fisher's exact test result.
+#' @slot oddsRatio A numeric matrix consisting of estimates of odds ratios. This slot is \code{NULL}
+#' for an Fisher's exact test result.
 #' @slot pvalue A numeric matrix consisting of p-values.
 #' @slot background A numeric matrix consisting mino acid proportions in the 
 #' background set of aligned, formatted peptides at each position.
@@ -139,6 +141,7 @@ setClass(
         difference = "matrix",
         test = "character",
         zscore = "matrix",
+        oddsRatio = "matrix",
         pvalue = "matrix",
         background = "matrix",
         motif = "matrix",
@@ -159,7 +162,7 @@ setClass(
         } else if (test == "fisher")
         {
             if (!is.null(object@zscore) || ncol(object@difference) == 0 || 
-                ncol(object@pvalue) == 0)
+                ncol(object@pvalue) == 0 || ncol(object@oddsRatio) == 0)
             {
                 re <-
                     "slots zscore, difference and pvalue could not be empty" 
@@ -172,7 +175,7 @@ setClass(
         } else
         {
             
-            if (ncol(object@zscore) == 0 ||
+            if (ncol(object@zscore) == 0 || !is.null(object@oddsRatio) ||
                 ncol(object@difference) == 0 || ncol(object@pvalue) == 0)
             {
                 re <-
