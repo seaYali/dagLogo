@@ -214,7 +214,7 @@ buildBackgroundModel <- function(dagPeptides,
     if (testType == "fisher")
     {
         numSubsamples <- 1L
-        background <- do.call(rbind, strsplit(matches, "", fixed = TRUE))
+        background <- list(do.call(rbind, strsplit(matches, "", fixed = TRUE)))
         backgroundModel <-
             initiateBackgroundModel(background = background,
                                     numSubsamples = numSubsamples,
