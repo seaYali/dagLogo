@@ -10,11 +10,12 @@
 #' @keywords internal
 #'
 #' @examples
-initiateBackgroundModel <- function(background, numSubsamples = 1L)
+initiateBackgroundModel <- function(background, numSubsamples = 1L, testType)
 {
     new("dagBackground",
         background = background,
-        numSubsamples = numSubsamples)
+        numSubsamples = numSubsamples,
+        testType = testType)
 }
 
 
@@ -40,6 +41,7 @@ buildZTestBackgroundModel <- function(dagPeptides,
                                       matches,
                                       numSubsamples = 30L,
                                       rand.seed = 1,
+                                      testType = testType,
                                       uniqueSeq = TRUE,
                                       replacement = FALSE)
 {
@@ -65,7 +67,8 @@ buildZTestBackgroundModel <- function(dagPeptides,
         do.call(rbind, strsplit(s, "", fixed = TRUE))
     })
     
-    initiateBackgroundModel(background = background, numSubsamples = numSubsamples)
+    initiateBackgroundModel(background = background, 
+                            numSubsamples = numSubsamples, testType = testType)
 }
 
 #' Build background models for DAU tests
@@ -210,9 +213,12 @@ buildBackgroundModel <- function(dagPeptides,
     ## build background model based on the type of hypothesis test
     if (testType == "fisher")
     {
-        matches <- list(matches) ## a list of length 1 
+        numSubsamples <- 1L
+        background <- do.call(rbind, strsplit(matches, "", fixed = TRUE))
         backgroundModel <-
-            initiateBackgroundModel(background = matches, numSubsamples = 1)
+            initiateBackgroundModel(background = background,
+                                    numSubsamples = numSubsamples,
+                                    testType = testType)
         
     } else
     {
@@ -220,7 +226,8 @@ buildBackgroundModel <- function(dagPeptides,
             buildZTestBackgroundModel(
                 dagPeptides = dagPeptides,
                 matches = matches,
-                numSubsamples = numSubsamples,
+                testType = testType,
+                numSubsamples = as.integer(numSubsamples),
                 rand.seed = rand.seed,
                 uniqueSeq = uniqueSeq,
                 replacement = replacement
