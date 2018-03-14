@@ -27,7 +27,7 @@
 #' fasta <- system.file("extdata", "Drosophila.melanogaster.fa", package="dagLogo")
 #' proteome <- prepareProteome(source = NULL, species = "Drosophila melanogaster", fastaFile=fasta)
 
-prepareProteome <- function(source = "UniProt", species = NULL, 
+prepareProteome <- function(source = NULL, species = NULL, 
                             destDir=getwd(), fastaFile, ...) 
 {
     if (is.null(species))
@@ -36,6 +36,10 @@ prepareProteome <- function(source = "UniProt", species = NULL,
     }
     if (!is.null(source))
     {
+        if (source != "UniProt")
+        {
+            stop("source must be UniProt.", call. = FALSE)
+        }
         tempFile <- tempfile(pattern = gsub(" ", ".", paste0(source, species, sep =".")), 
                              tmpdir = destDir, fileext = ".fasta")
         
