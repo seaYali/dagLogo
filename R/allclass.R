@@ -33,13 +33,13 @@ setClass(
         if (object@upstreamOffset < 0 ||
             object@downstreamOffset < 0)
             re <-
-                "upstreamOffset and downstreamOffset should be a integer greater than 0"
+                "upstreamOffset and downstreamOffset should be a integer greater than 0."
         peptides <- as.character(object@peptides)
         peptides <-
             peptides[(!is.na(peptides)) & (peptides != "NA")]
         if (!all(1 == nchar(peptides)))
             re <-
-            "peptides must be a matrix with one amino acide in each position"
+            "peptides must be a matrix with one amino acide in each position."
         re
     }
 )
@@ -74,11 +74,11 @@ setClass(
         if (!object@type %in% c("fasta", "UniProt"))
             re <- "type must be fasta or UniProt"
         if (object@type == "UniProt" &&
-            is.null(object@proteome$ENTREZ_GENE))
+            is.null(object@proteome$ID))
             re <-
-                "when type equals to UniProt, ENTREZ_GENE column is required for proteome"
+                "When type equals to UniProt, ID column is required for Proteome."
         if (is.null(object@proteome$SEQUENCE))
-            re <- "proteome sequence is required"
+            re <- "proteome sequence is required."
         re
     }
 )
@@ -102,7 +102,8 @@ setClass(
 
 setClass("dagBackground",
          representation(background = "list",
-                        numSubsamples = "integer"))
+                        numSubsamples = "integer",
+                        testType = "character"))
 
 
 #' Class testDAUresults.
@@ -114,6 +115,8 @@ setClass("dagBackground",
 #' @slot difference A numeric matrix consisting of differences of amino acid. 
 #' proportions between the test set and the background set of aligned, formatted 
 #' peptides at each position.
+#' @slot testType A character vector of length 1, the type of statistic testing.
+#' The available options are "fisher" and "z-test".
 #' @slot zscore A numeric matrix consisting of Z-scores. This slot is \code{NULL}
 #' for an Fisher's exact test result.
 #' @slot oddsRatio A numeric matrix consisting of estimates of odds ratios. This slot is \code{NULL}
@@ -126,6 +129,7 @@ setClass("dagBackground",
 #' relative to the anchoring position.
 #' @slot downstreamOffset A positive integer between (0, 20): the upstream offset
 #' relative to the anchoring position.
+
 #'
 #' @name testDAUresults-class
 #' @rdname testDAUresults-class
@@ -139,7 +143,7 @@ setClass(
     representation(
         group = "character",
         difference = "matrix",
-        test = "character",
+        testType = "character",
         zscore = "matrix",
         oddsRatio = "matrix",
         pvalue = "matrix",
@@ -153,24 +157,25 @@ setClass(
         if (object@upstreamOffset < 0 || object@downstreamOffset < 0)
         {
             re <-
-                "upstreamOffset and downstreamOffset should be a integer greater than 0"
+                "upstreamOffset and downstreamOffset should be a integer greater than 0."
         }
 
-        if(!test %in% c("fisher", "ztest"))
+        if(!testType %in% c("fisher", "ztest"))
         {
             re <- 'The test type must be "fisher", "ztest"'
-        } else if (test == "fisher")
+        } else if (testType == "fisher")
         {
             if (!is.null(object@zscore) || ncol(object@difference) == 0 || 
                 ncol(object@pvalue) == 0 || ncol(object@oddsRatio) == 0)
             {
                 re <-
-                    "slots zscore, difference and pvalue could not be empty" 
+                    "slots zscore, difference and pvalue could not be empty.
+                zscore should be NULL." 
             }
             if (any(dim(object@pvalue) != dim(object@difference)))
             {
                 re <-
-                    "dim of slots zscore, difference and pvalue should be identical"
+                    "Dimensions of slots zscore, difference and pvalue should be identical."
             }
         } else
         {
@@ -179,13 +184,14 @@ setClass(
                 ncol(object@difference) == 0 || ncol(object@pvalue) == 0)
             {
                 re <-
-                    "slots zscore, difference and pvalue could not be empty"
+                    "slots zscore, difference and pvalue could not be empty.
+                oddsRatio should be NULL."
             }
             if (any(dim(object@pvalue) != dim(object@difference)) || 
                 any(dim(object@pvalue) != dim(object@zscore)))
             {
                 re <-
-                    "dim of slots zscore, difference and pvalue should be identical"
+                    "dim of slots zscore, difference and pvalue should be identical."
             }
         }
         re
