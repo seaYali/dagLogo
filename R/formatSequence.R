@@ -34,7 +34,7 @@ formatSequence <-function(seq,
     if (missing(proteome) || class(proteome) != "Proteome") 
     {
         stop("proteome should be an object of Proteome Class. \n
-             Try ?prepareProteome to get help",
+             Try ?prepareProteome to get help.",
              call. = FALSE)
     }
     if (missing(seq)) 
