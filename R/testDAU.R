@@ -3,13 +3,17 @@
 #' Test differential usage of amino acids with or without grouping in
 #' experimental sets and background sets.
 #'
-#' @param dagPeptides An object of Class \code{\link{dagPeptides}}
-#' @param dagBackground An object of Class \code{\link{dagBackground}}
+#' @param dagPeptides An object of Class \code{\link{dagPeptides}}.
+#' @param dagBackground An object of Class \code{\link{dagBackground}}.
+#' @param testType A character vector of length 1. The available options are
+#' "fisher" and "z-test", that is "Fisher's exact test" and "Z-test". When the 
+#' the number of sequences in the background set is too samll to perform non-
+#' replacement subsamplint, "Fisher's exact test" is suggested.
 #' @param groupingScheme A character vector of length 1. Available choices are
 #' "no", "classic", "charge", "chemistry",and "hydrophobicity". It is used
 #' to group amino acids into groups.
-#' @param bgNoise A numeric vector of length 1. It should be between 0 and 1,
-#' exclusively.
+#' @param bgNoise A numeric vector of length 1. It should be in the interval of
+#' (0, 1).
 #'
 #' @return An object of Class \code{\link{testDAUresults}}.
 #' @export
@@ -19,6 +23,7 @@
 #' 
 testDAU <- function(dagPeptides,
                     dagBackground,
+                    testType = c("fisher", "z-test"),
                     groupingScheme = c("no", "classic", "charge", 
                                        "chemistry", "hydrophobicity"),
                     bgNoise = NA) 
@@ -44,6 +49,12 @@ testDAU <- function(dagPeptides,
             stop("The background noise is a number in the range of 0 to 1", 
                  call. = FALSE)
         }
+    }
+    testType <- match.arg(testType)
+    if(!testType %in% c("fisher", "z-test"))
+    {
+        stop("The type of testing should be Fisher's exact test or Z-test.", 
+             call. = FALSE)
     }
 
     exp <- dagPeptides@peptides
@@ -94,19 +105,37 @@ testDAU <- function(dagPeptides,
     {
         stop("The length of background is different from inputs", call. = FALSE)
     }
-    counts <- function(mat, coln) 
+    
+    ## get counts for each amino acid at each position if Fisher's exact test
+    ## otherwise get proportions
+    counts <- function(mat, coln, testType) 
     {
-        num <- apply(mat, 2, function(.ele) {
-            cnt <- table(.ele)[coln]
-            ## just in case not all coln in the dataset
-            names(cnt) <- coln 
-            cnt[is.na(cnt)] <- 0
-            total <- sum(cnt)
-            cnt / total})
+        if (testType == "fisher")
+        {
+            num <- apply(mat, 2, function(.ele) {
+                cnt <- table(.ele)[coln]
+                ## just in case not all coln in the dataset
+                names(cnt) <- coln 
+                cnt[is.na(cnt)] <- 0
+                cnt})
+        } else
+        {
+            num <- apply(mat, 2, function(.ele) {
+                cnt <- table(.ele)[coln]
+                ## just in case not all coln in the dataset
+                names(cnt) <- coln 
+                cnt[is.na(cnt)] <- 0
+                total <- sum(cnt)
+                cnt / total})
+        }
     }
-    bg <- lapply(bg, counts, coln)
-    exp <- counts(exp, coln)
+    bg <- lapply(bg, counts, coln, testType = testType)
+    exp <- counts(exp, coln, testType = testType)
+    exp[is.na(exp)] <- 0
+    
     rownames(exp) <- coln
+    
+    
     bg <- lapply(1:ncol(exp), function(i) {
         do.call(cbind, lapply(bg, function(.bg) {
             .bg[, i]
@@ -114,7 +143,7 @@ testDAU <- function(dagPeptides,
     })
     
     ## Add background noise to the background model
-    if (!is.na(bgNoise)) 
+    if (!is.na(bgNoise) && testType == "z-test") 
     {
         rdirichlet <- function (n, alpha) {
             l <- length(alpha)
@@ -125,25 +154,57 @@ testDAU <- function(dagPeptides,
             t(x / as.vector(sm))
         }
         bg <- lapply(bg, function(col_freqs) {
-            (1 - bgNoise) * col_freqs + bgNoise * rdirichlet(nrow(col_freqs), rep(1, ncol(col_freqs)))
+            (1 - bgNoise) * col_freqs + bgNoise * 
+                rdirichlet(nrow(col_freqs), rep(1, ncol(col_freqs)))
         })
     }
     
     ##Z-score = (x-mu)/std
     ## The standard deviation is not correctly calculated?
-    std <- do.call(cbind, lapply(bg, function(.bg) {
-        apply(.bg, 1, sd, na.rm = TRUE)
-    }))
     mu <- do.call(cbind, lapply(bg, function(.bg) {
         apply(.bg, 1, mean, na.rm = TRUE)
     }))
     
+    if (testType == "z-test")
+    {
+        ## std <- do.call(cbind, lapply(bg, function(.bg) {
+        ##    apply(.bg, 1, sd, na.rm = TRUE)}))
+        ## A better estimate of sigma = ssqrt(p*(1-p)/n)
+        std <- mu
+        n <-  dagBackground@numSubsamples
+        std <- mu*(1-mu)/n
+    }
+
+    
     ##difference
-    exp[is.na(exp)] <- 0
+
     diff <- exp - mu
     diff[is.na(diff)] <- 0
-    
-    zscore <- diff / std
+    if (testType == "z-test")
+    {
+        zscore <- diff / std
+        pvalue <- 2 * pnorm(-abs(zscore))
+        oddsRatio = NULL
+    } else
+    {
+        
+        
+        non_bg <- sweep(x= bg, MARGIN= 2, STATS = colSums(bg), FUN = "-") 
+        non_exp <- sweep(x= exp, MARGIN= 2, STATS = colSums(exp), FUN = "-")
+        
+        testResults <- mapply(function(x, X, y, Y){
+            fisher <- fisher.test(matrix(c(x, X, y, Y), nrow =2, byrow =TRUE),
+                                  alternative = "two.sided")
+            c(pvalues=fisher$p.value, statistics = fisher$estimate)
+        })
+        
+        testOut <- do.call(rbind, testResults)
+        pvalue <- matrix(testOut$pvalues, nrow = nrow(exp), byrow =FALSE)
+        oddsRatio <-  matrix(testOut$pvalues, nrow = nrow(exp), byrow =FALSE)
+        zscore  <- NULL
+        
+    }
+   
     
     rownames(diff) <- coln
     rownames(zscore) <- coln
@@ -168,7 +229,7 @@ testDAU <- function(dagPeptides,
         colnames(diff) <-
             colnames(zscore) <- paste("AA", 1:ncol(diff), sep = "")
     }
-    pvalue <- 2 * pnorm(-abs(zscore))
+    
     
     ## return the test results as an object of testDAUresults class
     new(
@@ -176,6 +237,7 @@ testDAU <- function(dagPeptides,
         group = groupingScheme,
         difference = diff,
         zscore = zscore,
+        oddsRatio = oddsRatio,
         pvalue = pvalue,
         background = mu,
         motif = exp,
