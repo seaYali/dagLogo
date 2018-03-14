@@ -59,7 +59,7 @@ buildZTestBackgroundModel <- function(dagPeptides,
              call. = FALSE)
     }
     
-    #### bootstrap: samplesize = n; number of samples = numSubsamples
+    ## subsampleing: samplesize = n; number of subsamples = numSubsamples
     background <- lapply(seq_len(numSubsamples), function(p) {
         s <- sample(matches, n, replace = replacement, prob = NULL)
         do.call(rbind, strsplit(s, "", fixed = TRUE))
