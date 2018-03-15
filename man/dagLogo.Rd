@@ -11,7 +11,7 @@ dagLogo(testDAUresults, type = c("diff", "zscore"), pvalueCutoff = 0.05,
   gscmd = Sys.getenv("R_GSCMD"), labels = NULL)
 }
 \arguments{
-\item{testDAUresults}{An object of \code{testDAUresults} (results of testing 
+\item{testDAUresults}{An object of \code{testDAUresults}(results of testing 
 differential amino acid uasage).}
 
 \item{type}{A character vector of length 1. Type of statistics to display 
@@ -23,7 +23,7 @@ on y-axis, available choices are "diff" or "zscore".}
 as names and single-letter symbols as values.}
 
 \item{font}{A character vector of length 1. Font type for displaying sequence
-Logo}
+Logo.}
 
 \item{fontface}{An integer, fontface of text for axis annotation and legends.}
 
@@ -39,7 +39,7 @@ x-axis label should be adjusted relative to the anchoring position.}
 Ghostscript. In MAC OS, it usually is "/usr/local/bin/gs". This should be 
 defined as a system variable or provide directly.}
 
-\item{labels}{A character vector, x-axis labels}
+\item{labels}{A character vector, x-axis labels.}
 }
 \value{
 A sequence Logo is plotted without returned values.
