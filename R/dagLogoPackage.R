@@ -5,4 +5,4 @@
 #' aligned peptide sequences which can be generated in different ways. Results 
 #' of Fisher's exact test and/or Z-test are visualized using a heatmap or DAG Logo.
 #'
-"_dagLogo"
+"_PACKAGE"
