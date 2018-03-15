@@ -39,7 +39,7 @@ conserved sequence patterns.
 However, iceLogo can only compare conserved sequences to reference sequences at the individual amino acid level. 
 As we know, some conserved sequence patterns are not conserved at the individual amino acid level, but conserved at the level of amino acids grouped on the basis of their physical and chemical properties, such as charge, hydrophobicity and etc.
 
-Here we developed a R/Bioconductor package dagLogo, inspired by iceLogo, to visualize significantly conserved sequence patterns relative to a proper background set of sequences, with or without grouping amino acid residuals based on their physical and chemical properties.
+Here we developed a R/Bioconductor package dagLogo, inspired by iceLogo, to visualize significantly conserved sequence patterns relative to a proper background set of sequences, with or without grouping amino acid residuals based on their physical and chemical properties. The flowchart of performaing dagLogo analysis is shown as [Figure 1]{./dagLogo flow chart.png}
 
 #Set up the working environment
 To visualize the result of statistical test of the differential usage of grouped amino acid, the full path to the executable of GhostScript need to be set by using the environment variable R\_GSCMD per session or by adding it to the system environment variable PATH. For a Unix, Linux or Mac operating system (OS), "gs" is used for searching the PATH variable, while For a Windows OS the environment variable "GSC" is searched for first, and then "gswi64c.exe" or "gswin32c.exe" are looked for among the system environment variables, depending on the operating system.
@@ -153,7 +153,7 @@ if(interactive()) {
 
 Then the proteome is used for background model building for Fisher's exact test or *Z*-test as follows. 
 
-```{r prepareProteome}
+```{r buildBackgroundModel}
 bg_fisher <- buildBackgroundModel(seq, background = "wholeProteome", proteome = proteome, testType = "fisher")
 bg_ztest <- buildBackgroundModel(seq, background = "wholeProteome", proteome = proteome, testType = "ztest")
 ```
@@ -217,7 +217,7 @@ Catabolite Activator Protein (CAP), also known as cAMP Receptor Protein (CRP),is
 
 The motif of the DNA-binding helix-turn-helix motif of the CAP family is first visualized by using the motifStack package.  Residues 7-13 form the first helix, 14-17 the turn and 18-26 the DNA recognition helix. The glycine at position 15 appears to be critical in forming the turn.
 
-```{r CAPmotif,fig.cap="Catobolite Activator Protein Motif",fig.width=6,fig.height=4}
+```{r CAPmotif,fig.cap="Catobolite Activator Protein Motif",fig.width=8,fig.height=6}
 protein <- read.table(file.path(find.package("motifStack"), "extdata", "cap.txt"))
 protein <- t(protein[, 1:20])
 motif <- pcm2pfm(protein)

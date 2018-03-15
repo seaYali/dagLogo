@@ -16,14 +16,21 @@
 #' @param species A character vector of length 1. The Latin name of a species 
 #' confirming to the Linnaean taxonomy nomenclature system.
 #'
-#' @improt UniProt.ws
+#' @importFrom UniProt.ws availableUniprotSpecies
+#' @import methods
+#' @importFrom Biostrings readAAStringSet
 #' @importFrom utils download.file
 #' @return An object of Proteome
 #' @export
 #'
 #' @examples 
-#' proteome <- prepareProteome(source = "UniProt", species = "Drosophila melanogaster")
+#' ## Prepare an objecto of Proteome from the UniProt database
+#' if(interactive()) 
+#' {
+#'     proteome <- prepareProteome(source = "UniProt", species = "Homo sapiens")
+#' }
 #' 
+#' ## Prepare n objecto of Proteome from a fasta file
 #' fasta <- system.file("extdata", "Drosophila.melanogaster.fa", package="dagLogo")
 #' proteome <- prepareProteome(source = NULL, species = "Drosophila melanogaster", fastaFile=fasta)
 

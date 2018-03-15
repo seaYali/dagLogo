@@ -18,7 +18,8 @@
 #' @examples
 #' data("seq.example")
 #' data("proteome.example")
-#' bg <- buildBackgroundModel(seq.example, proteome=proteome.example, permutationSize=10)
+#' bg <- buildBackgroundModel(seq.example, proteome=proteome.example, 
+#'                            numSubsamples=10)
 #' t0 <- testDAU(seq.example, bg)
 #' dagHeatmap(testDAUresults = t0, type = "diff")
 
@@ -140,8 +141,7 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chem
         classic = get("classic", envir = cachedEnv)$symbol,
         charge = get("charge", envir = cachedEnv)$symbol,
         chemistry = get("chemistry", envir = cachedEnv)$symbol,
-        hydrophobicity = get("hydrophobicity", envir = cachedEnv)$symbol
-    )
+        hydrophobicity = get("hydrophobicity", envir = cachedEnv)$symbol)
 }
 
 #' Create sequence logo
@@ -149,7 +149,7 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chem
 #' Create sequence logo for visualizing results of testing differential usage 
 #' of amino acids.
 #'
-#' @param testDAUresults An object of \code{testDAUresults} (results of testing 
+#' @param testDAUresults An object of \code{testDAUresults}(results of testing 
 #' differential amino acid uasage).
 #' @param type A character vector of length 1. Type of statistics to display 
 #' on y-axis, available choices are "diff" or "zscore".
@@ -157,31 +157,36 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chem
 #' @param groupingSymbol A named character vector, with 3-letter symbols of amino acids
 #' as names and single-letter symbols as values.
 #' @param font A character vector of length 1. Font type for displaying sequence
-#' Logo
+#' Logo.
 #' @param legend A logical vector of length 1, indicating whether to show the 
 #' legend.
 #' @param labelRelativeToAnchor A logical vector of length 1, indicating whether
 #' x-axis label should be adjusted relative to the anchoring position.
-#' @param labels A character vector, x-axis labels
+#' @param labels A character vector, x-axis labels.
 #' @param gscmd  A character vector of length 1, indicating the file path to 
 #' Ghostscript. In MAC OS, it usually is "/usr/local/bin/gs". This should be 
 #' defined as a system variable or provide directly.
 #' @param fontface An integer, fontface of text for axis annotation and legends.
 #' @param fontsize An integer, fontsize of text for axis annotation and legends.
+#' 
+#' @import grDevices
+#' @import motifStack
+#' @import grid
+#' @importFrom grImport PostScriptTrace readPicture picture 
 #'
-#' @return 
+#' @return A sequence Logo is plotted without returned values.
 #' @export
 #' @author Jianhong Ou, Haibo Liu
 #'
 #' @examples
 #' data("seq.example")
 #' data("proteome.example")
-#' bg <- buildBackgroundModel(seq.example, proteome=proteome.example, permutationSize=10)
+#' bg <- buildBackgroundModel(seq.example, proteome=proteome.example, numSubsamples=10, testType = "ztest")
 #' t0 <- testDAU(seq.example, bg)
-#' t1 <- testDAU(seq.example, bg, group="classic")
-#' t2 <- testDAU(seq.example, bg, group="charge")
-#' t3 <- testDAU(seq.example, bg, group="chemistry")
-#' t4 <- testDAU(seq.example, bg, group="hydrophobicity")
+#' t1 <- testDAU(dagPeptides = seq.example, dagBackground = bg, groupingScheme = "classic")
+#' t2 <- testDAU(dagPeptides = seq.example, dagBackground = bg, groupingScheme = charge")
+#' t3 <- testDAU(dagPeptides = seq.example, dagBackground = bg, groupingScheme = "chemistry")
+#' t4 <- testDAU(dagPeptides = seq.example, dagBackground = bg, groupingScheme = "hydrophobicity")
 #' dagLogo(t0)
 #' dagLogo(t1, groupingSymbol = getGroupingSymbol(t1@group))
 #' dagLogo(t2, groupingSymbol = getGroupingSymbol(t2@group))

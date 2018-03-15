@@ -26,62 +26,85 @@
 #' relative to the anchoring position.
 #' @param downstreamOffset An integer in the interval of (0, 20), the downstream 
 #' offset relative to the anchoring position.
-#' @improt biomaRt
+#' @import biomaRt
+#' @import methods
 #' @return An object of class \code{dagPetides} 
 #' @export
 #'
 #' @examples
-#' library(dagLogo)
-#' library(biomaRt)
-#' ## example 1
-#' try({
-#'        mart <- useMart("ensembl")
-#'        fly_mart <- useDataset(mart=mart, dataset = "dmelanogaster_gene_ensembl")
-#'        dat <- read.csv(system.file("extdata", "dagLogoTestData.csv", 
-#'                                package="dagLogo"))
-#'        dat <- dat[1:5,] ##subset to speed sample
-#'        dat
-#'        seq <- fetchSequence(IDs =as.character(dat$entrez_geneid), 
-#'                         anchorPos=as.character(dat$NCBI_site), 
-#'                         mart = fly_mart, 
-#'                         upstreamOffset=7, 
-#'                         downstreamOffset=7)
-#'        head(seq@peptides)
-#' })
+#' ## Case 1: You have both positions of the anchoring AAs and the identifiers 
+#' of their enclosing peptide/protein sequences for fetching sequences using 
+#' the fetchSequence function via the Biomart.
 #' 
-#' ## example 2
-#' try({
-#'        mart <- useMart("ensembl")
-#'        fly_mart <- useDataset(mart=mart, dataset = "dmelanogaster_gene_ensembl")
-#'        dat <- read.csv(system.file("extdata", "dagLogoTestData.csv", 
-#'                                package="dagLogo"))
-#'        seq <- fetchSequence(as.character(dat$entrez_geneid), 
-#'                     anchorAA="*",
-#'                     anchorPos=as.character(dat$peptide), 
-#'                     mart=fly_mart, 
-#'                     upstreamOffset=7, 
-#'                     downstreamOffset=7)
-#'       head(seq@peptides)
-#' })
-#' 
-#' if(interactive()){
-#' dat <- read.csv(system.file("extdata", "peptides4dagLogo.csv",
-#'                            package="dagLogo"))
-#'
-#' tail(dat)
-#' try({
-#' mart <- useMart("ensembl")
-#' human_mart <- useDataset(mart=mart, dataset = "hsapiens_gene_ensembl")
-#' seq <- fetchSequence(toupper(as.character(dat$symbol)), 
-#'                      type="hgnc_symbol",
-#'                      anchorAA="s",
-#'                      anchorPos=as.character(dat$peptides), 
-#'                      mart=human_mart, 
-#'                      upstreamOffset=7, 
-#'                      downstreamOffset=7)
-#' })
-#' head(seq@peptides)
+#' if (interactive())
+#' {
+#'     try({
+#'     mart <- useMart("ensembl")
+#'     fly_mart <-
+#'        useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
+#'     dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
+#'                            package = "dagLogo"))
+#'     dat <- dat[1:5, ] ##subset to speed sample
+#'     seq <- fetchSequence(
+#'        IDs = as.character(dat$entrez_geneid),
+#'        anchorPos = as.character(dat$NCBI_site),
+#'        mart = fly_mart,
+#'        upstreamOffset = 7,
+#'        downstreamOffset = 7)
+#'    head(seq@peptides)
+#'    })
 #' }
+#' 
+#' 
+#' ## Case 2: You don't have the exactly postion infor, but You have the 
+#' interesting peptide subsequences and the identifiers of their enclosing 
+#' peptide/protein sequences for fetching sequences using the fetchSequence
+#' function via the Biomart. In the following examples, the anchoring AAs 
+#' are marked by asterisks. 
+#' if (interactive())
+#' {
+#'     try({
+#'         mart <- useMart("ensembl")
+#'         fly_mart <-
+#'             useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
+#'         dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
+#'                                     package = "dagLogo"))
+#'         seq <- fetchSequence(
+#'             IDs = as.character(dat$entrez_geneid),
+#'             anchorAA = "*",
+#'            anchorPos = as.character(dat$peptide),
+#'             mart = fly_mart,
+#'             upstreamOffset = 7,
+#'             downstreamOffset = 7
+#'         )
+#'         head(seq@peptides)
+#'     })
+#' }
+#' 
+#' 
+#' ## In following example, the anchoring AAs are lower case "s" for amino acid 
+#' serine.
+#' if(interactive())
+#' {
+#'    try({
+#'        dat <- read.csv(system.file("extdata", "peptides4dagLogo.csv",
+#'                                    package = "dagLogo"))
+#'         mart <- useMart("ensembl")
+#'         human_mart <-
+#'             useDataset(mart = mart, dataset = "hsapiens_gene_ensembl")
+#'         seq <- fetchSequence(IDs = toupper(as.character(dat$symbol)),
+#'                              type = "hgnc_symbol",
+#'                              anchorAA = "s",
+#'                              anchorPos = as.character(dat$peptides),
+#'                              mart = human_mart,
+#'                              upstreamOffset = 7,
+#'                              downstreamOffset = 7)
+#'         head(seq@peptides)
+#'     })
+#' }
+#' 
+#' 
+
 
 fetchSequence <-function(IDs,
                         type = "entrezgene",

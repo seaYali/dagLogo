@@ -10,6 +10,8 @@
 #' @keywords internal
 #'
 #' @examples
+#'  
+
 initiateBackgroundModel <- function(background, numSubsamples = 1L, testType)
 {
     new("dagBackground",
@@ -37,6 +39,7 @@ initiateBackgroundModel <- function(background, numSubsamples = 1L, testType)
 #'
 #' @examples
 #' 
+
 buildZTestBackgroundModel <- function(dagPeptides,
                                       matches,
                                       numSubsamples = 30L,
@@ -94,23 +97,29 @@ buildZTestBackgroundModel <- function(dagPeptides,
 #' @param testType A character vector of length 1. Available options are "ztest" 
 #' and "fisher".
 
-#' @import 
-#' @importFrom
+#' @import methods
 #'
 #' @return An object of \code{\link{dagBackground}} class.
 #' @export
 #' @author Jianhong Ou, Haibo Liu
 #' @examples
-#' dat <- unlist(read.delim(system.file("extdata", "grB.txt", package="dagLogo"), 
-#'                                      header=F, as.is=TRUE))
+#' dat <- unlist(read.delim(system.file(
+#'                                    "extdata", "grB.txt", package = "dagLogo"),
+#'                          header = F, as.is = TRUE))
+#' head(dat)
 #' ##prepare proteome from a fasta file
-#' proteome <- prepareProteome(fasta=system.file("extdata", 
-#'                                              "HUMAN.fasta",
-#'                                              package="dagLogo"))
+#' proteome <- prepareProteome(fasta = system.file("extdata",
+#'                                                 "HUMAN.fasta",
+#'                                                 package = "dagLogo"), 
+#'                             species = "Homo sapiens")
 #' ##prepare object of dagPeptides
-#' seq <- formatSequence(seq=dat, proteome=proteome, 
-#'                      upstreamOffset=14, downstreamOffset=15)
-#' background <- buildBackgroundModel(seq, background="wholeProteome", proteome=proteome)
+#' ##prepare an object of dagPeptides
+#' seq <- formatSequence(seq = dat, proteome = proteome, upstreamOffset = 14,
+#'                      downstreamOffset = 15)
+#' bg_fisher <- buildBackgroundModel(seq, background = "wholeProteome", 
+#'                                   proteome = proteome, testType = "fisher")
+#' bg_ztest <- buildBackgroundModel(seq, background = "wholeProteome",
+#'                                    proteome = proteome, testType = "ztest")
 
 buildBackgroundModel <- function(dagPeptides,
                                  background = c("wholeProteome", "inputSet", "nonInputSet"),

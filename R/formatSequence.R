@@ -11,19 +11,27 @@
 #' offset relative to the anchoring position.
 #'
 #' @return An object of dagPeptides Class
+#' @import methods
 #' @export
 #' @author Jianhong Ou
 #' @examples
-#' dat <- unlist(read.delim(system.file("extdata", "grB.txt", package="dagLogo"), 
-#'                                      header=F, as.is=TRUE))
+#' ## You already have the aligned peptides sequences in hand. Then you can use 
+#' the formatSequence function to prepare an object of dagPeptides. Befor doing 
+#' that, you need prepare a Proteome object by the prepareProteome function.
+#' 
+#' dat <- unlist(read.delim(system.file(
+#'                                    "extdata", "grB.txt", package = "dagLogo"),
+#'                          header = F, as.is = TRUE))
 #' head(dat)
 #' ##prepare proteome from a fasta file
-#' proteome <- prepareProteome(fasta=system.file("extdata", "HUMAN.fasta", 
-#'                                                package="dagLogo"))
+#' proteome <- prepareProteome(fasta = system.file("extdata",
+#'                                                 "HUMAN.fasta",
+#'                                                 package = "dagLogo"), 
+#'                             species = "Homo sapiens")
 #' ##prepare object of dagPeptides
-#' seq <- formatSequence(seq=dat, proteome=proteome, upstreamOffset=14, 
-#'                      downstreamOffset=15)
-#' 
+#' ##prepare an object of dagPeptides
+#' seq <- formatSequence(seq = dat, proteome = proteome, upstreamOffset = 14,
+#'                      downstreamOffset = 15)
 #' 
 
 formatSequence <-function(seq,
