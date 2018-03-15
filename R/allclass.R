@@ -97,7 +97,7 @@ setClass(
 #' @exportClass dagBackground
 #' @import methods
 #' 
-#' @author Jianhong Ou 
+#' @author Jianhong Ou, Haibo Liu
 
 
 setClass("dagBackground",
@@ -156,9 +156,9 @@ setClass(
                 "upstreamOffset and downstreamOffset should be a integer greater than 0."
         }
 
-        if(!testType %in% c("fisher", "ztest"))
+        if(!object@testType %in% c("fisher", "ztest"))
         {
-            re <- 'The test type must be "fisher", "ztest"'
+            re <- 'The test type must be "fisher" or "ztest"'
         } else 
         {
             if (ncol(object@statistics) == 0 || ncol(object@difference) == 0 || 
