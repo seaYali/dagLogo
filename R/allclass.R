@@ -112,15 +112,13 @@ setClass("dagBackground",
 #' 
 #' @slot group A character vector of length 1, the type of method for grouping 
 #' amino acid.
+#' @slot testType A character vector of length 1, the type of statistic testing.
+#' The available options are "fisher" and "z-test".
 #' @slot difference A numeric matrix consisting of differences of amino acid. 
 #' proportions between the test set and the background set of aligned, formatted 
 #' peptides at each position.
-#' @slot testType A character vector of length 1, the type of statistic testing.
-#' The available options are "fisher" and "z-test".
-#' @slot zscore A numeric matrix consisting of Z-scores. This slot is \code{NULL}
-#' for an Fisher's exact test result.
-#' @slot oddsRatio A numeric matrix consisting of estimates of odds ratios. This slot is \code{NULL}
-#' for an Fisher's exact test result.
+#' @slot statistics A numeric matrix consisting of Z-scores or odds ratios for
+#' Z-test and Fisher's exact test, respectively.
 #' @slot pvalue A numeric matrix consisting of p-values.
 #' @slot background A numeric matrix consisting mino acid proportions in the 
 #' background set of aligned, formatted peptides at each position.
@@ -129,8 +127,7 @@ setClass("dagBackground",
 #' relative to the anchoring position.
 #' @slot downstreamOffset A positive integer between (0, 20): the upstream offset
 #' relative to the anchoring position.
-
-#'
+#' 
 #' @name testDAUresults-class
 #' @rdname testDAUresults-class
 #' @exportClass testDAUresults
@@ -142,10 +139,9 @@ setClass(
     "testDAUresults",
     representation(
         group = "character",
-        difference = "matrix",
         testType = "character",
-        zscore = "matrix",
-        oddsRatio = "matrix",
+        difference = "matrix",
+        statistics = "matrix",
         pvalue = "matrix",
         background = "matrix",
         motif = "matrix",
@@ -163,37 +159,21 @@ setClass(
         if(!testType %in% c("fisher", "ztest"))
         {
             re <- 'The test type must be "fisher", "ztest"'
-        } else if (testType == "fisher")
+        } else 
         {
-            if (!is.null(object@zscore) || ncol(object@difference) == 0 || 
-                ncol(object@pvalue) == 0 || ncol(object@oddsRatio) == 0)
+            if (ncol(object@statistics) == 0 || ncol(object@difference) == 0 || 
+                ncol(object@pvalue) == 0)
             {
                 re <-
-                    "slots zscore, difference and pvalue could not be empty.
-                zscore should be NULL." 
-            }
-            if (any(dim(object@pvalue) != dim(object@difference)))
-            {
-                re <-
-                    "Dimensions of slots zscore, difference and pvalue should be identical."
-            }
-        } else
-        {
-            
-            if (ncol(object@zscore) == 0 || !is.null(object@oddsRatio) ||
-                ncol(object@difference) == 0 || ncol(object@pvalue) == 0)
-            {
-                re <-
-                    "slots zscore, difference and pvalue could not be empty.
-                oddsRatio should be NULL."
+                    "slots statistics, difference and pvalue could not be empty." 
             }
             if (any(dim(object@pvalue) != dim(object@difference)) || 
-                any(dim(object@pvalue) != dim(object@zscore)))
+                any(dim(object@pvalue) != dim(object@statistics)))
             {
                 re <-
-                    "dim of slots zscore, difference and pvalue should be identical."
+                    "Dimensions of slots statistics, difference and pvalue should be identical."
             }
-        }
+        } 
         re
     }
 )

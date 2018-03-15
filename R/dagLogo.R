@@ -1,11 +1,15 @@
-#' Visualize daglogo using a heatmap
+#' Visualize daglogo using a heatmap.
 #' 
-#' Using a heat map to visualize results of testing differential amino acid uasage
+#' Using a heat map to visualize results of testing differential amino acid uasage.
 #' 
 #' @param testDAUresults An object of \code{testDAUresults} (results of testing 
 #' differential amino acid uasage).
-#' @param type A character vector of length 1. Type of statistics to display 
-#' on y-axis, available choices are "diff" or "zscore".
+#' @param type A character vector of length 1, the type of metrics to display 
+#' on y-axis. The available options are "diff" and "statistics", which are 
+#' differences in amino acide usage at each position between the inputSet and 
+#' the backgroundSet, and the Z-scores or odds ratios when Z-test or Fisher's 
+#' exact test is performed to test the differential uasge of amino acid at each 
+#' position between the two sets.
 #' @param ... Other parameters passed to \code{pheatmap} function.
 #' @import pheatmap
 #' @return The output from \code{pheatmap}
@@ -18,7 +22,7 @@
 #' t0 <- testDAU(seq.example, bg)
 #' dagHeatmap(testDAUresults = t0, type = "diff")
 
-dagHeatmap <-function(testDAUresults, type = c("diff", "zscore"), ...) 
+dagHeatmap <-function(testDAUresults, type = c("diff", "statistics"), ...) 
 {
     if (missing(testDAUresults) || class(testDAUresults) != "testDAUresults") 
     {
@@ -26,16 +30,63 @@ dagHeatmap <-function(testDAUresults, type = c("diff", "zscore"), ...)
              Please try ?testDAU to get help.", call. = FALSE)
     }
     type <- match.arg(type)
-    dat <- ifelse(type == "diff", testDAUresults@difference, testDAUresults@zscore )
-    dat <- dat[order(rowSums(dat), decreasing = TRUE), ]
+    data <- getData(type, testDAUresults)
+    dat <- data$dat[order(rowSums(data$dat), decreasing = TRUE), ]
     pheatmap(dat,
              ...,
              cluster_rows = FALSE,
              cluster_cols = FALSE,
-             scale = "column")
+             scale = "column",
+             main = paste0("Heatmap showing ", data$label))
 }
 
-#' Color sets for visualization
+#' Get the data for visualization.
+#'
+#' A helper function to Get the data and it lable for visualization.
+#' 
+#' @param type A character vector of length 1, the type of metrics to display 
+#' on y-axis. The available options are "diff" and "statistics", which are 
+#' differences in amino acide usage at each position between the inputSet and 
+#' the backgroundSet, and the Z-scores or odds ratios when Z-test or Fisher's 
+#' exact test is performed to test the differential uasge of amino acid at each 
+#' position between the two sets.
+#' @param testDAUresults An object of \code{testDAUresults} (results of testing 
+#' differential amino acid uasage).
+#'
+#' @return A list containing the following compoenets:
+#' label A character vector of length 1.The type of data for visualization.
+#' dat   A matrix of numeric data for visualization.
+#' @export
+#' @keywords internal
+#' 
+#' @author Haibo Liu
+#'
+#' @examples
+#' 
+getData <- function(type, testDAUresults)
+{
+    testType <- testDAUresults@testType
+    if (type == "diff")
+    {
+        dat <- testDAUresults@difference
+        label <- "DAU %"
+    } else
+    {
+        dat <- testDAUresults@statistics
+        if (testType == "fisher")
+        {
+            label <- "OddsRatio"
+        } else
+        {
+            label <- "Z-score"
+        }
+    }
+    list(label = label, dat = dat)
+}
+
+
+
+#' Color sets for visualization.
 #' 
 #' Create color encoding for visualization of a peptide sequence logo.
 #'
@@ -45,6 +96,8 @@ dagHeatmap <-function(testDAUresults, type = c("diff", "zscore"), ...)
 #'
 #' @return A named character vector of colors
 #' @export
+#' @keywords internal
+#' 
 #' @author Jianhong Ou, Haibo Liu
 #' @examples
 #' colorsets("classic")
@@ -71,10 +124,11 @@ colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry",
 #'
 #' @return A named character vector of character symbols
 #' @export
+#' @keywords internal
 #' @author Jianhong Ou, Haibo Liu
 #'
 #' @examples
-#' getGroupingSymbol("charge")
+#'
 
 getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chemistry", 
                                       "hydrophobicity"))
@@ -82,7 +136,7 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chem
     groupingScheme <- match.arg(groupingScheme)
     switch(
         groupingScheme,
-        no = get("no", envir = cachedEnv)$symbol,
+        no = NULL,
         classic = get("classic", envir = cachedEnv)$symbol,
         charge = get("charge", envir = cachedEnv)$symbol,
         chemistry = get("chemistry", envir = cachedEnv)$symbol,
@@ -154,14 +208,8 @@ dagLogo <- function(testDAUresults,
             Please try ?testDAU to get help.", call. = FALSE)
     }
     type <- match.arg(type)
-    if (type == "diff") 
-    {
-        dat <- testDAUresults@difference
-    } else
-    {
-        dat <- testDAUresults@zscore
-    }
-    
+    data <- getData(type, testDAUresults)
+    dat <- data$dat
     npos <- ncol(dat)
     ncha <- nrow(dat)
     if (!is.null(labels)) 
@@ -290,7 +338,7 @@ dagLogo <- function(testDAUresults,
     }
     
     ## add ylab
-    grid.text(label= ifelse(type == "diff", "DAU (%)", "Z-score"), 
+    grid.text(label= data$label, 
               x = x3, y = remap(0) + dw / 2,
               just = "centre",  rot = 90, 
               gp = gpar(fontsize=fontsize, fontface = fontface))

@@ -23,7 +23,6 @@
 #' 
 testDAU <- function(dagPeptides,
                     dagBackground,
-                    testType = c("fisher", "z-test"),
                     groupingScheme = c("no", "classic", "charge", 
                                        "chemistry", "hydrophobicity"),
                     bgNoise = NA) 
@@ -50,12 +49,6 @@ testDAU <- function(dagPeptides,
                  call. = FALSE)
         }
     }
-    testType <- match.arg(testType)
-    if(!testType %in% c("fisher", "z-test"))
-    {
-        stop("The type of testing should be Fisher's exact test or Z-test.", 
-             call. = FALSE)
-    }
 
     exp <- dagPeptides@peptides
     bg <- dagBackground@background
@@ -70,7 +63,7 @@ testDAU <- function(dagPeptides,
     {
         coln <- names(get(groupingScheme, envir = cachedEnv)$group)    
     } 
-    
+
     ## helper function used to group AAs based on groupingScheme
     convert <- function(x, gtype) 
     {
@@ -88,17 +81,16 @@ testDAU <- function(dagPeptides,
     {
         dat <- switch(
             group,
-            classic = convert(dat, classic),
-            charge = convert(dat, charge),
-            hydrophobicity = convert(dat, hydrophobicity),
-            chemistry = convert(dat, chemistry),
+            classic = convert(dat, get("classic", envir = cachedEnv)$group),
+            charge = convert(dat, get("charge", envir = cachedEnv)$group),
+            hydrophobicity = convert(dat, get("hydrophobicity", envir = cachedEnv)$group),
+            chemistry = convert(dat, get("chemistry", envir = cachedEnv)$group),
             no = dat
         )
         dat
     }
     
-    bg <- lapply(bg, function(.bg)
-        groupAA(.bg, groupingScheme))
+    bg <- lapply(bg, function(.bg) groupAA(.bg, groupingScheme))
     
     exp <- groupAA(exp, groupingScheme)
     if (ncol(exp) != ncol(bg[[1]]))
@@ -108,107 +100,104 @@ testDAU <- function(dagPeptides,
     
     ## get counts for each amino acid at each position if Fisher's exact test
     ## otherwise get proportions
+    testType <- dagBackground@testType
     counts <- function(mat, coln, testType) 
     {
-        if (testType == "fisher")
-        {
-            num <- apply(mat, 2, function(.ele) {
-                cnt <- table(.ele)[coln]
-                ## just in case not all coln in the dataset
-                names(cnt) <- coln 
-                cnt[is.na(cnt)] <- 0
-                cnt})
-        } else
-        {
-            num <- apply(mat, 2, function(.ele) {
-                cnt <- table(.ele)[coln]
-                ## just in case not all coln in the dataset
-                names(cnt) <- coln 
-                cnt[is.na(cnt)] <- 0
-                total <- sum(cnt)
-                cnt / total})
-        }
+        num <- apply(mat, 2, function(.ele) {
+            cnt <- table(.ele)[coln]
+            ## just in case not all coln in the dataset
+            names(cnt) <- coln 
+            cnt[is.na(cnt)] <- 0
+            total <- sum(cnt)
+            list(freq = cnt, percent = cnt / total)})
     }
+    ## a list of list
     bg <- lapply(bg, counts, coln, testType = testType)
+ 
+    ## a list
     exp <- counts(exp, coln, testType = testType)
-    exp[is.na(exp)] <- 0
-    
-    rownames(exp) <- coln
-    
-    
-    bg <- lapply(1:ncol(exp), function(i) {
-        do.call(cbind, lapply(bg, function(.bg) {
-            .bg[, i]
-        }))
-    })
+    ## get frequency of each amino acid at each position
+    exp_freq <- do.call(cbind, lapply(exp, function(.ele){
+       .ele$freq
+    }))
+    exp_freq[is.na(exp_freq)] <- 0
+    ## get percentage of each amino acid at each position
+    exp_percent <- do.call(cbind, lapply(exp, function(.ele){
+        .ele$percent
+    }))
+    exp_percent[is.na(exp_percent)] <- 0
+    rownames(exp_freq) <- rownames(exp_percent ) <- coln
     
     ## Add background noise to the background model
-    if (!is.na(bgNoise) && testType == "z-test") 
+    if(testType == "z-test")
     {
-        rdirichlet <- function (n, alpha) {
-            l <- length(alpha)
-            x <-matrix(rgamma(l * n, alpha),
-                       ncol = n,
-                       byrow = TRUE)
-            sm <- x %*% rep(1, n)
-            t(x / as.vector(sm))
-        }
-        bg <- lapply(bg, function(col_freqs) {
-            (1 - bgNoise) * col_freqs + bgNoise * 
-                rdirichlet(nrow(col_freqs), rep(1, ncol(col_freqs)))
+        per_sample_bg_percent <- lapply(bg, function(.bg) {
+                do.call(cbind, lapply(.bg, function(.ele){
+                    .ele$percent
+                }))
+            })
+        per_position_bg_percent <- lapply(1:ncol(exp_percent),function(i) {
+            do.call(cbind, lapply(per_sample_bg_percent, function(.ele){
+            .ele[, i]
+            }))
         })
-    }
-    
-    ##Z-score = (x-mu)/std
-    ## The standard deviation is not correctly calculated?
-    mu <- do.call(cbind, lapply(bg, function(.bg) {
-        apply(.bg, 1, mean, na.rm = TRUE)
-    }))
-    
-    if (testType == "z-test")
-    {
-        ## std <- do.call(cbind, lapply(bg, function(.bg) {
-        ##    apply(.bg, 1, sd, na.rm = TRUE)}))
-        ## A better estimate of sigma = ssqrt(p*(1-p)/n)
-        std <- mu
+        
+        if (!is.na(bgNoise)) 
+        {
+            rdirichlet <- function (n, alpha) {
+                l <- length(alpha)
+                x <-matrix(rgamma(l * n, alpha),
+                           ncol = n,
+                           byrow = TRUE)
+                sm <- x %*% rep(1, n)
+                t(x / as.vector(sm))
+            }
+            bg_percent <- lapply(per_position_bg_percent, function(col_pct) {
+                (1 - bgNoise) * col_pct + bgNoise * 
+                    rdirichlet(nrow(col_pct), rep(1, ncol(col_pct)))
+            })
+        }
+        
+        ## get mean proportion of each amino acid at each position
+        mu_percent <- do.call(cbind, lapply(bg_percent, function(.bg) {
+            apply(.bg, 1, mean, na.rm = TRUE)
+        }))
+        
+        diff_percent <- exp_percent - mu_percent
+        diff_percent[is.na(diff_percent)] <- 0
         n <-  dagBackground@numSubsamples
-        std <- mu*(1-mu)/n
-    }
-
-    
-    ##difference
-
-    diff <- exp - mu
-    diff[is.na(diff)] <- 0
-    if (testType == "z-test")
+        std_percent <- mu_percent*(1-mu_percent)/n
+        statistics <- diff_percent / std_percent
+        pvalue <- 2 * pnorm(-abs(statistics))
+    } else 
     {
-        zscore <- diff / std
-        pvalue <- 2 * pnorm(-abs(zscore))
-        oddsRatio = NULL
-    } else
-    {
+        bg <- bg[[1]]
+        bg_freq <- do.call(cbind, lapply(bg, function(.ele){
+            .ele$freq
+        }))
+        mu_percent <- do.call(cbind, lapply(bg, function(.ele){
+            .ele$percent
+        }))
+
+        diff_percent <- exp_percent - mu_percent
         
-        
-        non_bg <- sweep(x= bg, MARGIN= 2, STATS = colSums(bg), FUN = "-") 
-        non_exp <- sweep(x= exp, MARGIN= 2, STATS = colSums(exp), FUN = "-")
+        ## Fisher exact test
+        non_bg_freq <- -sweep(x= bg_freq, MARGIN= 2, STATS = colSums(bg_freq), FUN = "-") 
+        non_exp_freq <- -sweep(x= exp_freq, MARGIN= 2, STATS = colSums(exp_freq), FUN = "-")
         
         testResults <- mapply(function(x, X, y, Y){
             fisher <- fisher.test(matrix(c(x, X, y, Y), nrow =2, byrow =TRUE),
                                   alternative = "two.sided")
             c(pvalues=fisher$p.value, statistics = fisher$estimate)
-        })
+        }, exp_freq, non_exp_freq, bg_freq, non_bg_freq, SIMPLIFY = FALSE)
         
-        testOut <- do.call(rbind, testResults)
-        pvalue <- matrix(testOut$pvalues, nrow = nrow(exp), byrow =FALSE)
-        oddsRatio <-  matrix(testOut$pvalues, nrow = nrow(exp), byrow =FALSE)
-        zscore  <- NULL
-        
+        testOut <- as.data.frame(do.call(rbind, testResults))
+        colnames(testOut) <- c("pvalues", "statistics")
+        pvalue <- matrix(testOut$pvalues, nrow = nrow(exp_percent), byrow =FALSE)
+        statistics <- matrix(testOut$statistics, nrow = nrow(exp_percent), byrow =FALSE)
     }
+    rownames(diff_percent) <- rownames(pvalue) <- rownames(statistics) <- coln
    
-    
-    rownames(diff) <- coln
-    rownames(zscore) <- coln
-    
     coln <- c()
     if (dagPeptides@upstreamOffset > 0) 
     {
@@ -220,28 +209,27 @@ testDAU <- function(dagPeptides,
         coln <- c(coln,
                   paste("AA", 1:dagPeptides@downstreamOffset, sep = ""))
     }
-    if (length(coln) == ncol(diff)) 
+    if (length(coln) == ncol(diff_percent)) 
     {
-        colnames(diff) <- colnames(zscore) <- coln
-    } 
-    else
+        colnames(diff_percent) <- colnames(statistics) <- colnames(pvalue) <- coln
+    } else
     {
-        colnames(diff) <-
-            colnames(zscore) <- paste("AA", 1:ncol(diff), sep = "")
+        coln <- paste("AA", 1:ncol(diff_percent), sep = "")
+        colnames(diff_percent) <- colnames(statistics) <- colnames(pvalue) <- coln
     }
-    
+
     
     ## return the test results as an object of testDAUresults class
     new(
         "testDAUresults",
         group = groupingScheme,
-        difference = diff,
-        zscore = zscore,
-        oddsRatio = oddsRatio,
+        difference = diff_percent,
+        statistics = statistics,
         pvalue = pvalue,
-        background = mu,
-        motif = exp,
-        upstream = dagPeptides@upstreamOffset,
-        downstream = dagPeptides@downstreamOffset
+        background = mu_percent,
+        motif = exp_percent,
+        testType = dagBackground@testType,
+        upstreamOffset = dagPeptides@upstreamOffset,
+        downstreamOffset = dagPeptides@downstreamOffset
     )
 }
