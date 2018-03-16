@@ -55,7 +55,7 @@ dagHeatmap <-function(testDAUresults, type = c("diff", "statistics"), ...)
 #' differential amino acid uasage).
 #'
 #' @return A list containing the following compoenets:
-#' label A character vector of length 1.The type of data for visualization.
+#' label A character vector of length 1. The type of data for visualization.
 #' dat   A matrix of numeric data for visualization.
 #' @export
 #' @keywords internal
@@ -131,8 +131,8 @@ colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry",
 #' @examples
 #'
 
-getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chemistry", 
-                                      "hydrophobicity"))
+getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", 
+                                                "chemistry", "hydrophobicity"))
 {
     groupingScheme <- match.arg(groupingScheme)
     switch(
@@ -144,12 +144,12 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chem
         hydrophobicity = get("hydrophobicity", envir = cachedEnv)$symbol)
 }
 
-#' Create sequence logo
+#' Create sequence logo.
 #' 
 #' Create sequence logo for visualizing results of testing differential usage 
 #' of amino acids.
 #'
-#' @param testDAUresults An object of \code{testDAUresults}(results of testing 
+#' @param testDAUresults An object of \code{testDAUresults} (results of testing 
 #' differential amino acid uasage).
 #' @param type A character vector of length 1. Type of statistics to display 
 #' on y-axis, available choices are "diff" or "zscore".
@@ -164,8 +164,7 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chem
 #' x-axis label should be adjusted relative to the anchoring position.
 #' @param labels A character vector, x-axis labels.
 #' @param gscmd  A character vector of length 1, indicating the file path to 
-#' Ghostscript. In MAC OS, it usually is "/usr/local/bin/gs". This should be 
-#' defined as a system variable or provide directly.
+#' Ghostscript. This should be defined as a system variable or provide directly.
 #' @param fontface An integer, fontface of text for axis annotation and legends.
 #' @param fontsize An integer, fontsize of text for axis annotation and legends.
 #' 
@@ -178,15 +177,20 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", "chem
 #' @export
 #' @author Jianhong Ou, Haibo Liu
 #'
-#' @examples
-#' data("seq.example")
-#' data("proteome.example")
-#' bg <- buildBackgroundModel(seq.example, proteome=proteome.example, numSubsamples=10, testType = "ztest")
+#' @examples 
+#' data('seq.example') 
+#' data('proteome.example')
+#' bg <- buildBackgroundModel(seq.example, proteome=proteome.example, 
+#'                            numSubsamples=10, testType = "ztest")
 #' t0 <- testDAU(seq.example, bg)
-#' t1 <- testDAU(dagPeptides = seq.example, dagBackground = bg, groupingScheme = "classic")
-#' t2 <- testDAU(dagPeptides = seq.example, dagBackground = bg, groupingScheme = charge")
-#' t3 <- testDAU(dagPeptides = seq.example, dagBackground = bg, groupingScheme = "chemistry")
-#' t4 <- testDAU(dagPeptides = seq.example, dagBackground = bg, groupingScheme = "hydrophobicity")
+#' t1 <- testDAU(dagPeptides = seq.example, dagBackground = bg, 
+#'               groupingScheme = "classic")
+#' t2 <- testDAU(dagPeptides = seq.example, dagBackground = bg, 
+#'              groupingScheme = "charge")
+#' t3 <- testDAU(dagPeptides = seq.example, dagBackground = bg, 
+#'              groupingScheme = "chemistry")
+#' t4 <- testDAU(dagPeptides = seq.example, dagBackground = bg, 
+#'               groupingScheme = "hydrophobicity")
 #' dagLogo(t0)
 #' dagLogo(t1, groupingSymbol = getGroupingSymbol(t1@group))
 #' dagLogo(t2, groupingSymbol = getGroupingSymbol(t2@group))
