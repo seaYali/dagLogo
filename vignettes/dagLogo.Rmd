@@ -1,6 +1,6 @@
 ---
 title: "dagLogo Vignette"
-author: "Jianhong Ou, Lihua Julie Zhu"
+author: "Jianhong Ou, Haibo Liu, Lihua Julie Zhu"
 date: "`r doc_date()`"
 package: "`r pkg_ver('dagLogo')`"
 bibliography: bibliography.bib
@@ -56,50 +56,54 @@ Sys.setenv(R_GSCMD = file.path("C:", "Program Files", "gs", "gs9.06", "bin",
 
 ## Step 1: Fetching peptide sequences from the Biomart
 ### Case 1: You have both positions of the anchoring AAs and the identifiers of their enclosing peptide/protein sequences for fetching sequences using the fetchSequence function via the Biomart.
-```{r fetchSequences1}
+```{r fetchSequences1, results='hide'}
 ##just in case biomaRt server does not response
-try({
-    mart <- useMart("ensembl")
-    fly_mart <-
-        useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
-    dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
-                                package = "dagLogo"))
-    dat <- dat[1:5, ] ##subset to speed sample
-    seq <- fetchSequence(
-        IDs = as.character(dat$entrez_geneid),
-        anchorPos = as.character(dat$NCBI_site),
-        mart = fly_mart,
-        upstreamOffset = 7,
-        downstreamOffset = 7
-    )
-    head(seq@peptides)
-})
+if (interactive())
+{
+    try({
+            mart <- useMart("ensembl")
+            fly_mart <-
+            useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
+            dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
+                                        package = "dagLogo"))
+            dat <- dat[1:5, ] ##subset to speed sample
+            seq <- fetchSequence(
+                                IDs = as.character(dat$entrez_geneid),
+                                anchorPos = as.character(dat$NCBI_site),
+                                mart = fly_mart,
+                                upstreamOffset = 7,
+                                downstreamOffset = 7)
+            head(seq@peptides)
+   })
+}
 ```
 
 ### Case 2: You don't have the exactly postion infor, but You have the interesting peptide subsequences and the identifiers of their enclosing peptide/protein sequences for fetching sequences using the fetchSequence function via the Biomart. In the following examples, the anchoring AAs are marked by asterisks.
 
-```{r fetchSequences2}
-try({
-    mart <- useMart("ensembl")
-    fly_mart <-
-        useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
-    dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
-                                package = "dagLogo"))
-    seq <- fetchSequence(
-        IDs = as.character(dat$entrez_geneid),
-        anchorAA = "*",
-        anchorPos = as.character(dat$peptide),
-        mart = fly_mart,
-        upstreamOffset = 7,
-        downstreamOffset = 7
-    )
-    head(seq@peptides)
-})
+```{r fetchSequences2, results='hide'}
+if (interactive())
+{
+    try({
+            mart <- useMart("ensembl")
+            fly_mart <-
+            useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
+            dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
+                                        package = "dagLogo"))
+            seq <- fetchSequence(
+                                IDs = as.character(dat$entrez_geneid),
+                                anchorAA = "*",
+                                anchorPos = as.character(dat$peptide),
+                                mart = fly_mart,
+                                upstreamOffset = 7,
+                                downstreamOffset = 7)
+            head(seq@peptides)
+    })
+}
 ```
 
 In following example, the anchoring AAs are lower case "s" for amino acid serine.
 
-```{r fetchSequences3}
+```{r fetchSequences3, results='hide'}
 if(interactive()){
     try({
             dat <- read.csv(system.file("extdata", "peptides4dagLogo.csv",
@@ -123,10 +127,9 @@ Similarly, peptide sequences can be fected from an predefined Proteome object.
   
 ### Case 3: You already have the aligned peptides sequences in hand. Then you can use the formatSequence function to prepare an object of dagPeptides. Befor doing that, you need prepare a Proteome object by the prepareProteome function.
 
-```{r formatSequence}
+```{r formatSequence, results='hide'}
 dat <- unlist(read.delim(system.file("extdata", "grB.txt", package = "dagLogo"),
                         header = F, as.is = TRUE))
-head(dat)
 ##prepare proteome from a fasta file
 proteome <- prepareProteome(fasta = system.file("extdata",
                                                 "HUMAN.fasta",
@@ -148,8 +151,12 @@ Case 3 of Step 1 shows how to prepare a Proteome object from a fasta file. Here 
 Proteome via the UniProt database.
 
 ```{r prepareProteome0}
-if(interactive()) {
-    proteome <- prepareProteome(source = "UniProt", species = "Homo sapiens")
+if(interactive())
+{
+    try({
+        proteome <- prepareProteome(source = "UniProt", 
+                                    species = "Homo sapiens")
+    })
 }
 ```
 
