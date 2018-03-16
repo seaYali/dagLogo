@@ -19,7 +19,7 @@ differential amino acid uasage).}
 }
 \value{
 A list containing the following compoenets:
-label A character vector of length 1.The type of data for visualization.
+label A character vector of length 1. The type of data for visualization.
 dat   A matrix of numeric data for visualization.
 }
 \description{

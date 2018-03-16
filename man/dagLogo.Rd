@@ -2,7 +2,7 @@
 % Please edit documentation in R/dagLogo.R
 \name{dagLogo}
 \alias{dagLogo}
-\title{Create sequence logo}
+\title{Create sequence logo.}
 \usage{
 dagLogo(testDAUresults, type = c("diff", "zscore"), pvalueCutoff = 0.05,
   groupingSymbol = getGroupingSymbol(testDAUresults@group),
@@ -11,7 +11,7 @@ dagLogo(testDAUresults, type = c("diff", "zscore"), pvalueCutoff = 0.05,
   gscmd = Sys.getenv("R_GSCMD"), labels = NULL)
 }
 \arguments{
-\item{testDAUresults}{An object of \code{testDAUresults}(results of testing 
+\item{testDAUresults}{An object of \code{testDAUresults} (results of testing 
 differential amino acid uasage).}
 
 \item{type}{A character vector of length 1. Type of statistics to display 
@@ -36,8 +36,7 @@ legend.}
 x-axis label should be adjusted relative to the anchoring position.}
 
 \item{gscmd}{A character vector of length 1, indicating the file path to 
-Ghostscript. In MAC OS, it usually is "/usr/local/bin/gs". This should be 
-defined as a system variable or provide directly.}
+Ghostscript. This should be defined as a system variable or provide directly.}
 
 \item{labels}{A character vector, x-axis labels.}
 }
@@ -47,6 +46,26 @@ A sequence Logo is plotted without returned values.
 \description{
 Create sequence logo for visualizing results of testing differential usage 
 of amino acids.
+}
+\examples{
+data('seq.example') 
+data('proteome.example')
+bg <- buildBackgroundModel(seq.example, proteome=proteome.example, 
+                           numSubsamples=10, testType = "ztest")
+t0 <- testDAU(seq.example, bg)
+t1 <- testDAU(dagPeptides = seq.example, dagBackground = bg, 
+              groupingScheme = "classic")
+t2 <- testDAU(dagPeptides = seq.example, dagBackground = bg, 
+             groupingScheme = "charge")
+t3 <- testDAU(dagPeptides = seq.example, dagBackground = bg, 
+             groupingScheme = "chemistry")
+t4 <- testDAU(dagPeptides = seq.example, dagBackground = bg, 
+              groupingScheme = "hydrophobicity")
+dagLogo(t0)
+dagLogo(t1, groupingSymbol = getGroupingSymbol(t1@group))
+dagLogo(t2, groupingSymbol = getGroupingSymbol(t2@group))
+dagLogo(t3, groupingSymbol = getGroupingSymbol(t3@group))
+dagLogo(t4, groupingSymbol = getGroupingSymbol(t4@group))
 }
 \author{
 Jianhong Ou, Haibo Liu
