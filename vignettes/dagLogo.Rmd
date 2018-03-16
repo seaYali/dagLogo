@@ -48,8 +48,8 @@ To visualize the result of statistical test of the differential usage of grouped
 
 For example on a Windowsplatform with gswin32c.exe installed at C:\\ Program Files\\ gs\\ gs9.06\\ bin, you can set up R\_GSCMD as follows:
 ```{r setenv, eval=FALSE, echo=TRUE}
-Sys.setenv(R_GSCMD = file.path("C:", "Program Files", "gs", 
-                               "gs9.06", "bin", "gswin32c.exe"))
+Sys.setenv(R_GSCMD = file.path("C:", "Program Files", "gs", "gs9.06", "bin", 
+                               "gswin32c.exe"))
 ```
 
 # Demonstration of dagLogo application
@@ -156,8 +156,10 @@ if(interactive()) {
 Then the proteome is used for background model building for Fisher's exact test or *Z*-test as follows. 
 
 ```{r buildBackgroundModel}
-bg_fisher <- buildBackgroundModel(seq, background = "wholeProteome", proteome = proteome, testType = "fisher")
-bg_ztest <- buildBackgroundModel(seq, background = "wholeProteome", proteome = proteome, testType = "ztest")
+bg_fisher <- buildBackgroundModel(seq, background = "wholeProteome", 
+                                  proteome = proteome, testType = "fisher")
+bg_ztest <- buildBackgroundModel(seq, background = "wholeProteome", 
+                                 proteome = proteome, testType = "ztest")
 ```
 
 ## Step 3: Testing differential usage of (grouped) amino acids
@@ -166,17 +168,30 @@ Test can be done without making any change to the formatted, aligned amino acid 
 ```{r testDAU}
 ## no grouping
 t0 <- testDAU(seq, dagBackground = bg_ztest)
-## grouded classically: nonpolar_aliphatic = c("A", "G", "L", "M", "I", "V"), polar_uncharged = c("C", "P", "Q", "S", "T"), aromatic = c("F", "W", "Y"), positively_charged = c("H", "K", "N", "R"), negatively_charged = c("D", "E").
-t1 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, groupingScheme = "classic")
+## grouded classically: nonpolar_aliphatic = c("A", "G", "L", "M", "I", "V"), 
+## polar_uncharged = c("C", "P", "Q", "S", "T"), aromatic = c("F", "W", "Y"), 
+## positively_charged = c("H", "K", "N", "R"), negatively_charged = c("D", "E").
+t1 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest,
+              groupingScheme = "classic")
 
-## grouded on the basis of charge: positive = c("H", "K", "R"), neutral = c("A", "C", "F", "G", "I", "L", "M", "N", "P", "Q", "S", "T", "V","W","Y"), negative = c("D", "E")
-t2 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, groupingScheme = "charge")
+## grouded on the basis of charge: positive = c("H", "K", "R"), 
+## neutral = c("A", "C", "F", "G", "I", "L", "M", "N", "P", "Q", 
+## "S", "T", "V","W","Y"), negative = c("D", "E")
+t2 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
+              groupingScheme = "charge")
 
-## grouped on the basis of their chemical property: hydrophobic = c("A", "F", "I", "L", "M", "P", "V", "W"), polar = c("C", "G", "S", "T", "Y"), basic = c("H", "K", "R"), neutral = c("N", "Q"), acidic = c("D", "E")
-t3 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, groupingScheme = "chemistry")
+## grouped on the basis of their chemical property: 
+## hydrophobic = c("A", "F", "I", "L", "M", "P", "V", "W"), 
+## polar = c("C", "G", "S", "T", "Y"), basic = c("H", "K", "R"), 
+## neutral = c("N", "Q"), acidic = c("D", "E")
+t3 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
+              groupingScheme = "chemistry")
 
-## grouped on the basis of hydrophobicity: hydrophilic = c("D", "E", "K", "N", "Q", "R"), neutral = c("A", "G", "H", "P", "S", "T"), hydrophobic = c("C", "F", "I", "L", "M", "V", "W", "Y")
-t4 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, groupingScheme = "hydrophobicity")
+## grouped on the basis of hydrophobicity: hydrophilic = 
+## c("D", "E", "K", "N", "Q", "R"), neutral = c("A", "G", "H", "P", "S", "T"), 
+## hydrophobic = c("C", "F", "I", "L", "M", "V", "W", "Y")
+t4 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
+              groupingScheme = "hydrophobicity")
 ```
 
 ## Step 4: Visualizing test results
@@ -219,7 +234,8 @@ Catabolite Activator Protein (CAP), also known as cAMP Receptor Protein (CRP),is
 The motif of the DNA-binding helix-turn-helix motif of the CAP family is first visualized by using the motifStack package.  Residues 7-13 form the first helix, 14-17 the turn and 18-26 the DNA recognition helix. The glycine at position 15 appears to be critical in forming the turn.
 
 ```{r CAPmotif,fig.cap="Catobolite Activator Protein Motif",fig.width=8,fig.height=6}
-protein <- read.table(file.path(find.package("motifStack"), "extdata", "cap.txt"))
+protein <- read.table(file.path(find.package("motifStack"), "extdata", 
+                                "cap.txt"))
 protein <- t(protein[, 1:20])
 motif <- pcm2pfm(protein)
 motif <- new("pfm", mat = motif,name = "CAP",
