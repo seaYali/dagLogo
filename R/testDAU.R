@@ -41,26 +41,26 @@
 #'  
 #' t0 <- testDAU(seq, dagBackground = bg_ztest)
 #' ## grouded classically: nonpolar_aliphatic = c("A", "G", "L", "M", "I", "V"), 
-#' polar_uncharged = c("C", "P", "Q", "S", "T"), aromatic = c("F", "W", "Y"), 
-#' positively_charged = c("H", "K", "N", "R"), negatively_charged = c("D", "E").
+#' ## polar_uncharged = c("C", "P", "Q", "S", "T"), aromatic = c("F", "W", "Y"), 
+#' ## positively_charged = c("H", "K", "N", "R"), negatively_charged = c("D", "E").
 #' t1 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
 #'              groupingScheme = "classic")
 
 #' ## grouded on the basis of charge: positive = c("H", "K", "R"), 
-#' neutral = c("A", "C", "F", "G", "I", "L", "M", "N", "P", "Q", "S", "T", 
-#' "V","W","Y"), negative = c("D", "E")
+#' ## neutral = c("A", "C", "F", "G", "I", "L", "M", "N", "P", "Q", "S", "T", 
+#' ## "V","W","Y"), negative = c("D", "E")
 #' t2 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
 #'               groupingScheme = "charge")
 
 #' ## grouped on the basis of their chemical property: hydrophobic = c("A", "F",
-#' "I", "L", "M", "P", "V", "W"), polar = c("C", "G", "S", "T", "Y"), 
-#' basic = c("H", "K", "R"), neutral = c("N", "Q"), acidic = c("D", "E")
+#' ## "I", "L", "M", "P", "V", "W"), polar = c("C", "G", "S", "T", "Y"), 
+#' ## basic = c("H", "K", "R"), neutral = c("N", "Q"), acidic = c("D", "E")
 #' t3 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
 #'               groupingScheme = "chemistry")
 
 #' ## grouped on the basis of hydrophobicity: hydrophilic = c("D", "E", "K", "N", 
-#' "Q", "R"), neutral = c("A", "G", "H", "P", "S", "T"), hydrophobic = c("C", 
-#' "F", "I", "L", "M", "V", "W", "Y")
+#' ## "Q", "R"), neutral = c("A", "G", "H", "P", "S", "T"), hydrophobic = c("C", 
+#' ## "F", "I", "L", "M", "V", "W", "Y")
 #' t4 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
 #'               groupingScheme = "hydrophobicity")                                   
 
