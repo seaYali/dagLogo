@@ -41,7 +41,7 @@ As we know, some conserved sequence patterns are not conserved at the individual
 
 Here we developed a R/Bioconductor package dagLogo, inspired by iceLogo, to visualize significantly conserved sequence patterns relative to a proper background set of sequences, with or without grouping amino acid residuals based on their physical and chemical properties. The flowchart of performaing dagLogo analysis is as shown in Figure 1. 
   
-![Figure 1. Flowchart of performing dagLogo analyses. The two ways to prepare a Proteome object are colored in greenish and yellowish. The two alternative ways to build an object of dagPeptides are colored in blue and red.](./dagLogo_flowchart.png).
+![Figure 1. Flowchart of performing dagLogo analyses. The two ways to prepare a Proteome object are colored in greenish and yellowish. The two alternative ways to build an object of dagPeptides are colored in blue and red.](dagLogo_flowchart.png).
 
 Figure 1. Flowchart of performing dagLogo analyses. The two ways to prepare a Proteome object are colored in greenish and yellowish. The two alternative ways to build an object of dagPeptides are colored in blue and red.
 
