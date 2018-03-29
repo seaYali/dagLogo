@@ -104,7 +104,14 @@ getData <- function(type, testDAUresults)
 #' colorsets("classic")
 
 colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry", 
-                                     "hydrophobicity")) 
+                                     "hydrophobicity", "BLOSM50_L1", 
+                                     "BLOSM50_LL2", "BLOSM50_L3", "BLOSM50_L4", 
+                                     "BLOSM50_L5", "BLOSM50_L6", "BLOSM50_L7", 
+                                     "BLOSM50_L8", "chemistry_property_Mahler", 
+                                     "contact_potential_Maiorov", 
+                                     "protein_blocks_Rogov", 
+                                     "sequence_alignment_Dayhoff", 
+                                     "structure_alignments_Mirny")) 
 {
     colorScheme <- match.arg(colorScheme)
 
@@ -113,7 +120,26 @@ colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry",
            classic = get("classic", envir = cachedEnv)$color,
            charge = get("charge", envir = cachedEnv)$color,
            chemistry = get("chemistry", envir = cachedEnv)$color,
-           hydrophobicity = get("hydrophobicity", envir = cachedEnv)$color)
+           hydrophobicity = get("hydrophobicity", envir = cachedEnv)$color,
+           BLOSM50_L1 = get("BLOSM50_L1", envir = cachedEnv)$color,
+           BLOSM50_L2 = get("BLOSM50_L2", envir = cachedEnv)$color,
+           BLOSM50_L3 = get("BLOSM50_L3", envir = cachedEnv)$color,
+           BLOSM50_L4 = get("BLOSM50_L4", envir = cachedEnv)$color,
+           BLOSM50_L5 = get("BLOSM50_L5", envir = cachedEnv)$color,
+           BLOSM50_L6 = get("BLOSM50_L6", envir = cachedEnv)$color,
+           BLOSM50_L7 = get("BLOSM50_L7", envir = cachedEnv)$color,
+           BLOSM50_L8 = get("BLOSM50_L8", envir = cachedEnv)$color,
+           chemistry_property_Mahler = get("chemistry_property_Mahler", 
+                                           envir = cachedEnv)$color, 
+           contact_potential_Maiorov = get("contact_potential_Maiorov",
+                                           envir = cachedEnv)$color, 
+           protein_blocks_Rogov = get("protein_blocks_Rogov", 
+                                      envir = cachedEnv)$color,
+           sequence_alignment_Dayhoff = get("sequence_alignment_Dayhoff",
+                                            envir = cachedEnv)$color, 
+           structure_alignments_Mirny = get("structure_alignments_Mirny", 
+                                            envir = cachedEnv)$color
+    )
 }
 
 #' Get character symbols for grouped amino acids
@@ -132,7 +158,16 @@ colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry",
 #'
 
 getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", 
-                                                "chemistry", "hydrophobicity"))
+                                                "chemistry", "hydrophobicity",
+                                                "BLOSM50_L1", "BLOSM50_LL2", 
+                                                "BLOSM50_L3", "BLOSM50_L4", 
+                                                "BLOSM50_L5", "BLOSM50_L6", 
+                                                "BLOSM50_L7", "BLOSM50_L8", 
+                                                "chemistry_property_Mahler", 
+                                                "contact_potential_Maiorov", 
+                                                "protein_blocks_Rogov", 
+                                                "sequence_alignment_Dayhoff", 
+                                                "structure_alignments_Mirny"))
 {
     groupingScheme <- match.arg(groupingScheme)
     switch(
@@ -141,7 +176,25 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge",
         classic = get("classic", envir = cachedEnv)$symbol,
         charge = get("charge", envir = cachedEnv)$symbol,
         chemistry = get("chemistry", envir = cachedEnv)$symbol,
-        hydrophobicity = get("hydrophobicity", envir = cachedEnv)$symbol)
+        hydrophobicity = get("hydrophobicity", envir = cachedEnv)$symbol,
+        BLOSM50_L1 = get("BLOSM50_L1", envir = cachedEnv)$symbol,
+        BLOSM50_L2 = get("BLOSM50_L2", envir = cachedEnv)$symbol,
+        BLOSM50_L3 = get("BLOSM50_L3", envir = cachedEnv)$symbol,
+        BLOSM50_L4 = get("BLOSM50_L4", envir = cachedEnv)$symbol,
+        BLOSM50_L5 = get("BLOSM50_L5", envir = cachedEnv)$symbol,
+        BLOSM50_L6 = get("BLOSM50_L6", envir = cachedEnv)$symbol,
+        BLOSM50_L7 = get("BLOSM50_L7", envir = cachedEnv)$symbol,
+        BLOSM50_L8 = get("BLOSM50_L8", envir = cachedEnv)$symbol,
+        chemistry_property_Mahler = get("chemistry_property_Mahler", 
+                                        envir = cachedEnv)$symbol, 
+        contact_potential_Maiorov = get("contact_potential_Maiorov",
+                                        envir = cachedEnv)$symbol, 
+        protein_blocks_Rogov = get("protein_blocks_Rogov", 
+                                   envir = cachedEnv)$symbol,
+        sequence_alignment_Dayhoff = get("sequence_alignment_Dayhoff",
+                                         envir = cachedEnv)$symbol, 
+        structure_alignments_Mirny = get("structure_alignments_Mirny", 
+                                         envir = cachedEnv)$symbol)
 }
 
 #' Create sequence logo.
