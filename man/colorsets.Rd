@@ -5,7 +5,11 @@
 \title{Color sets for visualization.}
 \usage{
 colorsets(colorScheme = c("no", "classic", "charge", "chemistry",
-  "hydrophobicity"))
+  "hydrophobicity", "BLOSM50_L1", "BLOSM50_LL2", "BLOSM50_L3", "BLOSM50_L4",
+  "BLOSM50_L5", "BLOSM50_L6", "BLOSM50_L7", "BLOSM50_L8",
+  "chemistry_property_Mahler", "contact_potential_Maiorov",
+  "protein_blocks_Rogov", "sequence_alignment_Dayhoff",
+  "structure_alignments_Mirny"))
 }
 \arguments{
 \item{colorScheme}{A character vecto of length 1, determining the color scheme
