@@ -9,13 +9,19 @@ getGroupingSymbol(groupingScheme = c("no", "classic", "charge", "chemistry",
   "BLOSM50_L5", "BLOSM50_L6", "BLOSM50_L7", "BLOSM50_L8",
   "chemistry_property_Mahler", "contact_potential_Maiorov",
   "protein_blocks_Rogov", "sequence_alignment_Dayhoff",
-  "structure_alignments_Mirny"))
+  "structure_alignments_Mirny", "custom"))
 }
 \arguments{
 \item{groupingScheme}{A character vecto of length 1, determining the character
 symbols used to represent amino acids grouped by their physical and chemical
-properties. The available \code{groupingScheme} are "no", classic", "charge", 
-"chemistry", and "hydrophobicity".}
+properties. The available \code{groupingScheme} are "no",
+"classic", "charge", "chemistry", "hydrophobicity", "BLOSM50_L1", "BLOSM50_L2", 
+"BLOSM50_L3", "BLOSM50_L4", "BLOSM50_L5", "BLOSM50_L6", "BLOSM50_L7", 
+"BLOSM50_L8", "chemistry_property_Mahler", "contact_potential_Maiorov", 
+"protein_blocks_Rogov", "sequence_alignment_Dayhoff", "structure_alignments_Mirny",
+and "custom". If "custom" is used, users must define a grouping scheme using a
+a list containing sublist named as "color", "symbol" and "group" using the 
+function addGroupingScheme.}
 }
 \value{
 A named character vector of character symbols
@@ -25,6 +31,9 @@ Get character symbols for grouped amino acids
 }
 \examples{
 
+}
+\seealso{
+{\code{\link{addGroupingScheme}}}
 }
 \author{
 Jianhong Ou, Haibo Liu

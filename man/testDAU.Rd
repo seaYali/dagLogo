@@ -2,10 +2,14 @@
 % Please edit documentation in R/testDAU.R
 \name{testDAU}
 \alias{testDAU}
-\title{Conduct differential usage test of amino acids.}
+\title{Differential usage test of amino acids or groups.}
 \usage{
 testDAU(dagPeptides, dagBackground, groupingScheme = c("no", "classic",
-  "charge", "chemistry", "hydrophobicity"), bgNoise = NA)
+  "charge", "chemistry", "hydrophobicity", "BLOSM50_L1", "BLOSM50_L2",
+  "BLOSM50_L3", "BLOSM50_L4", "BLOSM50_L5", "BLOSM50_L6", "BLOSM50_L7",
+  "BLOSM50_L8", "chemistry_property_Mahler", "contact_potential_Maiorov",
+  "protein_blocks_Rogov", "sequence_alignment_Dayhoff",
+  "structure_alignments_Mirny", "custom"), bgNoise = NA)
 }
 \arguments{
 \item{dagPeptides}{An object of Class \code{\link{dagPeptides}}.}
@@ -13,8 +17,15 @@ testDAU(dagPeptides, dagBackground, groupingScheme = c("no", "classic",
 \item{dagBackground}{An object of Class \code{\link{dagBackground}}.}
 
 \item{groupingScheme}{A character vector of length 1. Available choices are
-"no", "classic", "charge", "chemistry",and "hydrophobicity". It is used
-to group amino acids into groups.}
+"no", "classic", "charge", "chemistry", "hydrophobicity", "BLOSM50_L1", 
+"BLOSM50_L2", "BLOSM50_L3", "BLOSM50_L4", "BLOSM50_L5", "BLOSM50_L6", 
+"BLOSM50_L7", "BLOSM50_L8", "chemistry_property_Mahler", 
+"contact_potential_Maiorov", "protein_blocks_Rogov", 
+"sequence_alignment_Dayhoff", "structure_alignments_Mirny",
+and "custom". If "custom" is used, users must define a grouping scheme using a
+a list containing sublist named as "color", "symbol" and "group" using the 
+function addGroupingScheme. It is used to group amino acids into groups of
+similarities.}
 
 \item{bgNoise}{A numeric vector of length 1. It should be in the interval of
 (0, 1).}
