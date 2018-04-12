@@ -1,4 +1,42 @@
-#' Conduct differential usage test of amino acids.
+#' Add a custom grouping scheme.
+#' 
+#' Add a custom grouping scheme for grouping amino acids as desired.
+#' 
+#' @param color A vector of character, with length match the number of desired 
+#' groups and names as the same as the groups' names. This vector specifies the 
+#' different colors for visualizing the different groups of amino acids.
+#' @param symbol A vector of character, with length match the number of desired 
+#' groups and names as the same as the groups' names. This vector specifies the 
+#' different symbols for visualizing the different groups of amino acids.
+#' @param group A list with names as the same as the groups' names.
+#'
+#' @return Add the custom grouping scheme to the cached environment.
+#' @export
+#' 
+#'
+#' @examples
+#' ## Add a grouping scheme based on the BLOSUM50 level 3 
+#' color = c(LVIMC = "#33FF00", AGSTP = "#CCFF00",
+#'          FYW = '#00FF66', EDNQKRH = "#FF0066")
+#' symbol = c(LVIMC = "L", AGSTP = "A", FYW = "F", EDNQKRH = "E")
+#' group = list(
+#'    LVIMC = c("L", "V", "I", "M", "C"), 
+#'    AGSTP = c("A", "G", "S", "T", "P"),
+#'    FYW = c("F", "Y", "W"),
+#'    EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H"))
+#' addGroupingScheme(color = color, symbol = symbol, group = group) 
+#' 
+ 
+addGroupingScheme <- function(color = vector("character"), 
+                              symbol = vector("character"),
+                              group=list())
+{
+    cachedEnv$custom <- list(color = color, symbol = symbol, group = group)
+}
+
+
+
+#' Differential usage test of amino acids or groups.
 #'
 #' Test differential usage of amino acids with or without grouping in
 #' experimental sets and background sets.
@@ -10,8 +48,16 @@
 #' the number of sequences in the background set is too samll to perform non-
 #' replacement subsamplint, "Fisher's exact test" is suggested.
 #' @param groupingScheme A character vector of length 1. Available choices are
-#' "no", "classic", "charge", "chemistry",and "hydrophobicity". It is used
-#' to group amino acids into groups.
+#' "no", "classic", "charge", "chemistry", "hydrophobicity", "BLOSM50_L1", 
+#' "BLOSM50_L2", "BLOSM50_L3", "BLOSM50_L4", "BLOSM50_L5", "BLOSM50_L6", 
+#' "BLOSM50_L7", "BLOSM50_L8", "chemistry_property_Mahler", 
+#' "contact_potential_Maiorov", "protein_blocks_Rogov", 
+#' "sequence_alignment_Dayhoff", "structure_alignments_Mirny",
+#' and "custom". If "custom" is used, users must define a grouping scheme using a
+#' a list containing sublist named as "color", "symbol" and "group" using the 
+#' function addGroupingScheme. It is used to group amino acids into groups of
+#' similarities.
+#' 
 #' @param bgNoise A numeric vector of length 1. It should be in the interval of
 #' (0, 1).
 #'
@@ -68,7 +114,17 @@
 testDAU <- function(dagPeptides,
                     dagBackground,
                     groupingScheme = c("no", "classic", "charge", 
-                                       "chemistry", "hydrophobicity"),
+                                       "chemistry", "hydrophobicity", 
+                                       "BLOSM50_L1", "BLOSM50_L2", 
+                                       "BLOSM50_L3", "BLOSM50_L4", 
+                                       "BLOSM50_L5", "BLOSM50_L6", 
+                                       "BLOSM50_L7", "BLOSM50_L8", 
+                                       "chemistry_property_Mahler", 
+                                       "contact_potential_Maiorov", 
+                                       "protein_blocks_Rogov", 
+                                       "sequence_alignment_Dayhoff", 
+                                       "structure_alignments_Mirny",
+                                       "custom"),
                     bgNoise = NA) 
 {
     if (missing(dagPeptides) || class(dagPeptides) != "dagPeptides") 
@@ -129,6 +185,25 @@ testDAU <- function(dagPeptides,
             charge = convert(dat, get("charge", envir = cachedEnv)$group),
             hydrophobicity = convert(dat, get("hydrophobicity", envir = cachedEnv)$group),
             chemistry = convert(dat, get("chemistry", envir = cachedEnv)$group),
+            BLOSM50_L1 = get("BLOSM50_L1", envir = cachedEnv)$group,
+            BLOSM50_L2 = get("BLOSM50_L2", envir = cachedEnv)$group,
+            BLOSM50_L3 = get("BLOSM50_L3", envir = cachedEnv)$group,
+            BLOSM50_L4 = get("BLOSM50_L4", envir = cachedEnv)$group,
+            BLOSM50_L5 = get("BLOSM50_L5", envir = cachedEnv)$group,
+            BLOSM50_L6 = get("BLOSM50_L6", envir = cachedEnv)$group,
+            BLOSM50_L7 = get("BLOSM50_L7", envir = cachedEnv)$group,
+            BLOSM50_L8 = get("BLOSM50_L8", envir = cachedEnv)$group,
+            chemistry_property_Mahler = get("chemistry_property_Mahler", 
+                                            envir = cachedEnv)$group, 
+            contact_potential_Maiorov = get("contact_potential_Maiorov",
+                                            envir = cachedEnv)$group, 
+            protein_blocks_Rogov = get("protein_blocks_Rogov", 
+                                       envir = cachedEnv)$group,
+            sequence_alignment_Dayhoff = get("sequence_alignment_Dayhoff",
+                                             envir = cachedEnv)$group, 
+            structure_alignments_Mirny = get("structure_alignments_Mirny", 
+                                             envir = cachedEnv)$group,
+            custom = get("custom", envir = cachedEnv)$group,
             no = dat
         )
         dat
