@@ -121,32 +121,11 @@ colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry",
                                      "structure_alignments_Mirny", "custom")) 
 {
     colorScheme <- match.arg(colorScheme)
-
-    switch(colorScheme,
-           no = get("no", envir = cachedEnv)$color,
-           classic = get("classic", envir = cachedEnv)$color,
-           charge = get("charge", envir = cachedEnv)$color,
-           chemistry = get("chemistry", envir = cachedEnv)$color,
-           hydrophobicity = get("hydrophobicity", envir = cachedEnv)$color,
-           BLOSM50_L1 = get("BLOSM50_L1", envir = cachedEnv)$color,
-           BLOSM50_L2 = get("BLOSM50_L2", envir = cachedEnv)$color,
-           BLOSM50_L3 = get("BLOSM50_L3", envir = cachedEnv)$color,
-           BLOSM50_L4 = get("BLOSM50_L4", envir = cachedEnv)$color,
-           BLOSM50_L5 = get("BLOSM50_L5", envir = cachedEnv)$color,
-           BLOSM50_L6 = get("BLOSM50_L6", envir = cachedEnv)$color,
-           BLOSM50_L7 = get("BLOSM50_L7", envir = cachedEnv)$color,
-           BLOSM50_L8 = get("BLOSM50_L8", envir = cachedEnv)$color,
-           chemistry_property_Mahler = get("chemistry_property_Mahler", 
-                                           envir = cachedEnv)$color, 
-           contact_potential_Maiorov = get("contact_potential_Maiorov",
-                                           envir = cachedEnv)$color, 
-           protein_blocks_Rogov = get("protein_blocks_Rogov", 
-                                      envir = cachedEnv)$color,
-           sequence_alignment_Dayhoff = get("sequence_alignment_Dayhoff",
-                                            envir = cachedEnv)$color, 
-           structure_alignments_Mirny = get("structure_alignments_Mirny", 
-                                            envir = cachedEnv)$color,
-           custome = get("custom", envir = cachedEnv)$color)
+    if (!colorScheme %in% ls(envir = cachedEnv))
+    {
+        stop("Unknown color scheme used!")
+    }
+    get(colorScheme, envir = cachedEnv)$color
 }
 
 #' Get character symbols for grouped amino acids
@@ -174,7 +153,7 @@ colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry",
 
 getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge", 
                                                 "chemistry", "hydrophobicity",
-                                                "BLOSM50_L1", "BLOSM50_LL2", 
+                                                "BLOSM50_L1", "BLOSM50_L2", 
                                                 "BLOSM50_L3", "BLOSM50_L4", 
                                                 "BLOSM50_L5", "BLOSM50_L6", 
                                                 "BLOSM50_L7", "BLOSM50_L8", 
@@ -186,32 +165,17 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge",
                                                 "custom"))
 {
     groupingScheme <- match.arg(groupingScheme)
-    switch(
-        groupingScheme,
-        no = NULL,
-        classic = get("classic", envir = cachedEnv)$symbol,
-        charge = get("charge", envir = cachedEnv)$symbol,
-        chemistry = get("chemistry", envir = cachedEnv)$symbol,
-        hydrophobicity = get("hydrophobicity", envir = cachedEnv)$symbol,
-        BLOSM50_L1 = get("BLOSM50_L1", envir = cachedEnv)$symbol,
-        BLOSM50_L2 = get("BLOSM50_L2", envir = cachedEnv)$symbol,
-        BLOSM50_L3 = get("BLOSM50_L3", envir = cachedEnv)$symbol,
-        BLOSM50_L4 = get("BLOSM50_L4", envir = cachedEnv)$symbol,
-        BLOSM50_L5 = get("BLOSM50_L5", envir = cachedEnv)$symbol,
-        BLOSM50_L6 = get("BLOSM50_L6", envir = cachedEnv)$symbol,
-        BLOSM50_L7 = get("BLOSM50_L7", envir = cachedEnv)$symbol,
-        BLOSM50_L8 = get("BLOSM50_L8", envir = cachedEnv)$symbol,
-        chemistry_property_Mahler = get("chemistry_property_Mahler", 
-                                        envir = cachedEnv)$symbol, 
-        contact_potential_Maiorov = get("contact_potential_Maiorov",
-                                        envir = cachedEnv)$symbol, 
-        protein_blocks_Rogov = get("protein_blocks_Rogov", 
-                                   envir = cachedEnv)$symbol,
-        sequence_alignment_Dayhoff = get("sequence_alignment_Dayhoff",
-                                         envir = cachedEnv)$symbol, 
-        structure_alignments_Mirny = get("structure_alignments_Mirny", 
-                                         envir = cachedEnv)$symbol,
-        custom = get("custom", envir = cachedEnv)$symbol)
+    if (!groupingScheme %in% ls(envir = cachedEnv))
+    {
+        stop("Unknown color scheme used!")
+    }
+    if (groupingScheme != "no")
+    {
+        get(groupingScheme, envir = cachedEnv)$symbol
+    } else 
+    {
+        NULL
+    }
 }
 
 #' Create sequence logo.
@@ -451,7 +415,6 @@ dagLogo <- function(testDAUresults,
                         )
                     } else
                     {
-                        
                         if (!is.null(labels)) 
                         {
                             grid.text(
@@ -516,13 +479,13 @@ dagLogo <- function(testDAUresults,
             grid.text(
                 groupingSymbol[i],
                 x = (npos+2)*dw,
-                y = .95 - i * 0.05 * lwd/2,
+                y = .95 - i * 0.1 * lwd/2,
                 just = c(.5, .5),
                 gp = gpar(col = colset[groupingSymbol[i]], fontsize=fontsize, fontface = fontface))
             grid.text(
                 names(groupingSymbol)[i],
-                x = (npos+2)*dw + 0.03 * lwd/2,
-                y = .95 - i * 0.05 * lwd/2,
+                x = (npos+2)*dw + 0.1 * lwd/2,
+                y = .95 - i * 0.1 * lwd/2,
                 just = c(0, .5),
                 gp = gpar(col = colset[groupingSymbol[i]], fontsize=fontsize, fontface = fontface))
         }

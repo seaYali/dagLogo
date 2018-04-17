@@ -168,6 +168,11 @@ testDAU <- function(dagPeptides,
     bg <- dagBackground@background
     
     groupingScheme <- match.arg(groupingScheme)
+    if (!groupingScheme %in% ls(envir = cachedEnv))
+    {
+        stop("Unknown grouping scheme used!")
+    }
+    
     AA <- get("no", envir = cachedEnv)$symbol
     
     if (groupingScheme == "no")
@@ -193,33 +198,10 @@ testDAU <- function(dagPeptides,
     }
     groupAA <- function(dat, group) 
     {
-        dat <- switch(
-            group,
-            classic = convert(dat, get("classic", envir = cachedEnv)$group),
-            charge = convert(dat, get("charge", envir = cachedEnv)$group),
-            hydrophobicity = convert(dat, get("hydrophobicity", envir = cachedEnv)$group),
-            chemistry = convert(dat, get("chemistry", envir = cachedEnv)$group),
-            BLOSM50_L1 = get("BLOSM50_L1", envir = cachedEnv)$group,
-            BLOSM50_L2 = get("BLOSM50_L2", envir = cachedEnv)$group,
-            BLOSM50_L3 = get("BLOSM50_L3", envir = cachedEnv)$group,
-            BLOSM50_L4 = get("BLOSM50_L4", envir = cachedEnv)$group,
-            BLOSM50_L5 = get("BLOSM50_L5", envir = cachedEnv)$group,
-            BLOSM50_L6 = get("BLOSM50_L6", envir = cachedEnv)$group,
-            BLOSM50_L7 = get("BLOSM50_L7", envir = cachedEnv)$group,
-            BLOSM50_L8 = get("BLOSM50_L8", envir = cachedEnv)$group,
-            chemistry_property_Mahler = get("chemistry_property_Mahler", 
-                                            envir = cachedEnv)$group, 
-            contact_potential_Maiorov = get("contact_potential_Maiorov",
-                                            envir = cachedEnv)$group, 
-            protein_blocks_Rogov = get("protein_blocks_Rogov", 
-                                       envir = cachedEnv)$group,
-            sequence_alignment_Dayhoff = get("sequence_alignment_Dayhoff",
-                                             envir = cachedEnv)$group, 
-            structure_alignments_Mirny = get("structure_alignments_Mirny", 
-                                             envir = cachedEnv)$group,
-            custom = get("custom", envir = cachedEnv)$group,
-            no = dat
-        )
+        if (group != "no")
+        {
+           dat <- convert(dat, get(group, envir = cachedEnv)$group)
+        }
         dat
     }
     

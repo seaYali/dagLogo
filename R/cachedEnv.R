@@ -3,13 +3,13 @@ cachedEnv <- new.env(parent = emptyenv())
 
 ## color and character symbol encodings and grouping for amino acids
 no <- list(
-    color = c('A' = '#CCFF00', 'C' = '#FFFF00', 'D' = '#FF0000',
-              'E' = '#FF0066', 'F' = '#00FF66', 'G' = '#FF9900',
-              'H' = '#0066FF', 'I' = '#66FF00', 'K' = '#6600FF',
-              'L' = '#33FF00', 'M' = '#00FF00', 'N' = '#CC00FF',
-              'P' = '#FFCC00', 'Q' = '#FF00CC', 'R' = '#0000FF',
-              'S' = '#FF3300', 'T' = '#FF6600', 'V' = '#99FF00',
-              'W' = '#00CCFF', 'Y' = '#00FFCC'),
+    color = c('A' = '#e6194b', 'C' = '#3cb44b', 'D' = '#0082c8',
+              'E' = '#f58231', 'F' = '#911eb4', 'G' = '#46f0f0',
+              'H' = '#f032e6', 'I' = '#d2f53c', 'K' = '#fabebe',
+              'L' = '#008080', 'M' = '#e6beff', 'N' = '#aa6e28',
+              'P' = '#00FF00', 'Q' = '#800000', 'R' = '#aaffc3',
+              'S' = '#808000', 'T' = '#ffd8b1', 'V' = '#000080',
+              'W' = '#808080', 'Y' = '#000000'),
     symbol = c("Ala" = "A", "Arg" = "R", "Asn" = "N", "Asp" = "D",
                "Cys" = "C", "Glu" = "E", "Gln" = "Q", "Gly" = "G",
                "His" = "H", "Ile" = "I", "Leu" = "L", "Lys" = "K",
@@ -23,15 +23,13 @@ classic <- list(
         polar_uncharged = "#00811B",
         aromatic = "#2000C7",
         positively_charged = "#800080",
-        negatively_charged = "#FFB32C"
-    ),
+        negatively_charged = "#FFB32C"),
     symbol = c(
         nonpolar_aliphatic = "M",
         polar_uncharged = "U",
         aromatic = "A",
         positively_charged = "P",
-        negatively_charged = "N"
-    ),
+        negatively_charged = "N"),
     ## Aliphatic: pertaining to nonaromatic hydrocarbon compounds in which the 
     ## constituent carbon atoms can be straight-chain, branched chain, or 
     ## cyclic, as in alicyclic compounds; saturated, as in the paraffins; or 
@@ -43,8 +41,7 @@ classic <- list(
         polar_uncharged = c("C","S", "T", "N", "Q"),
         aromatic = c("F", "W", "Y"),
         positively_charged = c("H", "K", "R"),
-        negatively_charged = c("D", "E")
-    )
+        negatively_charged = c("D", "E"))
 )
 
 chemistry <- list(
@@ -53,59 +50,50 @@ chemistry <- list(
         polar = "#00811B",
         basic = "#2000C7",
         neutral  = "#800080",
-        acidic = "#D00001"
-    ),
+        acidic = "#D00001"),
     symbol = c(
         hydrophobic = "H",
         polar = "P",
         basic = "B",
         neutral  = "U",
-        acidic = "A"
-    ),
+        acidic = "A"),
     group = list(
         hydrophobic = c("G", "A", "I", "L", "V", "M", "P", "F","W"),
         polar = c("C", "S", "T", "Y"),
         basic = c("H", "K", "R"),
         neutral = c("N", "Q"),
-        acidic = c("D", "E")
-    )
+        acidic = c("D", "E"))
 )
 
 hydrophobicity <- list(
     color = c(
         hydrophilic = '#000000',
         neutral = '#00811B',
-        hydrophobic  = '#2000C7'
-    ),
+        hydrophobic  = '#2000C7'),
     symbol = c(
         hydrophilic = 'I',
         neutral = 'U',
-        hydrophobic = 'O'
-    ),
+        hydrophobic = 'O'),
     group = list(
         hydrophilic = c("D", "E", "K", "R", "N", "Q"),
         neutral = c("A", "G", "H", "P", "S", "T"),
-        hydrophobic = c("C", "F", "I", "L", "M", "V", "W", "Y")
-    )
+        hydrophobic = c("C", "F", "I", "L", "M", "V", "W", "Y"))
 )
 
 charge <- list(
     color = c(
         positive = "#FFB32C",
         neutral = "#2000C7",
-        negative = "#CCCCCC"
-    ),
+        negative = "#CCCCCC"),
     symbol = c(
         positive = "P",
         neutral = "U",
-        negative = "N"
-    ),
+        negative = "N"),
     group = list(
         positive = c("H", "K", "R"),
         neutral = c("A", "C", "F", "G", "I", "L", "M", "N", "P", 
                     "Q", "S", "T", "V","W","Y"),
-        negative = c("D", "E")
-    )
+        negative = c("D", "E"))
 ) 
 
 ## 8-level schemes for amino acid alphabet reduction derived from correlations 
@@ -116,122 +104,106 @@ charge <- list(
 
 BLOSM50_L1 <- list(
     color = c(
-        LVIMCAGSTPFYW = "#33FF00",
-        EDNQKRH = "#FF0066"
-    ),
+        LVIMCAGSTPFYW = "#008080",
+        EDNQKRH = "#f58231"),
     symbol = c(
         LVIMCAGSTPFYW = "L",
-        EDNQKRH = "E"
-    ),
+        EDNQKRH = "E"),
     group = list(
         LVIMCAGSTPFYW = c("L", "V", "I", "M", "C", "A", "G", "S", "T", "P", 
                           "F", "Y", "W"),
-        EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H")
-    )
+        EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H"))
 ) 
 
 BLOSM50_L2 <- list(
     color = c(
-        LVIMCAGSTP = "#33FF00",
-        FYW = "#00FF66",
-        EDNQKRH = "#FF0066"
-    ),
+        LVIMCAGSTP = "#008080",
+        FYW = "#911eb4",
+        EDNQKRH = "#f58231"),
     symbol = c(
-        LVIMCAGST = "L",
+        LVIMCAGSTP = "L",
         FYW = "F",
-        EDNQKRH = "E"
-    ),
+        EDNQKRH = "E"),
     group = list(
         LVIMCAGSTP = c("L", "V", "I", "M", "C", "A", "G", "S", "T", "P"), 
         FYW = c("F", "Y", "W"),
-        EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H")
-    )
+        EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H"))
 ) 
 
 BLOSM50_L3 <- list(
     color = c(
-        LVIMC = "#33FF00",
-        AGSTP = "#CCFF00",
-        FYW = '#00FF66',
-        EDNQKRH = "#FF0066"
-    ),
+        LVIMC = "#008080",
+        AGSTP = "#e6194b",
+        FYW = '#911eb4',
+        EDNQKRH = "#f58231"),
     symbol = c(
         LVIMC = "L",
         AGSTP = "A",
         FYW = "F",
-        EDNQKRH = "E"
-    ),
+        EDNQKRH = "E"),
     group = list(
         LVIMC = c("L", "V", "I", "M", "C"), 
         AGSTP = c("A", "G", "S", "T", "P"),
         FYW = c("F", "Y", "W"),
-        EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H")
-    )
+        EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H"))
 ) 
 
 BLOSM50_L4 <- list(
     color = c(
-        LVIMC = "#33FF00",
-        AGSTP = "#CCFF00",
-        FYW = '#00FF66',
-        EDNQ = "#FF0066",
-        KRH = "#6600FF"
-    ),
+        LVIMC = "#008080",
+        AGSTP = "#e6194b",
+        FYW = '#911eb4',
+        EDNQ = "#f58231",
+        KRH = "#fabebe"),
     symbol = c(
         LVIMC = "L",
         AGSTP = "A",
         FYW = "F",
         EDNQ = "E",
-        KRH = "K"
-    ),
+        KRH = "K"),
     group = list(
         LVIMC = c("L", "V", "I", "M", "C"), 
         AGSTP = c("A", "G", "S", "T", "P"),
         FYW = c("F", "Y", "W"),
         EDNQ = c("E", "D", "N", "Q"),
-        KRH = c("K", "R", "H")
-    )
+        KRH = c("K", "R", "H"))
 ) 
 
 BLOSM50_L5 <- list(
     color = c(
-        LVIMC = "#33FF00",
-        AGST = "#CCFF00",
-        P = "#FFCC00",
-        FYW = "#00FF66",
-        EDNQ = "#FF0066",
-        KRH = "#6600FF"
-    ),
+        LVIMC = "#008080",
+        AGST = "#e6194b",
+        P = "#00FF00",
+        FYW = "#911eb4",
+        EDNQ = "#f58231",
+        KRH = "#fabebe"),
     symbol = c(
         LVIMC = "L",
-        AGSTP = "A",
+        AGST = "A",
         P = "P",
         FYW = "F",
         EDNQ = "E",
-        KRH = "K"
-    ),
+        KRH = "K"),
     group = list(
         LVIMC = c("L", "V", "I", "M", "C"), 
         AGST = c("A", "G", "S", "T"),
         P = "P",
         FYW = c("F", "Y", "W"),
         EDNQ = c("E", "D", "N", "Q"),
-        KRH = c("K", "R", "H")
-    )
+        KRH = c("K", "R", "H"))
 ) 
 
 
 BLOSM50_L6 <- list(
     color = c(
-        LVIMC = "#33FF00",
-        AG = "#CCFF00",
-        ST = "#FF3300",
-        P = "#FFCC00",
-        FYW = "#00FF66",
-        EDNQ = "#FF0066",
-        KR = "#6600FF",
-        H = "#0066FF"
-    ),
+        LVIMC = "#008080",
+        AG = "#e6194b",
+        ST = "#808000",
+        P = "#00FF00",
+        FYW = "#911eb4",
+        EDNQ = "#f58231",
+        KR = "#fabebe",
+        H = "#f032e6"),
     symbol = c(
         LVIMC = "L",
         AG = "A",
@@ -240,8 +212,7 @@ BLOSM50_L6 <- list(
         FYW = "F",
         EDNQ = "E",
         KR = "K",
-        H = "H"
-    ),
+        H = "H"),
     group = list(
         LVIMC = c("L", "V", "I", "M", "C"), 
         AG = c("A", "G"),
@@ -250,23 +221,21 @@ BLOSM50_L6 <- list(
         FYW = c("F", "Y", "W"),
         EDNQ = c("E", "D", "N", "Q"),
         KR = c("K", "R"),
-        H = "H"
-    )
+        H = "H")
 ) 
 
 BLOSM50_L7 <- list(
     color = c(
-        LVIM = "#33FF00",
-        C = "#FFFF00",
-        A = "#CCFF00",
-        G = "#FF9900",
-        ST = "#FF3300",
-        P = "#FFCC00",
-        FYW = "#00FF66",
-        EDNQ = "#FF0066",
-        KR = "#6600FF",
-        H = "#0066FF"
-    ),
+        LVIM = "#008080",
+        C = "#3cb44b",
+        A = "#e6194b",
+        G = "#46f0f0",
+        ST = "#808000",
+        P = "#00FF00",
+        FYW = "#911eb4",
+        EDNQ = "#f58231",
+        KR = "#fabebe",
+        H = "#f032e6"),
     symbol = c(
         LVIM = "L",
         C = "C",
@@ -277,8 +246,7 @@ BLOSM50_L7 <- list(
         FYW = "F",
         EDNQ = "E",
         KR = "K",
-        H = "H"
-    ),
+        H = "H"),
     group = list(
         LVIM = c("L", "V", "I", "M"), 
         C = "C",
@@ -289,28 +257,26 @@ BLOSM50_L7 <- list(
         FYW = c("F", "Y", "W"),
         EDNQ = c("E", "D", "N", "Q"),
         KR = c("K", "R"),
-        H = "H"
-    )
+        H = "H")
 ) 
 
 BLOSM50_L8 <- list(
     color = c(
-        LVIM = "#33FF00",
-        C = "#FFFF00",
-        A = "#2000C7",
-        G = "#FF9900",
-        S = "#FF3300",
-        T = "#FF6600",
-        P = "#FFCC00",
-        FY = "#00FF66",
-        W = "#00CCFF",
-        E = "#FF0066",
-        D = "#FF0000",
-        N = "#CC00FF",
-        Q = "#FF00CC",
-        KR = "#6600FF",
-        H = "#0066FF"
-    ),
+        LVIM = "#008080",
+        C = "#3cb44b",
+        A = "#e6194b",
+        G = "#46f0f0",
+        S = "#808000",
+        T = "#ffd8b1",
+        P = "#00FF00",
+        FY = "#911eb4",
+        W = "#808080",
+        E = "#f58231",
+        D = "#0082c8",
+        N = "#aa6e28",
+        Q = "#800000",
+        KR = "#fabebe",
+        H = "#f032e6"),
     symbol = c(
         LVIM = "L",
         C = "C",
@@ -326,8 +292,7 @@ BLOSM50_L8 <- list(
         N = "N",
         Q = "Q",
         KR = "K",
-        H = "H"
-    ),
+        H = "H"),
     group = list(
         LVIM = c("L", "V", "I", "M"), 
         C = "C",
@@ -343,22 +308,20 @@ BLOSM50_L8 <- list(
         N = "N",
         Q = "Q",
         KR = c("K", "R"),
-        H = "H"
-    )
+        H = "H")
 ) 
 
 
 ## Spatial frequency
 contact_potential_Maiorov <- list(
     color = c(
-        DENQ = "#FF0000",
-        KR = "#6600FF",
-        G = '#FF9900',
-        P = "#FFCC00",
-        AV = "#CCFF00",
-        STHWY = "#FF3300",
-        CFMLI = "#FFFF00"
-    ),
+        DENQ = "#0082c8",
+        KR = "#fabebe",
+        G = '#46f0f0',
+        P = "#00FF00",
+        AV = "#e6194b",
+        STHWY = "#808000",
+        CFMLI = "#3cb44b"),
     symbol = c(
         DENQ = "D",
         KR = "K",
@@ -366,8 +329,7 @@ contact_potential_Maiorov <- list(
         P = "P",
         AV = "A",
         STHWY = "S",
-        CFMLI = "C"
-    ),
+        CFMLI = "C"),
     group = list(
         DENQ = c("D", "E", "N", "Q"), 
         KR = c("K", "R"),
@@ -375,23 +337,21 @@ contact_potential_Maiorov <- list(
         P = "P",
         AV = c("A", "V"),
         STHWY = c("S", "T", "H", "W", "Y"),
-        CFMLI = c("C", "F", "M", "L", "I")
-    )
+        CFMLI = c("C", "F", "M", "L", "I"))
 ) 
 
 ## protein blocks
 protein_blocks_Rogov <- list(
     color = c(
-        DNSTA = "#FF0000",
-        EKRQ = "#FF0066",
-        G = '#FF9900',
-        P = "#FFCC00",
-        H = "#0066FF",
-        C = "#FFFF00",
-        W = "#00CCFF",
-        M = "#00FF00",
-        YFLIV = "#00FFCC"
-    ),
+        DNSTA = "#0082c8",
+        EKRQ = "#f58231",
+        G = '#46f0f0',
+        P = "#00FF00",
+        H = "#f032e6",
+        C = "#3cb44b",
+        W = "#808080",
+        M = "#e6beff",
+        YFLIV = "#000000"),
     symbol = c(
         DNSTA = "D",
         EKRQ = "E",
@@ -401,8 +361,7 @@ protein_blocks_Rogov <- list(
         C = "C",
         W = "W",
         M = "M",
-        YFLIV = "Y"
-    ),
+        YFLIV = "Y"),
     group = list(
         DNSTA = c("D", "N", "S", "T", "A"), 
         EKRQ = c("E", "K", "R", "Q"),
@@ -412,76 +371,68 @@ protein_blocks_Rogov <- list(
         C = "C",
         W = "W",
         M = "M",
-        YFLIV = c("Y", "F", "L", "I", "V")
-    )
+        YFLIV = c("Y", "F", "L", "I", "V"))
 ) 
 
 ##  structure alignment
 structure_alignments_Mirny <- list(
     color = c(
-        DE = "#FF0000",
-        KR = "#6600FF",
-        NQST = '#CC00FF',
-        GP = "#FF9900",
-        HWYF = "#0066FF",
-        ACMLIV = "#CCFF00"
-    ),
+        DE = "#0082c8",
+        KR = "#fabebe",
+        NQST = '#aa6e28',
+        GP = "#46f0f0",
+        HWYF = "#f032e6",
+        ACMLIV = "#e6194b"),
     symbol = c(
         DE = "D",
         KR = "K",
         NQST = "N",
         GP = "G",
         HWYF = "H",
-        ACMLIV = "A"
-    ),
+        ACMLIV = "A"),
     group = list(
         DE = c("D","E"),
         KR = c("K","R"),
         NQST = c("N", "Q", "S", "T"),
         GP = c("G", "P"),
         HWYF = c("H", "W", "Y", "F"),
-        ACMLIV = c("A", "C", "M", "L", "I", "V")
-    )
+        ACMLIV = c("A", "C", "M", "L", "I", "V"))
 ) 
 
 sequence_alignment_Dayhoff <- list(
     color = c(
-        DENQ = "#FF0000",
-        KRH = "#6600FF",
-        STGPA = "#FF3300",
-        C = '#FFFF00',
-        WYF = "#00CCFF",
-        MLIV = "#00FF00"
-    ),
+        DENQ = "#0082c8",
+        KRH = "#fabebe",
+        STGPA = "#808000",
+        C = '#3cb44b',
+        WYF = "#808080",
+        MLIV = "#e6beff"),
     symbol = c(
         DENQ = "D",
         KRH = "K",
         STGPA = "S",
         C = "C",
         WYF = "W",
-        MLIV = "M"
-    ),
+        MLIV = "M"),
     group = list(
         DENQ = c("D","E", "N", "Q"),
         KRH = c("K","R", "H"),
         STGPA  = c("S", "T", "G", "P", "A"),
         C = "C",
         WYF = c("W", "Y", "F"),
-        MLIV = c("M", "L", "I", "V")
-    )
+        MLIV = c("M", "L", "I", "V"))
 ) 
 
 chemistry_property_Mahler <- list(
     color = c(
-        DE = "#FF0000",
-        KRH = "#6600FF",
-        QN = "#FF00CC",
-        ST = "#FF3300",
-        P = "#FFCC00",
-        CM = '#FFFF00',
-        WYF = "#00CCFF",
-        GALIV = "#FF9900"
-    ),
+        DE = "#0082c8",
+        KRH = "#fabebe",
+        QN = "#800000",
+        ST = "#808000",
+        P = "#00FF00",
+        CM = '#3cb44b',
+        WYF = "#808080",
+        GALIV = "#46f0f0"),
     symbol = c(
         DE = "D",
         KRH = "K",
@@ -490,8 +441,7 @@ chemistry_property_Mahler <- list(
         P = "P",
         CM = "C",
         WYF = "W",
-        GALIV = "G"
-    ),
+        GALIV = "G"),
     group = list(
         DE= c("D","E"),
         KRH = c("K","R", "H"),
@@ -500,8 +450,7 @@ chemistry_property_Mahler <- list(
         P = "P",
         CM = c("C", "M"),
         WYF = c("W", "Y", "F"),
-        GALIV = c("G", "A", "M", "L", "I", "V")
-    )
+        GALIV = c("G", "A", "M", "L", "I", "V"))
 )
 
 
