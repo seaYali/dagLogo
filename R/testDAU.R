@@ -146,15 +146,13 @@ testDAU <- function(dagPeptides,
 {
     if (missing(dagPeptides) || class(dagPeptides) != "dagPeptides") 
     {
-        stop(
-            "dagPeptides should be an object of dagPeptides class.\n
+        stop("dagPeptides should be an object of dagPeptides class.\n
             Please try ?fetchSequence to get help.",
             call. = FALSE)
     }
     if (missing(dagBackground) || class(dagBackground) != "dagBackground") 
     {
-        stop(
-            "dagBackground should be an object of dagBackground class .\n
+        stop("dagBackground should be an object of dagBackground class .\n
             Please try ?buildBackgroundModel to get help.",
             call. = FALSE)
     }
@@ -176,10 +174,13 @@ testDAU <- function(dagPeptides,
     if(groupingScheme == "no")
     {
         coln <- as.character(AA)
-    } else 
+    } else if (groupingScheme == "custom")
     {
-        coln <- names(get(groupingScheme, envir = cachedEnv)$group)    
-    } 
+        coln <- names(get(groupingScheme, envir = .globalEnv)$group)    
+    } else
+    {
+        coln <- names(get(groupingScheme, envir = cachedEnv)$group)
+    }
 
     ## helper function used to group AAs based on groupingScheme
     convert <- function(x, gtype) 
