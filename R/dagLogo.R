@@ -146,7 +146,7 @@ colorsets <-function(colorScheme = c("no", "classic", "charge", "chemistry",
                                             envir = cachedEnv)$color, 
            structure_alignments_Mirny = get("structure_alignments_Mirny", 
                                             envir = cachedEnv)$color,
-           custome = get("custom", envir = cachedEnv)$color)
+           custome = get("custom", envir = .globalEnv)$color)
 }
 
 #' Get character symbols for grouped amino acids
@@ -211,7 +211,7 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge",
                                          envir = cachedEnv)$symbol, 
         structure_alignments_Mirny = get("structure_alignments_Mirny", 
                                          envir = cachedEnv)$symbol,
-        custom = get("custom", envir = cachedEnv)$symbol)
+        custom = get("custom", envir = .globalEnv)$symbol)
 }
 
 #' Create sequence logo.

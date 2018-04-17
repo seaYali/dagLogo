@@ -31,7 +31,24 @@ addGroupingScheme <- function(color = vector("character"),
                               symbol = vector("character"),
                               group=list())
 {
-    cachedEnv$custom <- list(color = color, symbol = symbol, group = group)
+    if (length(color) < 1 || length(symbol) < 1 || length(group) < 1)
+    {
+        stop("Too few groups!")
+    }
+    if (length(color) != length(symbol) || length(color) != length(group) ||
+        length(symbol) != length(group))
+    {
+        stop("Wrong grouping specification:", 
+             "The length of color, symbol and group should be the same!")
+    }
+    if(names(color) != names(symbol) || names(color) != names(group) ||
+       names(symbol) != names(group))
+    {
+        stop("The names of color, symbol and group should be the same!") 
+    }
+    .globalEnv <- new.env(parent = emptyenv())
+    .globalEnv$custom <- list(color = color, symbol = symbol, group = group)
+    .globalEnv
 }
 
 
@@ -203,7 +220,7 @@ testDAU <- function(dagPeptides,
                                              envir = cachedEnv)$group, 
             structure_alignments_Mirny = get("structure_alignments_Mirny", 
                                              envir = cachedEnv)$group,
-            custom = get("custom", envir = cachedEnv)$group,
+            custom = get("custom", envir = .globalEnv)$group,
             no = dat
         )
         dat
