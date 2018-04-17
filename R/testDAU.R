@@ -47,7 +47,7 @@ addGroupingScheme <- function(color = vector("character"),
         stop("The names of color, symbol and group should be the same!") 
     }
     custom <- list(color = color, symbol = symbol, group = group)
-    assign("custom", custome, envir = cachedEnv)
+    assign("custom", custom, envir = cachedEnv)
 }
 
 
