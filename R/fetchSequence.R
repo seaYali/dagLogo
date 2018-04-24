@@ -8,7 +8,7 @@
 #' @param IDs  A character vector containing protein/peptide IDs used to fecth 
 #' sequences from a Biomart database or a \code{Proteome} object.
 #' @param type A character vector of length 1. The available options are 
-#' "entrezgene" and "uniprotsptrembl" if parameter \code{mart} is missing; otherwise
+#' "entrezgene" and "uniprotswissprot" if parameter \code{mart} is missing; otherwise
 #' it can be any type of IDs aavailable in Biomart databases.
 #' @param anchorAA A character vector of length 1 or the same length as that of
 #' anchorPos, each element of which is a single character amino acid, for example,
@@ -22,11 +22,12 @@
 #' \code{mart} and \code{proteome} should be provided.
 #' @param proteome An object of \code{Proteome} class. One of parameters 
 #' \code{mart} and \code{proteome} should be provided.
-#' @param upstreamOffset An integer in the interval of (0, 20), the upstream offset 
-#' relative to the anchoring position.
-#' @param downstreamOffset An integer in the interval of (0, 20), the downstream 
-#' offset relative to the anchoring position.
+#' @param upstreamOffset An integer, the upstream offset relative to
+#' the anchoring position.
+#' @param downstreamOffset An integer, the downstream offset relative
+#' to the anchoring position.
 #' @import biomaRt
+#' @importFrom BiocGenerics start
 #' @import methods
 #' @return An object of class \code{dagPetides} 
 #' @export
@@ -121,32 +122,28 @@ fetchSequence <-function(IDs,
     }
     if (!missing(mart) && class(mart) != "Mart") 
     {
-        stop("mart should be an object of Mart", call. = FALSE)
+        stop("mart should be an object of Mart class", call. = FALSE)
     }
     if (!missing(proteome) && class(proteome) != "Proteome") 
     {
-        stop(
-            "proteome should be an object of Proteome class. \n
-            Try ?prepareProteome to get help",
-            call. = FALSE)
+        stop("proteome should be an object of Proteome class.",
+            "Try ?prepareProteome to get help", call. = FALSE)
     }
     if (missing(upstreamOffset) || missing(downstreamOffset)) 
     {
-        stop(
-            "Please provide the upstreamOffset and downstreamOffset position 
-            relative to the anchoring amino acid",
-            call. = FALSE)
+        stop("Please provide the upstreamOffset and downstreamOffset position 
+            relative to the anchoring amino acid", call. = FALSE)
     }
     if (upstreamOffset < 0 || downstreamOffset < 0) 
     {
         stop("The upstreamOffset and downstreamOffset should be a positive integer",
              call. = FALSE)
     }
-    if (downstreamOffset > 20 || upstreamOffset > 20) 
-    {
-        stop("The upstreamOffset and downstreamOffset should be a positive integer less than 20",
-             call. = FALSE)
-    }
+    # if (downstreamOffset > 20 || upstreamOffset > 20) 
+    # {
+    #     stop("The upstreamOffset and downstreamOffset should be a positive integer less than 20",
+    #          call. = FALSE)
+    # }
     if (missing(IDs) || missing(anchorPos)) 
     {
         stop("Missing required parameter IDs or anchorPos", call. = FALSE)
@@ -167,8 +164,9 @@ fetchSequence <-function(IDs,
     }
     if (length(anchorAA) > 0 && any(nchar(anchorAA) != 1)) 
     {
-            stop("anchorAA must be a single amino acid or *", call. = FALSE)
+        stop("anchorAA must be a single amino acid or *", call. = FALSE)
     }
+   
     searchAnchor <- FALSE
     if (class(anchorPos) == "character") 
     {
@@ -176,22 +174,19 @@ fetchSequence <-function(IDs,
         anchorPos <- gsub("^\\-+", "", anchorPos)
         anchorPos <- gsub("\\-+$", "", anchorPos)
         
-        ## non-typical anchorPos
+        ## non-typical anchorPos, for example, "*" in anchorPos
         if (any(!grepl("^[A-Z]\\d+$", toupper(anchorPos)))) 
         {
-            if (length(anchorAA) < 1 || any(grepl("[^*A-Z]", toupper(anchorPos)))) 
+             if (length(anchorAA) < 1 || any(grepl("[^*A-Z]", toupper(anchorPos)))) 
             {
-                stop(
-                    "anchorPos should be the amino acid followed by the position, eg. K123",
+                stop("anchorPos should be the amino acid followed by the position, eg. K123.",
                     "Otherwise, anchorPos should be the strings of amino acid and 
-                    anchorAA is the anchoring amino acid",
-                    call. = FALSE
-                )
+                    anchorAA is the anchoring amino acid", call. = FALSE)
             }
             searchAnchor <- TRUE
             anchorPos <- strsplit(anchorPos, "")
             
-            ## find index of the anchoring amino acids
+            ## find relative index of the anchoring amino acids
             anchor <- mapply(function(x, y) {which(x == y)}, anchorPos, 
                              anchorAA, SIMPLIFY = FALSE)
             
@@ -202,54 +197,54 @@ fetchSequence <-function(IDs,
                 if (length(anchorAA) == length(anchorPos)) 
                 {
                     ## the index of the amino acid immediately before the "*"
+                    ## the actual index should be index -1
                     anchor[anchorAA == "*"] <-
-                        lapply(anchor[anchorAA == "*"], function(.ele)
-                            .ele - 1:length(.ele))
+                        lapply(anchor[anchorAA == "*"], function(.ele){.ele - 1:length(.ele)})
                 } else
                 {
                     if (length(anchorAA) == 1) 
                     {
-                        anchor <- lapply(anchor, function(.ele)
-                            .ele - 1:length(.ele))
+                        anchor <- sapply(anchor, function(.ele){.ele - 1:length(.ele)})
                     } else
                     {
-                        stop("length of anchorAA must be 1 or equal to anchorPos")
+                        stop("length of anchorAA must be 1 or equal to that of anchorPos.")
                     }
                 }
-                
-                ## remove "*"
-                anchorPos <-
-                    lapply(anchorPos, function(.ele)
-                        .ele[.ele != "*"])
+                ## remove "*" 
+                anchorPos <- lapply(anchorPos, function(.ele){.ele[.ele != "*"]})
             }
+            ## and collapse into a single string and change to uppper cases
             anchorPos <- sapply(anchorPos, paste, collapse = "")
             anchorPos <- toupper(anchorPos)
         } else
         {
             anchorPos <- toupper(anchorPos)
-            
             ## single character symbol of amino acid
             anchorAA <- substr(anchorPos, 1, 1)
-            
             ## now position is only number
             anchorPos <- as.numeric(substring(anchorPos, 2))
+            anchor <- anchorPos
         }
     }
-    inputs <- data.frame(IDs, anchorAA, anchorPos, oid = 1:length(anchorPos))
+    inputs <- data.frame(IDs, anchorAA, anchorPos, anchor, oid = 1:length(anchorPos))
     
     if (!missing(mart))  ## retreive sequence from biomart
     {
-        protein <- getSequence(
-            id = unique(as.character(IDs)),
-            type = type,
-            seqType = "peptide",
-            mart = mart)
+        protein <- getSequence(id = unique(as.character(IDs)),
+                               type = type,
+                               seqType = "peptide",
+                               mart = mart)
+        if (nrow(protein) < 1)
+        {
+            stop("Too few retrieved protein sequences from Ensembl Biomart.",
+                 "Make sure the IDs and their type are correct!", call. = FALSE)
+        }
     } else  ## retreive sequence from Proteome
     {
         
-         if (!(type %in% c("entrezgene", "uniprotsptrembl"))) 
+        if (!(type %in% c("entrezgene", "uniprotswissprot"))) 
         {
-            stop( "Only accept 'entrezgene' or 'uniprotsptrembl' for type when 
+            stop( "Only accept 'entrezgene' or 'uniprotswissprot' for type when 
                   using proteome for fetching sequences.", call. = FALSE)
         }
         if (type == "entrezgene") 
@@ -264,7 +259,7 @@ fetchSequence <-function(IDs,
                 proteome@proteome[proteome@proteome[, "ID"] %in% 
                                       unique(as.character(IDs)),
                                   c("SEQUENCE", "ID")]
-            colnames(protein) <- c("peptide", "uniprotsptrembl")
+            colnames(protein) <- c("peptide", "uniprotswissprot")
         }
         protein <- protein[!is.na(protein[, 2]), ]
     }
@@ -274,40 +269,37 @@ fetchSequence <-function(IDs,
     
     if (searchAnchor) 
     {
+        ## get the absolute index for the first occurence of query peptides
         anchorPos <- mapply(function(.ele, .pep) {
-            start(matchPattern(AAString(toupper(.ele)), .pep))
+            BiocGenerics::start(matchPattern(AAString(toupper(.ele)), .pep))
         }, dat$anchorPos, dat$peptide, SIMPLIFY = FALSE)
-        
-        ## number-only
+        ## get the absolute index for the  anchoring amino acids in the first 
+        ## occurence of query peptide
         anchorPos <- mapply(function(.pos, .anchor) {
             if (length(.pos) == 0) 
             {
                 return(integer())
             }
             .pos[1] + .anchor - 1
-        }, anchorPos, anchor[dat$oid], SIMPLIFY = FALSE)
+        }, anchorPos, dat$anchor, SIMPLIFY = FALSE)
         
+        ## remove peptide without queryed "anchoring peptide"
+        ## It is hard to understand these lines of code
         dat <- dat[rep(1:nrow(dat), sapply(anchorPos, length)),]
+        
+        ## replacing query peptide with the absolute index of anchoring amino acid
         dat$anchorPos <- unlist(anchorPos)
-        dat$anchorAA <-
-            unlist(mapply(function(pep, pos) {
-                substr(pep, pos, pos)
-            },
-            dat$peptide, dat$anchorPos))
-    }
-    
-    ## amino acid
-    dat$anchor <-
-        unlist(mapply(function(pep, pos) {
-            substr(pep, pos, pos)
-        },
-        dat$peptide, dat$anchorPos))
-    
-    ## colnames(dat)==c("IDs", "anchorAA", "anchorPos", "peptide", "anchor")
+        dat$anchorAA <- unlist(mapply(function(pep, pos) {
+            substr(pep, pos, pos)},dat$peptide, dat$anchorPos))
+    } 
+    ## replace indice with symbols of anchoring amino acid
+    dat$anchor <-unlist(mapply(function(pep, pos) {
+                substr(pep, pos, pos)}, dat$peptide, dat$anchorPos))
+
     ## check sequence of NCBIsites
     if (!is.null(anchorAA)[1])
     {
-        dat <- dat[toupper(dat$anchorAA) == dat$anchor,]
+        dat <- dat[toupper(dat$anchorAA) == dat$anchor, ]
     }
     
     ## extract sequences for logo
@@ -322,11 +314,9 @@ fetchSequence <-function(IDs,
                dat$anchorPos,
                dat$anchorPos + upstreamOffset - 1)
     dat$downstream <-
-        substr(
-            peptide.guarded,
+        substr(peptide.guarded,
             dat$anchorPos + upstreamOffset + 1,
-            dat$anchorPos + upstreamOffset + downstreamOffset
-        )
+            dat$anchorPos + upstreamOffset + downstreamOffset)
     
     # unique dat by oid and upstream/anchor/downstream sequence
     dat <- dat[!duplicated(paste(dat$oid, dat$upstream, dat$downstream)), ]
@@ -340,8 +330,7 @@ fetchSequence <-function(IDs,
     seqchar.downstream <-
         do.call(rbind, strsplit(dat$downstream, "", fixed = TRUE))
     seqchar.downstream[seqchar.downstream == '?'] <- NA
-    seqchar <-
-        cbind(seqchar.upstream, dat$anchor, seqchar.downstream)
+    seqchar <- cbind(seqchar.upstream, dat$anchor, seqchar.downstream)
     
     new(
         "dagPeptides",

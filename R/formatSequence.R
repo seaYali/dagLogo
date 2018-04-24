@@ -5,10 +5,10 @@
 #' 
 #' @param seq A vector of aligned peptide sequences of the same length
 #' @param proteome An object of \code{Proteome} Class.
-#' @param upstreamOffset An integer in the interval (0, 20): the upstream offset
-#' relative to the anchoring position.
-#' @param downstreamOffset An integer in the interval (0, 20): the downstream 
-#' offset relative to the anchoring position.
+#' @param upstreamOffset An integer, the upstream offset relative to
+#' the anchoring position.
+#' @param downstreamOffset An integer, the downstream offset relative
+#' to the anchoring position.
 #'
 #' @return An object of dagPeptides Class
 #' @import methods
@@ -79,11 +79,10 @@ formatSequence <-function(seq,
     }
     
     ## check validity of upstreamOffset and downstreamOffset
-    if (upstreamOffset <0 || upstreamOffset > 20 || 
-        downstreamOffset < 0 || downstreamOffset >20)
+    if (upstreamOffset < 0 || downstreamOffset < 0)
     {
-        stop("upstreamOffset and downstreamOffset must be in the 
-             interval (0, 20).", call. = FALSE)
+        stop("upstreamOffset and downstreamOffset must be positive integers.", 
+             call. = FALSE)
     }
     
     ## retrieve anchorAA and anchorPos
