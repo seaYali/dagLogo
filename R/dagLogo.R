@@ -194,6 +194,7 @@ getGroupingSymbol <-function(groupingScheme = c("no", "classic", "charge",
 #' Logo.
 #' @param legend A logical vector of length 1, indicating whether to show the 
 #' legend.
+#' @param title A character vector of length 1, main title for a plot.
 #' @param labelRelativeToAnchor A logical vector of length 1, indicating whether
 #' x-axis label should be adjusted relative to the anchoring position.
 #' @param labels A character vector, x-axis labels.
@@ -238,7 +239,8 @@ dagLogo <- function(testDAUresults,
                     groupingSymbol = getGroupingSymbol(testDAUresults@group),
                     font = "Helvetica-Bold",
                     fontface = "bold",
-                    fontsize= 5,
+                    fontsize = 5,
+                    title = NULL,
                     legend = FALSE,
                     labelRelativeToAnchor = FALSE,
                     gscmd = Sys.getenv("R_GSCMD"),
@@ -467,6 +469,16 @@ dagLogo <- function(testDAUresults,
         }    
         x.pos <- x.pos + dw
     }
+    if (!is.null(title))
+    {
+        grid.text(
+            as.character(title),
+            x = 0.5,
+            y = 0.98,
+            just = c(.5, .5),
+            gp = gpar(col = "black", fontsize=fontsize*2, fontface = fontface))
+    }
+    
     ## plot legend
     if (legend) 
     {
