@@ -12,7 +12,7 @@ fetchSequence(IDs, type = "entrezgene", anchorAA = NULL, anchorPos, mart,
 sequences from a Biomart database or a \code{Proteome} object.}
 
 \item{type}{A character vector of length 1. The available options are 
-"entrezgene" and "uniprotsptrembl" if parameter \code{mart} is missing; otherwise
+"entrezgene" and "uniprotswissprot" if parameter \code{mart} is missing; otherwise
 it can be any type of IDs aavailable in Biomart databases.}
 
 \item{anchorAA}{A character vector of length 1 or the same length as that of
@@ -31,11 +31,11 @@ peptide/protein sequence, for example, "123" for an amino acid at position 123.}
 \item{proteome}{An object of \code{Proteome} class. One of parameters 
 \code{mart} and \code{proteome} should be provided.}
 
-\item{upstreamOffset}{An integer in the interval of (0, 20), the upstream offset 
-relative to the anchoring position.}
+\item{upstreamOffset}{An integer, the upstream offset relative to
+the anchoring position.}
 
-\item{downstreamOffset}{An integer in the interval of (0, 20), the downstream 
-offset relative to the anchoring position.}
+\item{downstreamOffset}{An integer, the downstream offset relative
+to the anchoring position.}
 }
 \value{
 An object of class \code{dagPetides}

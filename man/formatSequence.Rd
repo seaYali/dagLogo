@@ -11,11 +11,11 @@ formatSequence(seq, proteome, upstreamOffset, downstreamOffset)
 
 \item{proteome}{An object of \code{Proteome} Class.}
 
-\item{upstreamOffset}{An integer in the interval (0, 20): the upstream offset
-relative to the anchoring position.}
+\item{upstreamOffset}{An integer, the upstream offset relative to
+the anchoring position.}
 
-\item{downstreamOffset}{An integer in the interval (0, 20): the downstream 
-offset relative to the anchoring position.}
+\item{downstreamOffset}{An integer, the downstream offset relative
+to the anchoring position.}
 }
 \value{
 An object of dagPeptides Class

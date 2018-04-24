@@ -4,17 +4,24 @@
 \alias{prepareProteome}
 \title{Create an object of Proteome class.}
 \usage{
-prepareProteome(source = NULL, species = NULL, destDir = getwd(),
-  fastaFile, ...)
+prepareProteome(source = NULL, taxonID = NULL, species = NULL,
+  destDir = getwd(), fastaFile, ...)
 }
 \arguments{
 \item{source}{A character vector of length 1 or NULL. A database source from 
 where the proteome sequences are to downloaded. By default, currently it is
-"Uniprot". If it is NULL, then \code{fastaFile} has to be specified. The 
+"UniProt". If it is NULL, then \code{fastaFile} has to be specified. The 
 priority of \code{source} is higher than \code{fastaFile}.}
 
+\item{taxonID}{Taxonomy ID for a species of interest. Check the NCBI
+taxonomy database: \link{https://www.ncbi.nlm.nih.gov/taxonomy} or 
+the UniProt database \link{http://www.uniprot.org/taxonomy/}. At least one of 
+the two parameters, \code{taxonID} and \code{species}, should be specified. 
+If both are specified, taxonID will be used preferentially.}
+
 \item{species}{A character vector of length 1. The Latin name of a species 
-confirming to the Linnaean taxonomy nomenclature system.}
+confirming to the Linnaean taxonomy nomenclature system. CAUTION: for species 
+with different strains, attention should be paid.}
 
 \item{destDir}{A character vector of length 1. A destination directory with 
 writing permission for saving downloaded sequences.}

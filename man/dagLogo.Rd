@@ -7,7 +7,7 @@
 dagLogo(testDAUresults, type = c("diff", "zscore"), pvalueCutoff = 0.05,
   groupingSymbol = getGroupingSymbol(testDAUresults@group),
   font = "Helvetica-Bold", fontface = "bold", fontsize = 5,
-  legend = FALSE, labelRelativeToAnchor = FALSE,
+  title = NULL, legend = FALSE, labelRelativeToAnchor = FALSE,
   gscmd = Sys.getenv("R_GSCMD"), labels = NULL)
 }
 \arguments{
@@ -28,6 +28,8 @@ Logo.}
 \item{fontface}{An integer, fontface of text for axis annotation and legends.}
 
 \item{fontsize}{An integer, fontsize of text for axis annotation and legends.}
+
+\item{title}{A character vector of length 1, main title for a plot.}
 
 \item{legend}{A logical vector of length 1, indicating whether to show the 
 legend.}
