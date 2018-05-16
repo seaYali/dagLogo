@@ -63,16 +63,20 @@ addGroupingScheme <- function(color = vector("character"),
 #' "fisher" and "z-test", that is "Fisher's exact test" and "Z-test". When the 
 #' the number of sequences in the background set is too samll to perform non-
 #' replacement subsamplint, "Fisher's exact test" is suggested.
-#' @param groupingScheme A character vector of length 1. Available choices are
-#' "no", "classic", "charge", "chemistry", "hydrophobicity", "BLOSM50_L1", 
-#' "BLOSM50_L2", "BLOSM50_L3", "BLOSM50_L4", "BLOSM50_L5", "BLOSM50_L6", 
-#' "BLOSM50_L7", "BLOSM50_L8", "chemistry_property_Mahler", 
-#' "contact_potential_Maiorov", "protein_blocks_Rogov", 
-#' "sequence_alignment_Dayhoff", "structure_alignments_Mirny",
-#' and "custom". If "custom" is used, users must define a grouping scheme using a
-#' a list containing sublist named as "color", "symbol" and "group" using the 
-#' function addGroupingScheme. It is used to group amino acids into groups of
-#' similarities.
+#' @param groupingScheme A character vector of length 1. Available choices are 
+#' "no","bulkiness_Zimmerman","hydrophobicity_KD", "hydrophobicity_HW", 
+#' "isoelectric_point_Zimmerman", "contact_potential_Maiorov",
+#' "chemistry_property_Mahler", "consensus_similarity_SF", 
+#' "volume_Bigelow", "structure_alignments_Mirny", "polarity_Grantham", 
+#' "sequence_alignment_Dayhoff", "bulkiness_Zimmerman_group", "hydrophobicity_KD_group",
+#' "hydrophobicity_HW_group", "charge_group", "contact_potential_Maiorov_group",
+#' "chemistry_property_Mahler_group", "consensus_similarity_SF_group", 
+#' "volume_Bigelow_group", "structure_alignments_Mirny_group", "polarity_Grantham_group",  
+#' "sequence_alignment_Dayhoff_group", and "custom". If "custom" is used, users 
+#' must define a grouping scheme using a list containing sublist named as "color",
+#' "symbol" and "group" using the function addGroupingScheme. No grouping was applied
+#' for the first 12 schemes. It is used to color AAs based on similarities or
+#' group amino acids into groups of similarities.
 #' 
 #' @param bgNoise A numeric vector of length 1. It should be in the interval of
 #' (0, 1).
@@ -129,18 +133,7 @@ addGroupingScheme <- function(color = vector("character"),
 
 testDAU <- function(dagPeptides,
                     dagBackground,
-                    groupingScheme = c("no", "classic", "charge", 
-                                       "chemistry", "hydrophobicity", 
-                                       "BLOSM50_L1", "BLOSM50_L2", 
-                                       "BLOSM50_L3", "BLOSM50_L4", 
-                                       "BLOSM50_L5", "BLOSM50_L6", 
-                                       "BLOSM50_L7", "BLOSM50_L8", 
-                                       "chemistry_property_Mahler", 
-                                       "contact_potential_Maiorov", 
-                                       "protein_blocks_Rogov", 
-                                       "sequence_alignment_Dayhoff", 
-                                       "structure_alignments_Mirny",
-                                       "custom"),
+                    groupingScheme = ls(envir = cachedEnv),
                     bgNoise = NA) 
 {
     if (missing(dagPeptides) || class(dagPeptides) != "dagPeptides") 
