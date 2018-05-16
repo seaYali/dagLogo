@@ -179,7 +179,7 @@ fetchSequence <-function(IDs,
         {
              if (length(anchorAA) < 1 || any(grepl("[^*A-Z]", toupper(anchorPos)))) 
             {
-                stop("anchorPos should be the amino acid followed by the position, eg. K123.",
+                stop("anchorPos should be the amino acid followed by the position, eg. K123. ",
                     "Otherwise, anchorPos should be the strings of amino acid and 
                     anchorAA is the anchoring amino acid", call. = FALSE)
             }
