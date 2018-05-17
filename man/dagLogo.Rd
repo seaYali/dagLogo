@@ -19,8 +19,7 @@ on y-axis, available choices are "diff" or "zscore".}
 
 \item{pvalueCutoff}{A numeric vector of length 1. A cutoff of p-value.}
 
-\item{groupingSymbol}{A named character vector, with 3-letter symbols of amino acids
-as names and single-letter symbols as values.}
+\item{groupingSymbol}{A named character vector.}
 
 \item{font}{A character vector of length 1. Font type for displaying sequence
 Logo.}

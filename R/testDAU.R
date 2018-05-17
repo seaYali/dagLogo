@@ -182,7 +182,15 @@ testDAU <- function(dagPeptides,
         stop("Unknown grouping scheme used!")
     }
     
-    coln <- as.character(get(groupingScheme, envir = cachedEnv)$symbol)
+    group <- get(groupingScheme, envir = cachedEnv)$group
+    if (is.null(group))
+    {
+        AA <- get(groupingScheme, envir = cachedEnv)$symbol
+        coln <- as.character(AA)
+    } else
+    {
+        coln <- names(get(groupingScheme, envir = cachedEnv)$group)
+    }
     ## helper function used to group AAs based on groupingScheme
     convert <- function(x, gtype) 
     {
@@ -198,7 +206,7 @@ testDAU <- function(dagPeptides,
     }
     groupAA <- function(dat, group) 
     {
-        if (group != "no")
+        if (grepl("group", group))
         {
            dat <- convert(dat, get(group, envir = cachedEnv)$group)
         }

@@ -173,8 +173,7 @@ getGroupingSymbol <-function(groupingScheme = ls(envir = cachedEnv))
 #' @param type A character vector of length 1. Type of statistics to display 
 #' on y-axis, available choices are "diff" or "zscore".
 #' @param pvalueCutoff A numeric vector of length 1. A cutoff of p-value.
-#' @param groupingSymbol A named character vector, with 3-letter symbols of amino acids
-#' as names and single-letter symbols as values.
+#' @param groupingSymbol A named character vector.
 #' @param font A character vector of length 1. Font type for displaying sequence
 #' Logo.
 #' @param legend A logical vector of length 1, indicating whether to show the 
@@ -271,9 +270,9 @@ dagLogo <- function(testDAUresults,
                  sep = "_")
     
     ## can't use ifelse here
-    if(exists("tmp_motifStack_symbolsCache", envir = cachedEnv))
+    if(exists("tmp_motifStack_symbolsCache", envir = .globalEnv))
     {
-        symbolsCache = get("tmp_motifStack_symbolsCache", envir = cachedEnv)   
+        symbolsCache = get("tmp_motifStack_symbolsCache", envir = .globalEnv)   
     } else
     {
         symbolsCache = list()
@@ -287,7 +286,7 @@ dagLogo <- function(testDAUresults,
         symbolsCache[[key]] <- symbols
         
         ## save symbolsCache to the environment variable for future use
-        assign("tmp_motifStack_symbolsCache", symbolsCache, envir = cachedEnv)
+        assign("tmp_motifStack_symbolsCache", symbolsCache, envir = .globalEnv)
     }
     
     dw <- ifelse(legend, 1 / (npos + 6), 1 / (npos + 2))
@@ -468,7 +467,7 @@ dagLogo <- function(testDAUresults,
     {
         if (is.null(groupingSymbol)) 
         {
-            groupingSymbol <- get("no", envir = cachedEnv)$symbol
+            groupingSymbol <- get(testDAUresults@group, envir = cachedEnv)$symbol
         }
         for (i in 1:length(groupingSymbol)) 
         {

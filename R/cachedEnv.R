@@ -1,6 +1,6 @@
 ## create a cached environment to store those package-wide accessible constants.
 cachedEnv <- new.env(parent = emptyenv())
-
+.globalEnv <- new.env(parent = emptyenv())
 ## color and character symbol encodings and grouping for amino acids
 
 ## no grouping, colored using 20 distinct colors
@@ -275,19 +275,20 @@ charge_group <- list(
 ## polarity group
 polarity_Grantham_group <- list(
     color = c( 
-              nonpolar_alipathic = "#0000FF",
+              nonpolar_aliphatic = "#0000FF",
               nonpolar_aromatic = "#0C00F2",
               polar_uncharged = "#850079",
               polar_positively_charged = "#CB0033",
               polar_negatively_charged = "#FF0000"),
     symbol = c(
-               nonpolar_alipathic = "A",
+               nonpolar_aliphatic = "A",
                nonpolar_aromatic = "W",
                polar_uncharged = "S",
                polar_positively_charged = "K",
                polar_negatively_charged = "D"),
     group = list(
-                 nonpolar_aliphatic = c("A", "V", "L", "G", "P", "I", "M"),
+                 nonpolar_aliphatic = c("A", "V", "L", "G", 
+                                        "P", "I", "M"),
                  nonpolar_aromatic = c("W", "F", "Y"),
                  polar_uncharged = c("S", "T", "Q", "C", "N"),
                  polar_positively_charged = c("K", "R", "H"),
@@ -295,11 +296,15 @@ polarity_Grantham_group <- list(
 
 ## Bulkiness
 bulkiness_Zimmerman_group <- list(
-    color = c(tiny = "#0000FF", small = "#74008A", 
-              medium = "#970067", large = "#B50049",
+    color = c(tiny = "#0000FF",
+              small = "#74008A", 
+              medium = "#970067", 
+              large = "#B50049",
               gigantic = "#FF0000"),
-    symbol = c(tiny = "G", small = "D", 
-               medium = "R", large = "M", 
+    symbol = c(tiny = "G", 
+               small = "D", 
+               medium = "R", 
+               large = "M", 
                gigantic = "I"),
     group = list(
         tiny = c("G", "S", "A"),
