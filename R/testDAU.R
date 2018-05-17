@@ -1,16 +1,17 @@
-#' Add a custom grouping scheme.
+#' Add a custom coloring or grouping scheme.
 #' 
-#' Add a custom grouping scheme for grouping amino acids as desired.
+#' Add a custom coloring or grouping scheme for grouped or ungrouped amino acids
+#' as desired.
 #' 
-#' @param color A vector of character, with length match the number of desired 
-#' groups and names as the same as the groups' names. This vector specifies the 
-#' different colors for visualizing the different groups of amino acids.
-#' @param symbol A vector of character, with length match the number of desired 
-#' groups and names as the same as the groups' names. This vector specifies the 
-#' different symbols for visualizing the different groups of amino acids.
-#' @param group A list with names as the same as the groups' names.
+#' @param color A named vector of character. This vector specifies
+#' different colors for visualizing the different amino acids or amino acid groups.
+#' @param symbol A named vector of character. This vector specifies the 
+#' different symbols for visualizing the different amino acids or amino acid groups.
+#' @param group A list or NULL. If only coloring amino acids of similar property is
+#' desired, set \code{group} to NULL; otherwise \code{group} should be a list with
+#' same names as those of \code{color} and \code{symbol}.
 #'
-#' @return Add the custom grouping scheme to the cached environment.
+#' @return Add the custom coloring or grouping scheme to the cached environment.
 #' @export
 #' 
 #'
@@ -27,27 +28,42 @@
 #' addGroupingScheme(color = color, symbol = symbol, group = group) 
 #' 
  
-addGroupingScheme <- function(color = vector("character"), 
-                              symbol = vector("character"),
-                              group=list())
+addScheme <- function(color = vector("character"), 
+                     symbol = vector("character"),
+                     group = NULL)
 {
-    if (length(color) < 1 || length(symbol) < 1 || length(group) < 1)
+    if(!is.null(group))
     {
-        stop("Too few groups!")
+        if (length(color) < 1 || length(symbol) < 1 || length(group) < 1)
+        {
+            stop("Too few groups!")
+        }
+        if (length(color) != length(symbol) || length(color) != length(group) ||
+            length(symbol) != length(group))
+        {
+            stop("Wrong grouping specification:", 
+                 "The length of color, symbol and group should be the same!")
+        }
+        if(names(color) != names(symbol) || names(color) != names(group) ||
+           names(symbol) != names(group))
+        {
+            stop("The names of color, symbol and group should be the same!") 
+        }
+        custom_group <- list(color = color, symbol = symbol, group = group)
+        assign("custom_group", custom_group, envir = cachedEnv)
+    } else {
+        if (length(color) < 1 || length(symbol) < 1 )
+        {
+            stop("Too few groups!")
+        }
+        if (length(color) != length(symbol))
+        {
+            stop("Wrong grouping specification:", 
+                 "The length of color, symbol and group should be the same!")
+        }
+        custom <- list(color = color, symbol = symbol, group = NULL)
+        assign("custom", custom, envir = cachedEnv)
     }
-    if (length(color) != length(symbol) || length(color) != length(group) ||
-        length(symbol) != length(group))
-    {
-        stop("Wrong grouping specification:", 
-             "The length of color, symbol and group should be the same!")
-    }
-    if(names(color) != names(symbol) || names(color) != names(group) ||
-       names(symbol) != names(group))
-    {
-        stop("The names of color, symbol and group should be the same!") 
-    }
-    custom <- list(color = color, symbol = symbol, group = group)
-    assign("custom", custom, envir = cachedEnv)
 }
 
 
@@ -166,16 +182,7 @@ testDAU <- function(dagPeptides,
         stop("Unknown grouping scheme used!")
     }
     
-    AA <- get("no", envir = cachedEnv)$symbol
-    
-    if (groupingScheme == "no")
-    {
-        coln <- as.character(AA)
-    } else
-    {
-        coln <- names(get(groupingScheme, envir = cachedEnv)$group)
-    }
-
+    coln <- as.character(get(groupingScheme, envir = cachedEnv)$symbol)
     ## helper function used to group AAs based on groupingScheme
     convert <- function(x, gtype) 
     {

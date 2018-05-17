@@ -154,7 +154,7 @@ getGroupingSymbol <-function(groupingScheme = ls(envir = cachedEnv))
     {
         stop("Unknown color scheme used!")
     }
-    if (groupingScheme != "no")
+    if (grepl("group", groupingScheme))
     {
         get(groupingScheme, envir = cachedEnv)$symbol
     } else 
@@ -231,7 +231,6 @@ dagLogo <- function(testDAUresults,
                     gscmd = Sys.getenv("R_GSCMD"),
                     labels = NULL) 
 {
-
     if (missing(testDAUresults) || class(testDAUresults) != "testDAUresults") 
     {
         stop("testDAUresults should be an object of testDAUresults\n
