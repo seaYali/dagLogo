@@ -4,10 +4,10 @@
 \name{dagPeptides-class}
 \alias{dagPeptides-class}
 \title{Class \code{\link{dagPeptides}}.
-An S4 class to represent formatted, aligned peptides for DAGlogo analysis.}
+An S4 class to represent formatted, aligned peptides for dagLogo analysis.}
 \description{
 Class \code{\link{dagPeptides}}.
-An S4 class to represent formatted, aligned peptides for DAGlogo analysis.
+An S4 class to represent formatted, aligned peptides for dagLogo analysis.
 }
 \section{Slots}{
 

@@ -16,7 +16,7 @@ A dataset containing the E. coli proteome. The variables are as follows:
 }
 \details{
 \itemize{
-  \item proteome. A data frame containg ENTREZ_GENE IDs, protein SEQUENCES, 
+  \item proteome. A data frame containing ENTREZ_GENE IDs, protein SEQUENCES, 
                   and UniProtKB IDs and length of the sequences
   \item type. The data source: Uniprot
   \item species. Drosophila melanogaster

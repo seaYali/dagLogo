@@ -3,12 +3,12 @@
 #' Using a heatmap to visualize results of testing differential amino acid usage.
 #' 
 #' @param testDAUresults An object of \code{\link{testDAUresults}} (results of 
-#' testing differential amino acid uasage).
+#' testing differential amino acid usage).
 #' @param type A character vector of length 1, the type of metrics to display 
 #' on y-axis. The available options are "diff" and "statistics", which are 
-#' differences in amino acide usage at each position between the inputSet and 
+#' differences in amino acid usage at each position between the inputSet and 
 #' the backgroundSet, and the Z-scores or odds ratios when Z-test or Fisher's 
-#' exact test is performed to test the differential uasge of amino acid at each 
+#' exact test is performed to test the differential usage of amino acid at each 
 #' position between the two sets.
 #' @param ... other parameters passed to the\code{\link{pheatmap}} function.
 #' @import pheatmap
@@ -43,18 +43,18 @@ dagHeatmap <-function(testDAUresults, type = c("diff", "statistics"), ...)
 
 #' Get the data for visualization.
 #'
-#' A helper function to get the data and it lable for visualization.
+#' A helper function to get the data and the label for visualization.
 #' 
 #' @param type A character vector of length 1, the type of metrics to display 
 #' on y-axis. The available options are "diff" and "statistics", which are 
-#' differences in amino acide usage at each position between the inputSet and 
+#' differences in amino acid usage at each position between the inputSet and 
 #' the backgroundSet, and the Z-scores or odds ratios when Z-test or Fisher's 
-#' exact test is performed to test the differential uasge of amino acid at each 
+#' exact test is performed to test the differential usage of amino acid at each 
 #' position between the two sets.
 #' @param testDAUresults An object of \code{\link{testDAUresults}} Class (results
 #' of testing differential amino acid usage).
 #'
-#' @return A list containing the following compoenets:
+#' @return A list containing the following components:
 #' label A character vector of length 1. The type of data for visualization.
 #' dat   A matrix of numeric data for visualization.
 #' @export
@@ -90,7 +90,7 @@ getData <- function(type, testDAUresults)
 #' 
 #' Create color encoding for visualization of a peptide sequence logo.
 #'
-#' @param colorScheme A character vecto of length 1, determining the color scheme
+#' @param colorScheme A character vector of length 1, determining the color scheme
 #' based on amino acid classification methods. The available \code{colorScheme} 
 #' are ""no","bulkiness_Zimmerman","hydrophobicity_KD", "hydrophobicity_HW", 
 #' "isoelectric_point_Zimmerman", "contact_potential_Maiorov",
@@ -128,7 +128,7 @@ colorsets <-function(colorScheme = ls(envir = cachedEnv))
 
 #' Get character symbols for grouped amino acids
 #'
-#' @param groupingScheme A character vecto of length 1, determining the character
+#' @param groupingScheme A character vector of length 1, determining the character
 #' symbols used to represent amino acids grouped by their physical and chemical
 #' properties. The available \code{groupingScheme} are "no","bulkiness_Zimmerman",
 #' "hydrophobicity_KD", "hydrophobicity_HW", "isoelectric_point_Zimmerman",
@@ -176,7 +176,7 @@ getGroupingSymbol <-function(groupingScheme = ls(envir = cachedEnv))
 #' of amino acids.
 #'
 #' @param testDAUresults An object of \code{\link{testDAUresults}} (results of
-#' testing differential amino acid uasage).
+#' testing differential amino acid usage).
 #' @param type A character vector of length 1. Type of statistics to display 
 #' on y-axis, available choices are "diff" or "zscore".
 #' @param pvalueCutoff A numeric vector of length 1. A cutoff of p-values.

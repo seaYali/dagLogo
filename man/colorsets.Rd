@@ -7,7 +7,7 @@
 colorsets(colorScheme = ls(envir = cachedEnv))
 }
 \arguments{
-\item{colorScheme}{A character vecto of length 1, determining the color scheme
+\item{colorScheme}{A character vector of length 1, determining the color scheme
 based on amino acid classification methods. The available \code{colorScheme} 
 are ""no","bulkiness_Zimmerman","hydrophobicity_KD", "hydrophobicity_HW", 
 "isoelectric_point_Zimmerman", "contact_potential_Maiorov",

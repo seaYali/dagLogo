@@ -6,13 +6,13 @@
 \title{Class \code{\link{dagBackground}}.}
 \description{
 An S4 class to represent a background of a formatted, aligned peptides for 
-dagoLogo analysis.
+dagLogo analysis.
 }
 \section{Slots}{
 
 \describe{
 \item{\code{background}}{A list of data frame. Within each n-by-1 dataframe is a the 
-aligned pedtides of same length.}
+aligned peptides of same length.}
 
 \item{\code{numSubsamples}}{An integer. That is the length of the \code{background} list}
 }}

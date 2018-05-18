@@ -1,5 +1,5 @@
 #' Class \code{\link{dagPeptides}}.
-#' An S4 class to represent formatted, aligned peptides for DAGlogo analysis.
+#' An S4 class to represent formatted, aligned peptides for dagLogo analysis.
 #' 
 #' @slot data A data frame with columns: IDs, anchorAA, anchorPos, peptide and anchor.
 #' @slot peptides A matrix of character, each element is a single-character symbol
@@ -48,7 +48,7 @@ setClass(
 
 #' Class \code{\link{Proteome}}.
 #' 
-#' An S4 class to represent a whole proteome for DAGlogo analysis.
+#' An S4 class to represent a whole proteome for dagLogo analysis.
 #' 
 #' @slot proteome A data frame.
 #' @slot type A character vector of length 1. Available options :"UniProt", and 
@@ -88,10 +88,10 @@ setClass(
 #' Class \code{\link{dagBackground}}.
 #' 
 #' An S4 class to represent a background of a formatted, aligned peptides for 
-#' dagoLogo analysis.
+#' dagLogo analysis.
 #' 
 #' @slot background A list of data frame. Within each n-by-1 dataframe is a the 
-#' aligned pedtides of same length.
+#' aligned peptides of same length.
 #' @slot numSubsamples An integer. That is the length of the \code{background} list
 #'
 #' @name dagBackground-class
@@ -110,7 +110,7 @@ setClass("dagBackground",
 
 #' Class \code{\link{testDAUresults}}.
 #' 
-#' An S4 class to represent a DAU statistical test result from DAGlogo analysis.
+#' An S4 class to represent a DAU statistical test result from dagLogo analysis.
 #' 
 #' @slot group A character vector of length 1, the type of method for grouping 
 #' amino acid.
@@ -122,9 +122,9 @@ setClass("dagBackground",
 #' @slot statistics A numeric matrix consisting of Z-scores or odds ratios for
 #' Z-test and Fisher's exact test, respectively.
 #' @slot pvalue A numeric matrix consisting of p-values.
-#' @slot background A numeric matrix consisting mino acid proportions in the 
+#' @slot background A numeric matrix consisting amino acid proportions in the 
 #' background set of aligned, formatted peptides at each position.
-#' @slot motif A numeric matrix consisting of proportions for DAGLogo. 
+#' @slot motif A numeric matrix consisting of proportions for dagLogo. 
 #' @slot upstreamOffset A positive integer, the upstream offset
 #' relative to the anchoring position.
 #' @slot downstreamOffset A positive integer, the upstream offset
@@ -135,7 +135,7 @@ setClass("dagBackground",
 #' @exportClass testDAUresults
 #' @import methods
 #' 
-#' @author Jianhong Ou, Hiabo Liu
+#' @author Jianhong Ou, Haibo Liu
 
 setClass(
     "testDAUresults",

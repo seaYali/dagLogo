@@ -7,7 +7,7 @@
 getGroupingSymbol(groupingScheme = ls(envir = cachedEnv))
 }
 \arguments{
-\item{groupingScheme}{A character vecto of length 1, determining the character
+\item{groupingScheme}{A character vector of length 1, determining the character
 symbols used to represent amino acids grouped by their physical and chemical
 properties. The available \code{groupingScheme} are "no","bulkiness_Zimmerman",
 "hydrophobicity_KD", "hydrophobicity_HW", "isoelectric_point_Zimmerman",

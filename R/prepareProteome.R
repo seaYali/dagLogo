@@ -22,7 +22,7 @@
 #' working directory.
 #' @param fastaFile A character vector of length 1. A fasta file name from which
 #' to read in protein sequences.
-#' @param ... other parameters passing to the functioin \code{\link{download.file}}.
+#' @param ... other parameters passing to the function \code{\link{download.file}}.
 #'
 #' @importFrom UniProt.ws availableUniprotSpecies
 #' @import methods

@@ -31,7 +31,7 @@ working directory.}
 \item{fastaFile}{A character vector of length 1. A fasta file name from which
 to read in protein sequences.}
 
-\item{...}{other parameters passing to the functioin \code{\link{download.file}}.}
+\item{...}{other parameters passing to the function \code{\link{download.file}}.}
 }
 \value{
 An object of Proteome

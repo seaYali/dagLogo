@@ -70,8 +70,8 @@ addScheme <- function(color = vector("character"),
 #' @param dagBackground An object of Class \code{\link{dagBackground}}.
 #' @param testType A character vector of length 1. The available options are
 #' "fisher" and "z-test", that is "Fisher's exact test" and "Z-test". When the 
-#' the number of sequences in the background set is too samll to perform non-
-#' replacement subsamplint, "Fisher's exact test" is suggested.
+#' the number of sequences in the background set is too small to perform non-
+#' replacement subsampling, "Fisher's exact test" is suggested.
 #' @param groupingScheme A character vector of length 1. Available choices are 
 #' "no","bulkiness_Zimmerman","hydrophobicity_KD", "hydrophobicity_HW", 
 #' "isoelectric_point_Zimmerman", "contact_potential_Maiorov",

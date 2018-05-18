@@ -5,7 +5,7 @@
 \alias{Proteome-class}
 \title{Class \code{\link{Proteome}}.}
 \description{
-An S4 class to represent a whole proteome for DAGlogo analysis.
+An S4 class to represent a whole proteome for dagLogo analysis.
 }
 \section{Slots}{
 

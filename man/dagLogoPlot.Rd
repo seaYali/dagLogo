@@ -12,7 +12,7 @@ dagLogoPlot(testDAUresults, type = c("diff", "zscore"), pvalueCutoff = 0.05,
 }
 \arguments{
 \item{testDAUresults}{An object of \code{\link{testDAUresults}} (results of
-testing differential amino acid uasage).}
+testing differential amino acid usage).}
 
 \item{type}{A character vector of length 1. Type of statistics to display 
 on y-axis, available choices are "diff" or "zscore".}

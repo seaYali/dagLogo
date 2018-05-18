@@ -5,7 +5,7 @@
 \alias{testDAUresults-class}
 \title{Class \code{\link{testDAUresults}}.}
 \description{
-An S4 class to represent a DAU statistical test result from DAGlogo analysis.
+An S4 class to represent a DAU statistical test result from dagLogo analysis.
 }
 \section{Slots}{
 
@@ -25,10 +25,10 @@ Z-test and Fisher's exact test, respectively.}
 
 \item{\code{pvalue}}{A numeric matrix consisting of p-values.}
 
-\item{\code{background}}{A numeric matrix consisting mino acid proportions in the 
+\item{\code{background}}{A numeric matrix consisting amino acid proportions in the 
 background set of aligned, formatted peptides at each position.}
 
-\item{\code{motif}}{A numeric matrix consisting of proportions for DAGLogo.}
+\item{\code{motif}}{A numeric matrix consisting of proportions for dagLogo.}
 
 \item{\code{upstreamOffset}}{A positive integer, the upstream offset
 relative to the anchoring position.}
@@ -38,5 +38,5 @@ relative to the anchoring position.}
 }}
 
 \author{
-Jianhong Ou, Hiabo Liu
+Jianhong Ou, Haibo Liu
 }

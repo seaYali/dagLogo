@@ -9,21 +9,21 @@ getData(type, testDAUresults)
 \arguments{
 \item{type}{A character vector of length 1, the type of metrics to display 
 on y-axis. The available options are "diff" and "statistics", which are 
-differences in amino acide usage at each position between the inputSet and 
+differences in amino acid usage at each position between the inputSet and 
 the backgroundSet, and the Z-scores or odds ratios when Z-test or Fisher's 
-exact test is performed to test the differential uasge of amino acid at each 
+exact test is performed to test the differential usage of amino acid at each 
 position between the two sets.}
 
 \item{testDAUresults}{An object of \code{\link{testDAUresults}} Class (results
 of testing differential amino acid usage).}
 }
 \value{
-A list containing the following compoenets:
+A list containing the following components:
 label A character vector of length 1. The type of data for visualization.
 dat   A matrix of numeric data for visualization.
 }
 \description{
-A helper function to get the data and it lable for visualization.
+A helper function to get the data and the label for visualization.
 }
 \examples{
 

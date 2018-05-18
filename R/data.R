@@ -3,7 +3,7 @@
 #' A dataset containing the E. coli proteome. The variables are as follows:
 #'
 #' \itemize{
-#'   \item proteome. A data frame containg ENTREZ_GENE IDs, protein SEQUENCES, 
+#'   \item proteome. A data frame containing ENTREZ_GENE IDs, protein SEQUENCES, 
 #'                   and UniProtKB IDs and length of the sequences
 #'   \item type. The data source: Uniprot
 #'   \item species. Escherichia coli
@@ -18,7 +18,7 @@
 #' A dataset containing the E. coli proteome. The variables are as follows:
 #'
 #' \itemize{
-#'   \item proteome. A data frame containg ENTREZ_GENE IDs, protein SEQUENCES, 
+#'   \item proteome. A data frame containing ENTREZ_GENE IDs, protein SEQUENCES, 
 #'                   and UniProtKB IDs and length of the sequences
 #'   \item type. The data source: Uniprot
 #'   \item species. Drosophila melanogaster
@@ -28,14 +28,14 @@
 #' @source \url{http://www.uniprot.org/}
 "proteome.example"
 
-#' An object of \code{\link{dagPeptides}} representing acetylated lysine-containg
+#' An object of \code{\link{dagPeptides}} representing acetylated lysine-containing
 #' peptides.
 #'
-#' A dataset containing the acetylated lysine-containg peptides from Drosophila 
+#' A dataset containing the acetylated lysine-containing peptides from Drosophila 
 #' melanogaster. The variables are as follows:
 #'
 #' \itemize{
-#'   \item data. A data frame containg entrezgene IDs, anchorAA, anchorPos,
+#'   \item data. A data frame containing entrezgene IDs, anchorAA, anchorPos,
 #'               peptide, anchor, upstreamOffset and downstreamOffset.
 #'   \item peptides. A matrix of individual symbols of aligned amino acids.
 #'   \item upstreamOffset. 

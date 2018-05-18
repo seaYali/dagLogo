@@ -1,15 +1,15 @@
 #' Fetch protein/peptide sequences and create a \code{\link{dagPeptides}} object.
 #'
-#' This function fecthes protein/peptide sequences from a Biomart database or 
+#' This function fetches protein/peptide sequences from a Biomart database or 
 #' from a \code{\link{Proteome}} object based on protein/peptide IDs and create 
 #' a \code{\link{dagPeptides}} object following restriction as specified by 
 #' parameters: anchorAA or anchorPos, upstreamOffset and downstreamOffset.
 #'
-#' @param IDs  A character vector containing protein/peptide IDs used to fecth 
+#' @param IDs  A character vector containing protein/peptide IDs used to fetch 
 #' sequences from a Biomart database or a \code{\link{Proteome}} object.
 #' @param type A character vector of length 1. The available options are 
 #' "entrezgene" and "uniprotswissprot" if parameter \code{mart} is missing;
-#' otherwise it can be any type of IDs aavailable in Biomart databases.
+#' otherwise it can be any type of IDs available in Biomart databases.
 #' @param anchorAA A character vector of length 1 or the same length as that of
 #' anchorPos, each element of which is a single letter symbol of amino acids, 
 #' for example, "K" for lysine.

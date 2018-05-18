@@ -33,8 +33,8 @@ the interval of (0, 1) when not NA.}
 
 \item{testType}{A character vector of length 1. The available options are
 "fisher" and "z-test", that is "Fisher's exact test" and "Z-test". When the 
-the number of sequences in the background set is too samll to perform non-
-replacement subsamplint, "Fisher's exact test" is suggested.}
+the number of sequences in the background set is too small to perform non-
+replacement subsampling, "Fisher's exact test" is suggested.}
 }
 \value{
 An object of Class \code{\link{testDAUresults}}.
