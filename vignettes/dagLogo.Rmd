@@ -5,7 +5,7 @@ date: "`r doc_date()`"
 package: "`r pkg_ver('dagLogo')`"
 bibliography: bibliography.bib
 abstract: >
-  A sequence logo has been widely used as a graphical representation of an alignment of multiple amino acid (AA) or nucleic acid sequences. Our R/bioconductor package dagLogo can be used to visualize amio acids of significantly differential usage, with or without grounping based on their physical and chemical properties, among given sequence contexts compared to a background context.
+  A sequence logo has been widely used as a graphical representation of an alignment of multiple amino acid (AA) or nucleic acid sequences. Our R/Bioconductor package dagLogo can be used to visualize amino acids of significantly differential usage, with or without grouping based on their physical and chemical properties, among given sequence contexts compared to a background context.
 vignette: >
   %\VignetteIndexEntry{dagLogo Vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -32,23 +32,23 @@ And another package motifStack[@Jianhong2012] was developed for drawing sequence
 
 IceLogo[@Colaert2009] is a tool developed in Java to visualize significantly conserved sequence patterns in
 an alignment of multiple peptide sequences against background sequences. Compare to 
-webLogo[@Crooks2004], which relying on information theory, iceLogo builds on probability theory. It is
-reported that iceLogo has a more dynamic nature and is more appropriate for analysis of
+webLogo[@Crooks2004], which relying on information theory, IceLogo builds on probability theory. It is
+reported that IceLogo has a more dynamic nature and is more appropriate for analysis of
 conserved sequence patterns.
 
-However, iceLogo can only compare conserved sequences to reference sequences at the individual amino acid level. 
+However, IceLogo can only compare conserved sequences to reference sequences at the individual amino acid level. 
 As we know, some conserved sequence patterns are not conserved at the individual amino acid level, but conserved at the level of amino acids grouped on the basis of their physical and chemical properties, such as charge, hydrophobicity and etc.
 
-Here we developed a R/Bioconductor package dagLogo, inspired by iceLogo, to visualize significantly conserved sequence patterns relative to a proper background set of sequences, with or without grouping amino acid residuals based on their physical and chemical properties. The flowchart of performaing dagLogo analysis is as shown in Figure 1. 
+Here we developed a R/Bioconductor package dagLogo, inspired by IceLogo, to visualize significantly conserved sequence patterns relative to a proper background set of sequences, with or without grouping amino acid residuals based on their physical and chemical properties. The flowchart of performing dagLogo analysis is as shown in Figure 1. 
   
 ![Figure 1. Flowchart of performing dagLogo analyses. The two ways to prepare a Proteome object are colored in greenish and yellowish. The two alternative ways to build an object of dagPeptides are colored in blue and red.](dagLogo_flowchart.png).
 
 Figure 1. Flowchart of performing dagLogo analyses. The two ways to prepare a Proteome object are colored in greenish and yellowish. The two alternative ways to build an object of dagPeptides are colored in blue and red.
 
 # Set up the working environment
-To visualize the result of statistical test of the differential usage of grouped amino acid, the full path to the executable of GhostScript need to be set by using the environment variable R\_GSCMD per session or by adding it to the system environment variable PATH. For a Unix, Linux or Mac operating system (OS), "gs" is used for searching the PATH variable, while For a Windows OS the environment variable "GSC" is searched for first, and then "gswi64c.exe" or "gswin32c.exe" are looked for among the system environment variables, depending on the operating system.
+To visualize the result of statistical test of the differential usage of grouped amino acid, the full path to the executable of GhostScript need to be set by using the environment variable R\_GSCMD per session or by adding it to the system environment variable PATH. For a Unix, Linux or Mac operating system (OS), "gs" is used for searching the PATH variable, while For a Windows OS the environment variable "GSC" is searched for first, and then "gswin64c.exe" or "gswin32c.exe" are looked for among the system environment variables, depending on the operating system.
 
-For example on a Windowsplatform with gswin32c.exe installed at C:\\Program Files\\gs\\gs9.06\\bin, you can set up R\_GSCMD as follows:
+For example on a Windows platform with gswin32c.exe installed at C:\\Program Files\\gs\\gs9.06\\bin, you can set up R\_GSCMD as follows:
 ```{r setenv, eval=FALSE, echo=TRUE}
 Sys.setenv(R_GSCMD = file.path("C:", "Program Files", "gs", "gs9.06", "bin", 
                                "gswin32c.exe"))
@@ -80,7 +80,7 @@ if (interactive())
 }
 ```
 
-### Case 2: You don't have the exactly postion infor, but You have the interesting peptide subsequences and the identifiers of their enclosing peptide/protein sequences for fetching sequences using the fetchSequence function via the Biomart. In the following examples, the anchoring AAs are marked by asterisks.
+### Case 2: You don't have the exactly position information, but You have the interesting peptide subsequences and the identifiers of their enclosing peptide/protein sequences for fetching sequences using the fetchSequence function via the Biomart. In the following examples, the anchoring AAs are marked by asterisks.
 
 ```{r fetchSequences2, results='hide'}
 if (interactive())
@@ -124,10 +124,10 @@ if(interactive()){
     })
 }
 ```
-Similarly, peptide sequences can be fected from an predefined Proteome object.  
+Similarly, peptide sequences can be fetched from an predefined Proteome object.  
   
   
-### Case 3: You already have the aligned peptides sequences in hand. Then you can use the formatSequence function to prepare an object of dagPeptides. Befor doing that, you need prepare a Proteome object by the prepareProteome function.
+### Case 3: You already have the aligned peptides sequences in hand. Then you can use the formatSequence function to prepare an object of dagPeptides. Before doing that, you need prepare a Proteome object by the prepareProteome function.
 
 ```{r formatSequence, results='hide'}
 dat <- unlist(read.delim(system.file("extdata", "grB.txt", package = "dagLogo"),
@@ -286,7 +286,7 @@ t0 <- testDAU(seq, bg)
 dagLogo(t0)
 ```
 
-Residuals at positions 10, 14, 16, 21 and 25 are partially or completely buried in the 3-D structure of CAPs are preferentially hydrophobic. Thee amino acids of the CAP DNA-binding motifs are grouped on the basis of their chemical proterties and visualized using dagLogo as follows. This plot clearly displays those preferentially hydrophobic sites.
+Residuals at positions 10, 14, 16, 21 and 25 are partially or completely buried in the 3-D structure of CAPs are preferentially hydrophobic. Thee amino acids of the CAP DNA-binding motifs are grouped on the basis of their chemical properties and visualized using dagLogo as follows. This plot clearly displays those preferentially hydrophobic sites.
 ```{r CAPgroup,fig.cap="Catobolite Activator Protein Motif",fig.width=8,fig.height=6}
 ## The DNA-binding helix-turn-helix motif of the CAP family grouped by chemistry
 t1 <- testDAU(seq, bg, groupingScheme = "chemistry")
