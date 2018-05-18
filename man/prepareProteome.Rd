@@ -2,14 +2,14 @@
 % Please edit documentation in R/prepareProteome.R
 \name{prepareProteome}
 \alias{prepareProteome}
-\title{Create an object of Proteome class.}
+\title{Create an object of \code{\link{Proteome}} Class.}
 \usage{
 prepareProteome(source = NULL, taxonID = NULL, species = NULL,
   destDir = getwd(), fastaFile, ...)
 }
 \arguments{
 \item{source}{A character vector of length 1 or NULL. A database source from 
-where the proteome sequences are to downloaded. By default, currently it is
+which the proteome sequences are to be downloaded. By default, currently it is
 "UniProt". If it is NULL, then \code{fastaFile} has to be specified. The 
 priority of \code{source} is higher than \code{fastaFile}.}
 
@@ -17,36 +17,36 @@ priority of \code{source} is higher than \code{fastaFile}.}
 taxonomy database: \link{https://www.ncbi.nlm.nih.gov/taxonomy} or 
 the UniProt database \link{http://www.uniprot.org/taxonomy/}. At least one of 
 the two parameters, \code{taxonID} and \code{species}, should be specified. 
-If both are specified, taxonID will be used preferentially.}
+If both are specified, \code{taxonID} will be used preferentially.}
 
 \item{species}{A character vector of length 1. The Latin name of a species 
 confirming to the Linnaean taxonomy nomenclature system. CAUTION: for species 
-with different strains, attention should be paid.}
+with different strains, attention should be paid. You can interactively choose
+the right \code{taxonID} from an output list.}
 
 \item{destDir}{A character vector of length 1. A destination directory with 
-writing permission for saving downloaded sequences.}
+writing permission for saving downloaded sequences. Default is the current
+working directory.}
 
 \item{fastaFile}{A character vector of length 1. A fasta file name from which
 to read in protein sequences.}
 
-\item{...}{other parameters passing to \link{download.file}.}
+\item{...}{other parameters passing to the functioin \code{\link{download.file}}.}
 }
 \value{
 An object of Proteome
 }
 \description{
-Create an object of Proteome class by downloading a whole proteome data from 
-Uniprot for a given organism of an NCBI taxonomy ID or by using peptide sequences
-in a fasta file.
+Create an object of \code{\link{Proteome}} class by downloading a whole 
+proteome data from UniProt for a given organism of an NCBI taxonomy ID or 
+species' scientific name, or by using peptide sequences in a fasta file.
 }
 \examples{
-## Prepare an objecto of Proteome from the UniProt database
-if(interactive()) 
-{
-    proteome <- prepareProteome(source = "UniProt", species = "Homo sapiens")
-}
+## Prepare an objecto of Proteome Class from the UniProt database
+proteome <- prepareProteome(source = "UniProt", species = "Homo sapiens")
 
-## Prepare n objecto of Proteome from a fasta file
+## Prepare an objecto of Proteome from a fasta file
 fasta <- system.file("extdata", "Drosophila.melanogaster.fa", package="dagLogo")
-proteome <- prepareProteome(source = NULL, species = "Drosophila melanogaster", fastaFile=fasta)
+proteome <- prepareProteome(source = NULL, species = "Drosophila melanogaster", 
+fastaFile=fasta)
 }

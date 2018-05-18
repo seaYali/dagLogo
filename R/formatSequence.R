@@ -1,19 +1,19 @@
 #' Format already aligned peptide sequences.
 #' 
-#' Convert already aligned peptide sequences into an object of \code{dagPeptides} 
-#' class.
+#' Convert already aligned peptide sequences into an object of 
+#' \code{\link{dagPeptides}} Class.
 #' 
 #' @param seq A vector of aligned peptide sequences of the same length
-#' @param proteome An object of \code{Proteome} Class.
+#' @param proteome An object of \code{\link{Proteome}} Class.
 #' @param upstreamOffset An integer, the upstream offset relative to
 #' the anchoring position.
 #' @param downstreamOffset An integer, the downstream offset relative
 #' to the anchoring position.
 #'
-#' @return An object of dagPeptides Class
+#' @return An object of \code{\link{dagPeptides}} Class
 #' @import methods
 #' @export
-#' @author Jianhong Ou
+#' @author Jianhong Ou, Haibo Liu
 #' @examples
 #' ## You already have the aligned peptides sequences in hand. Then you can use 
 #' the formatSequence function to prepare an object of dagPeptides. Befor doing 
@@ -22,13 +22,11 @@
 #' dat <- unlist(read.delim(system.file(
 #'                                    "extdata", "grB.txt", package = "dagLogo"),
 #'                          header = F, as.is = TRUE))
-#' head(dat)
-#' ##prepare proteome from a fasta file
+#' ##prepare an object of Proteome Class from a fasta file
 #' proteome <- prepareProteome(fasta = system.file("extdata",
 #'                                                 "HUMAN.fasta",
 #'                                                 package = "dagLogo"), 
 #'                             species = "Homo sapiens")
-#' ##prepare object of dagPeptides
 #' ##prepare an object of dagPeptides
 #' seq <- formatSequence(seq = dat, proteome = proteome, upstreamOffset = 14,
 #'                      downstreamOffset = 15)
@@ -86,6 +84,7 @@ formatSequence <-function(seq,
     }
     
     ## retrieve anchorAA and anchorPos
+    ## This will not work for gapped alignments!
     center <- upstreamOffset + 1
     anchorAA <- unlist(lapply(seq, function(.ele)
                                    substr(.ele, center, center)))
@@ -93,6 +92,9 @@ formatSequence <-function(seq,
     ## find the IDs and the starting positions of peptide sequences in Proteome 
     ## which match the sequences in seq
     m <- do.call(rbind, lapply(seq, function(.seq) {
+        ## removing non-standard letter symbols, which makes subsequent pattern
+        ## matching possible
+        .seq <- gsub("[^ARNDCEQGHILKMFPSTWYV]", "", .seq, perl = TRUE)
         ## a numeric vector: starting positions of the matches, -1 if no match
         .m <- regexpr(.seq, proteome@proteome$SEQUENCE) 
         ## index of sequence with true match
@@ -144,12 +146,10 @@ formatSequence <-function(seq,
     seqchar <-cbind(seqchar.upstream,
                     as.character(dat$anchorAA),
                     seqchar.downstream)
-    new(
-        "dagPeptides",
+    new("dagPeptides",
         data = dat,
         peptides = seqchar,
         upstreamOffset = upstreamOffset,
         downstreamOffset = downstreamOffset,
-        type = proteome@type
-    )
+        type = proteome@type)
 }

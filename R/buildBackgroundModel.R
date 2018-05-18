@@ -1,11 +1,11 @@
-#' Create a new \code{backgroundModel} object for \code{testDAU}.
+#' Create a new \code{\link{backgroundModel}} object for \code{\link{testDAU}}.
 #'
 #' @param background A list each element of which is a vector of aligned peptide
-#' sequences of the same length..
-#' @param numSubsamples An integer, the number of random sampling to get 
+#' sequences of the same length.
+#' @param numSubsamples An integer, the number of random samplings to get 
 #' background sequence sets.
 #'
-#' @return An object of \code{\link{dagBackground}} class.
+#' @return An object of \code{\link{dagBackground}} Class.
 #' @export
 #' @keywords internal
 #'
@@ -23,7 +23,7 @@ initiateBackgroundModel <- function(background, numSubsamples = 1L, testType)
 
 #' Build a background model for Z-test.
 #'
-#' @param dagPeptides An object of \code{\link{dagPeptides}} class containing 
+#' @param dagPeptides An object of \code{\link{dagPeptides}} Class containing 
 #' peptide sequences as the input set.
 #' @param matches A character vector with the matched subsequences.
 #' @param numSubsamples An integer, the number of random sampling.
@@ -33,7 +33,7 @@ initiateBackgroundModel <- function(background, numSubsamples = 1L, testType)
 #' @param replacement A logical vector of length 1, indicating whether replacement 
 #' is allowed for random sampling.
 #'
-#' @return An object of \code{\link{dagBackground}} class.
+#' @return An object of \code{\link{dagBackground}} Class.
 #' @export
 #' @keywords internal
 #'
@@ -78,7 +78,7 @@ buildZTestBackgroundModel <- function(dagPeptides,
 #' 
 #' A method used to build background models for testing differential amino acid usage
 #'
-#' @param dagPeptides An object of \code{\link{dagPeptides}} class containing 
+#' @param dagPeptides An object of \code{\link{dagPeptides}} Class containing 
 #' peptide sequences as the input set.
 #' @param background A character vector with defaults: "wholeProteome" and "inputSet", 
 #' "nonInputSet", indicating what set of peptide sequences should be considered to 
@@ -99,21 +99,20 @@ buildZTestBackgroundModel <- function(dagPeptides,
 
 #' @import methods
 #'
-#' @return An object of \code{\link{dagBackground}} class.
+#' @return An object of \code{\link{dagBackground}} Class.
 #' @export
 #' @author Jianhong Ou, Haibo Liu
 #' @examples
 #' dat <- unlist(read.delim(system.file(
 #'                                    "extdata", "grB.txt", package = "dagLogo"),
 #'                          header = F, as.is = TRUE))
-#' head(dat)
-#' ##prepare proteome from a fasta file
+#' ##prepare an object of Proteome Class from a fasta file
 #' proteome <- prepareProteome(fasta = system.file("extdata",
 #'                                                 "HUMAN.fasta",
 #'                                                 package = "dagLogo"), 
 #'                             species = "Homo sapiens")
-#' ##prepare object of dagPeptides
-#' ##prepare an object of dagPeptides
+#'                             
+#' ##prepare an object of dagPeptides Class
 #' seq <- formatSequence(seq = dat, proteome = proteome, upstreamOffset = 14,
 #'                      downstreamOffset = 15)
 #' bg_fisher <- buildBackgroundModel(seq, background = "wholeProteome", 

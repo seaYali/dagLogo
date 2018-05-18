@@ -19,11 +19,12 @@ properties. The available \code{groupingScheme} are "no","bulkiness_Zimmerman",
 "volume_Bigelow_group", "structure_alignments_Mirny_group", "polarity_Grantham_group",  
 "sequence_alignment_Dayhoff_group", and "custom". If "custom" is used, users 
 must define a grouping scheme using a list containing sublist named as "color",
-"symbol" and "group" using the function addGroupingScheme. No grouping was applied
-for the first 12 schemes.}
+"symbol" and "group" using the function \code{\link{addScheme}}. No grouping 
+was applied for the first 12 schemes.}
 }
 \value{
-A named character vector of character symbols
+A named character vector of character symbols if grouping is applied;
+otherwise NULL.
 }
 \description{
 Get character symbols for grouped amino acids
@@ -32,7 +33,7 @@ Get character symbols for grouped amino acids
 
 }
 \seealso{
-{\code{\link{addGroupingScheme}}}
+{\code{\link{addScheme}}}
 }
 \author{
 Jianhong Ou, Haibo Liu

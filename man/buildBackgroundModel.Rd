@@ -11,7 +11,7 @@ buildBackgroundModel(dagPeptides, background = c("wholeProteome", "inputSet",
   proteome)
 }
 \arguments{
-\item{dagPeptides}{An object of \code{\link{dagPeptides}} class containing 
+\item{dagPeptides}{An object of \code{\link{dagPeptides}} Class containing 
 peptide sequences as the input set.}
 
 \item{background}{A character vector with defaults: "wholeProteome" and "inputSet", 
@@ -39,7 +39,7 @@ is allowed for random sampling.}
 and "fisher".}
 }
 \value{
-An object of \code{\link{dagBackground}} class.
+An object of \code{\link{dagBackground}} Class.
 }
 \description{
 A method used to build background models for testing differential amino acid usage
@@ -48,14 +48,13 @@ A method used to build background models for testing differential amino acid usa
 dat <- unlist(read.delim(system.file(
                                    "extdata", "grB.txt", package = "dagLogo"),
                          header = F, as.is = TRUE))
-head(dat)
-##prepare proteome from a fasta file
+##prepare an object of Proteome Class from a fasta file
 proteome <- prepareProteome(fasta = system.file("extdata",
                                                 "HUMAN.fasta",
                                                 package = "dagLogo"), 
                             species = "Homo sapiens")
-##prepare object of dagPeptides
-##prepare an object of dagPeptides
+                            
+##prepare an object of dagPeptides Class
 seq <- formatSequence(seq = dat, proteome = proteome, upstreamOffset = 14,
                      downstreamOffset = 15)
 bg_fisher <- buildBackgroundModel(seq, background = "wholeProteome", 

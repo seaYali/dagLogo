@@ -3,13 +3,14 @@
 \docType{data}
 \name{seq.example}
 \alias{seq.example}
-\title{An object of \code{dagPeptides} representing acetylated Lysine-containg peptides.}
-\format{A object of \code{dagPeptides} class}
+\title{An object of \code{\link{dagPeptides}} representing acetylated lysine-containg
+peptides.}
+\format{An object of \code{\link{dagPeptides}} Class}
 \usage{
 seq.example
 }
 \description{
-A dataset containing the acetylated Lysine-containg peptides from Drosophila 
+A dataset containing the acetylated lysine-containg peptides from Drosophila 
 melanogaster. The variables are as follows:
 }
 \details{

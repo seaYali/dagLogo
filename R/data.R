@@ -1,4 +1,4 @@
-#' An object of \code{Proteome} representing the E. coli proteome.
+#' An object of \code{\link{Proteome}} representing the E. coli proteome.
 #'
 #' A dataset containing the E. coli proteome. The variables are as follows:
 #'
@@ -9,11 +9,11 @@
 #'   \item species. Escherichia coli
 #' }
 #'
-#' @format A object of Proteome class
+#' @format A object of \code{\link{Proteome}} Class
 #' @source \url{http://www.uniprot.org/}
 "ecoli.proteome"
 
-#' An object of \code{Proteome} representing the E. coli proteome.
+#' An object of \code{\link{Proteome}} representing the E. coli proteome.
 #'
 #' A dataset containing the E. coli proteome. The variables are as follows:
 #'
@@ -24,13 +24,14 @@
 #'   \item species. Drosophila melanogaster
 #' }
 #'
-#' @format A object of Proteome class
+#' @format A object of \code{\link{Proteome}} Class
 #' @source \url{http://www.uniprot.org/}
 "proteome.example"
 
-#' An object of \code{dagPeptides} representing acetylated Lysine-containg peptides.
+#' An object of \code{\link{dagPeptides}} representing acetylated lysine-containg
+#' peptides.
 #'
-#' A dataset containing the acetylated Lysine-containg peptides from Drosophila 
+#' A dataset containing the acetylated lysine-containg peptides from Drosophila 
 #' melanogaster. The variables are as follows:
 #'
 #' \itemize{
@@ -42,5 +43,5 @@
 #'   \item type. The ID type
 #' }
 #'
-#' @format A object of \code{dagPeptides} class
+#' @format An object of \code{\link{dagPeptides}} Class
 "seq.example"

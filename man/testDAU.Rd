@@ -2,7 +2,7 @@
 % Please edit documentation in R/testDAU.R
 \name{testDAU}
 \alias{testDAU}
-\title{Differential usage test of amino acids or groups.}
+\title{Differential usage test of amino acids or amino acid groups.}
 \usage{
 testDAU(dagPeptides, dagBackground, groupingScheme = ls(envir = cachedEnv),
   bgNoise = NA)
@@ -21,14 +21,15 @@ testDAU(dagPeptides, dagBackground, groupingScheme = ls(envir = cachedEnv),
 "hydrophobicity_HW_group", "charge_group", "contact_potential_Maiorov_group",
 "chemistry_property_Mahler_group", "consensus_similarity_SF_group", 
 "volume_Bigelow_group", "structure_alignments_Mirny_group", "polarity_Grantham_group",  
-"sequence_alignment_Dayhoff_group", and "custom". If "custom" is used, users 
-must define a grouping scheme using a list containing sublist named as "color",
-"symbol" and "group" using the function addGroupingScheme. No grouping was applied
-for the first 12 schemes. It is used to color AAs based on similarities or
-group amino acids into groups of similarities.}
+"sequence_alignment_Dayhoff_group", "custom" and "custom_group". If "custom" or
+"custom_group" are used, users must define a grouping scheme using a list 
+containing sublist named as "color", and "symbol" using the function
+addScheme, with group set as "NULL" or a list with same names as those of color 
+and symbol. No grouping was applied for the first 12 schemes. It is used to 
+color AAs based on similarities or group amino acids into groups of similarities.}
 
-\item{bgNoise}{A numeric vector of length 1. It should be in the interval of
-(0, 1).}
+\item{bgNoise}{A numeric vector of length 1 if not NA. It should be in 
+the interval of (0, 1) when not NA.}
 
 \item{testType}{A character vector of length 1. The available options are
 "fisher" and "z-test", that is "Fisher's exact test" and "Z-test". When the 
@@ -46,42 +47,38 @@ experimental sets and background sets.
 dat <- unlist(read.delim(system.file(
                                    "extdata", "grB.txt", package = "dagLogo"),
                          header = F, as.is = TRUE))
-head(dat)
-##prepare proteome from a fasta file
+                         
+##prepare an object of Proteome Class from a fasta file
 proteome <- prepareProteome(fasta = system.file("extdata",
                                                 "HUMAN.fasta",
                                                 package = "dagLogo"), 
                             species = "Homo sapiens")
-##prepare object of dagPeptides
-##prepare an object of dagPeptides
+##prepare an object of dagPeptides Class
 seq <- formatSequence(seq = dat, proteome = proteome, upstreamOffset = 14,
                      downstreamOffset = 15)
-bg_fisher <- buildBackgroundModel(seq, background = "wholeProteome", 
+bg_fisher <- buildBackgroundModel(seq, background = "wholeProteome",
                                   proteome = proteome, testType = "fisher")
 bg_ztest <- buildBackgroundModel(seq, background = "wholeProteome",
                                    proteome = proteome, testType = "ztest")
- 
+
+## no grouping and distinct coloring scheme
 t0 <- testDAU(seq, dagBackground = bg_ztest)
-## grouded classically: nonpolar_aliphatic = c("A", "G", "L", "M", "I", "V"), 
-## polar_uncharged = c("C", "P", "Q", "S", "T"), aromatic = c("F", "W", "Y"), 
-## positively_charged = c("H", "K", "N", "R"), negatively_charged = c("D", "E").
+
+## grouped by polarity index (Granthm, 1974)
 t1 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-             groupingScheme = "classic")
-## grouded on the basis of charge: positive = c("H", "K", "R"), 
-## neutral = c("A", "C", "F", "G", "I", "L", "M", "N", "P", "Q", "S", "T", 
-## "V","W","Y"), negative = c("D", "E")
+             groupingScheme = "polarity_Grantham_group")
+             
+## grouped by charge.
 t2 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-              groupingScheme = "charge")
-## grouped on the basis of their chemical property: hydrophobic = c("A", "F",
-## "I", "L", "M", "P", "V", "W"), polar = c("C", "G", "S", "T", "Y"), 
-## basic = c("H", "K", "R"), neutral = c("N", "Q"), acidic = c("D", "E")
+              groupingScheme = "charge_group")
+              
+## grouped on the basis of the chemical property of side chains.
 t3 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-              groupingScheme = "chemistry")
-## grouped on the basis of hydrophobicity: hydrophilic = c("D", "E", "K", "N", 
-## "Q", "R"), neutral = c("A", "G", "H", "P", "S", "T"), hydrophobic = c("C", 
-## "F", "I", "L", "M", "V", "W", "Y")
+              groupingScheme = "side_chain_chemistry_group")
+              
+## grouped on the basis of hydrophobicity (Kyte and Doolittle, 1982)
 t4 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-              groupingScheme = "hydrophobicity")                                   
+              groupingScheme = "hydrophobicity_KD_group")                                   
 }
 \author{
 Jianhong Ou, Haibo Liu

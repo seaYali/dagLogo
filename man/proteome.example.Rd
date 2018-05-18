@@ -3,8 +3,8 @@
 \docType{data}
 \name{proteome.example}
 \alias{proteome.example}
-\title{An object of \code{Proteome} representing the E. coli proteome.}
-\format{A object of Proteome class}
+\title{An object of \code{\link{Proteome}} representing the E. coli proteome.}
+\format{A object of \code{\link{Proteome}} Class}
 \source{
 \url{http://www.uniprot.org/}
 }

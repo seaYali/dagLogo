@@ -19,10 +19,11 @@ desired, set \code{group} to NULL; otherwise \code{group} should be a list with
 same names as those of \code{color} and \code{symbol}.}
 }
 \value{
-Add the custom coloring or grouping scheme to the cached environment.
+Add the custom coloring or grouping scheme to the environment 
+\code{cacheEnv}.
 }
 \description{
-Add a custom coloring or grouping scheme for grouped or ungrouped amino acids
+Add a custom coloring or grouping scheme for ungrouped or grouped amino acids
 as desired.
 }
 \examples{
@@ -35,6 +36,6 @@ group = list(
    AGSTP = c("A", "G", "S", "T", "P"),
    FYW = c("F", "Y", "W"),
    EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H"))
-addGroupingScheme(color = color, symbol = symbol, group = group) 
+addScheme(color = color, symbol = symbol, group = group) 
 
 }

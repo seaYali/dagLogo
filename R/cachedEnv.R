@@ -1,8 +1,11 @@
-## create a cached environment to store those package-wide accessible constants.
+## Create two cached environments to store those package-wide accessible constants.
+#### cachedEnv stores grouping schemes
 cachedEnv <- new.env(parent = emptyenv())
-.globalEnv <- new.env(parent = emptyenv())
-## color and character symbol encodings and grouping for amino acids
 
+#### .globalEnv stores motifStack plotting configureation
+.globalEnv <- new.env(parent = emptyenv())
+
+## color and character symbol encodings and grouping for amino acids
 ## no grouping, colored using 20 distinct colors
 no <- list(
     color = c('A' = '#e6194b', 'C' = '#3cb44b', 'D' = '#0082c8', 'E' = '#f58231',
@@ -172,7 +175,7 @@ volume_Bigelow <- list(
                "Arg" = "R", "Phe" = "F", "Tyr" = "Y", "Trp" = "W"),
     group = NULL)
 
-## chemistry property similarity of individual AAs
+## chemistry property similarity of individual AAs (Mahler)
 chemistry_property_Mahler <- list(
     color = c(
         D = "#0082c8", E = "#0082c8", K = "#fabebe", R = "#fabebe", H = "#fabebe",
@@ -187,7 +190,7 @@ chemistry_property_Mahler <- list(
     group = NULL)
 
 
-## substitution index
+## substitution index (Dayhoff)
 sequence_alignment_Dayhoff <- list(
     color = c(
         D = "#0082c8", E = "#0082c8", N = "#0082c8", Q = "#0082c8", K = "#fabebe",
@@ -202,7 +205,7 @@ sequence_alignment_Dayhoff <- list(
     group = NULL)
 
 
-## structural alignment
+## structural alignment (Mirny)
 structure_alignments_Mirny <- list(
     color = c(
         D = "#0082c8", E = "#0082c8", K = "#fabebe", R = "#fabebe",
@@ -217,7 +220,7 @@ structure_alignments_Mirny <- list(
         "Cys" = "C", "Met" = "M", "Leu" = "L", "Ile" = "I", "Val" = "V"),
     group = NULL)
 
-## spatial frequency
+## spatial frequency (Maiorov)
 contact_potential_Maiorov <- list(
     color = c(
         D = "#0082c8", E = "#0082c8", N = "#0082c8", Q = "#0082c8",
@@ -508,7 +511,6 @@ cachedEnv$consensus_similarity_SF <- consensus_similarity_SF
 cachedEnv$contact_potential_Maiorov <- contact_potential_Maiorov
 cachedEnv$structure_alignments_Mirny <- structure_alignments_Mirny
 cachedEnv$sequence_alignment_Dayhoff <- sequence_alignment_Dayhoff
-
 
 ## grouping based on properties of individual AAs
 cachedEnv$hydrophobicity_KD_group <- hydrophobicity_KD_group

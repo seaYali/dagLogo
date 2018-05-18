@@ -7,8 +7,8 @@
 dagHeatmap(testDAUresults, type = c("diff", "statistics"), ...)
 }
 \arguments{
-\item{testDAUresults}{An object of \code{testDAUresults} (results of testing 
-differential amino acid uasage).}
+\item{testDAUresults}{An object of \code{\link{testDAUresults}} (results of 
+testing differential amino acid uasage).}
 
 \item{type}{A character vector of length 1, the type of metrics to display 
 on y-axis. The available options are "diff" and "statistics", which are 
@@ -17,13 +17,13 @@ the backgroundSet, and the Z-scores or odds ratios when Z-test or Fisher's
 exact test is performed to test the differential uasge of amino acid at each 
 position between the two sets.}
 
-\item{...}{Other parameters passed to \code{pheatmap} function.}
+\item{...}{other parameters passed to the\code{\link{pheatmap}} function.}
 }
 \value{
-The output from \code{pheatmap}
+The output from the \code{\link{pheatmap}} function.
 }
 \description{
-Using a heat map to visualize results of testing differential amino acid uasage.
+Using a heatmap to visualize results of testing differential amino acid usage.
 }
 \examples{
 data("seq.example")
@@ -34,5 +34,5 @@ t0 <- testDAU(seq.example, bg)
 dagHeatmap(testDAUresults = t0, type = "diff")
 }
 \author{
-Jianhong Ou
+Jianhong Ou, Haibo Liu
 }

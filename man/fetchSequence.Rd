@@ -2,33 +2,31 @@
 % Please edit documentation in R/fetchSequence.R
 \name{fetchSequence}
 \alias{fetchSequence}
-\title{Fecth protein/peptide sequences and create a dagPeptides object.}
+\title{Fetch protein/peptide sequences and create a \code{\link{dagPeptides}} object.}
 \usage{
 fetchSequence(IDs, type = "entrezgene", anchorAA = NULL, anchorPos, mart,
   proteome, upstreamOffset, downstreamOffset)
 }
 \arguments{
 \item{IDs}{A character vector containing protein/peptide IDs used to fecth 
-sequences from a Biomart database or a \code{Proteome} object.}
+sequences from a Biomart database or a \code{\link{Proteome}} object.}
 
 \item{type}{A character vector of length 1. The available options are 
-"entrezgene" and "uniprotswissprot" if parameter \code{mart} is missing; otherwise
-it can be any type of IDs aavailable in Biomart databases.}
+"entrezgene" and "uniprotswissprot" if parameter \code{mart} is missing;
+otherwise it can be any type of IDs aavailable in Biomart databases.}
 
 \item{anchorAA}{A character vector of length 1 or the same length as that of
-anchorPos, each element of which is a single character amino acid, for example,
-"K" for lysine.}
+anchorPos, each element of which is a single letter symbol of amino acids, 
+for example, "K" for lysine.}
 
-\item{anchorPos}{A character or numeric vector. Each element of which is a 
-single character amino acid followed by the position of the anchoring amino
-acid in the target peptide/protein sequence, for example, "K123" for lysine 
+\item{anchorPos}{A character or numeric vector. Each element of which is (1) a 
+single-letter symbol of amino acid followed by the position of the anchoring 
+amino acid in the target peptide/protein sequence, for example, "K123" for lysine 
 at position 123 or the position of the anchoring amino acid in the target 
-peptide/protein sequence, for example, "123" for an amino acid at position 123.}
+peptide/protein sequence, for example, "123" for an amino acid at position 123; 
+or (2) a vector of subsequences containing the anchoring AAs.}
 
-\item{mart}{A BioMart database name you want to connect to. One of parameters 
-\code{mart} and \code{proteome} should be provided.}
-
-\item{proteome}{An object of \code{Proteome} class. One of parameters 
+\item{mart}{A Biomart database name you want to connect to. One of parameters 
 \code{mart} and \code{proteome} should be provided.}
 
 \item{upstreamOffset}{An integer, the upstream offset relative to
@@ -38,13 +36,13 @@ the anchoring position.}
 to the anchoring position.}
 }
 \value{
-An object of class \code{dagPetides}
+An object of class \code{\link{dagPetides}}
 }
 \description{
 This function fecthes protein/peptide sequences from a Biomart database or 
-from a Proteome object based on protein/peptide IDs and create a dagPeptides 
-object following restriction as specified by parameters: anchorAA or anchorPos,
-upstreamOffset and downstreamOffset.
+from a \code{\link{Proteome}} object based on protein/peptide IDs and create 
+a \code{\link{dagPeptides}} object following restriction as specified by 
+parameters: anchorAA or anchorPos, upstreamOffset and downstreamOffset.
 }
 \examples{
 ## Case 1: You have both positions of the anchoring AAs and the identifiers 
@@ -59,7 +57,6 @@ if (interactive())
        useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
     dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
                            package = "dagLogo"))
-    dat <- dat[1:5, ] ##subset to speed sample
     seq <- fetchSequence(
        IDs = as.character(dat$entrez_geneid),
        anchorPos = as.character(dat$NCBI_site),
@@ -87,7 +84,7 @@ if (interactive())
         seq <- fetchSequence(
             IDs = as.character(dat$entrez_geneid),
             anchorAA = "*",
-           anchorPos = as.character(dat$peptide),
+            anchorPos = as.character(dat$peptide),
             mart = fly_mart,
             upstreamOffset = 7,
             downstreamOffset = 7
@@ -95,7 +92,6 @@ if (interactive())
         head(seq@peptides)
     })
 }
-
 
 ## In following example, the anchoring AAs are lower case "s" for amino acid 
 serine.

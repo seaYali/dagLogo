@@ -9,7 +9,7 @@ formatSequence(seq, proteome, upstreamOffset, downstreamOffset)
 \arguments{
 \item{seq}{A vector of aligned peptide sequences of the same length}
 
-\item{proteome}{An object of \code{Proteome} Class.}
+\item{proteome}{An object of \code{\link{Proteome}} Class.}
 
 \item{upstreamOffset}{An integer, the upstream offset relative to
 the anchoring position.}
@@ -18,11 +18,11 @@ the anchoring position.}
 to the anchoring position.}
 }
 \value{
-An object of dagPeptides Class
+An object of \code{\link{dagPeptides}} Class
 }
 \description{
-Convert already aligned peptide sequences into an object of \code{dagPeptides} 
-class.
+Convert already aligned peptide sequences into an object of 
+\code{\link{dagPeptides}} Class.
 }
 \examples{
 ## You already have the aligned peptides sequences in hand. Then you can use 
@@ -32,18 +32,16 @@ that, you need prepare a Proteome object by the prepareProteome function.
 dat <- unlist(read.delim(system.file(
                                    "extdata", "grB.txt", package = "dagLogo"),
                          header = F, as.is = TRUE))
-head(dat)
-##prepare proteome from a fasta file
+##prepare an object of Proteome Class from a fasta file
 proteome <- prepareProteome(fasta = system.file("extdata",
                                                 "HUMAN.fasta",
                                                 package = "dagLogo"), 
                             species = "Homo sapiens")
-##prepare object of dagPeptides
 ##prepare an object of dagPeptides
 seq <- formatSequence(seq = dat, proteome = proteome, upstreamOffset = 14,
                      downstreamOffset = 15)
 
 }
 \author{
-Jianhong Ou
+Jianhong Ou, Haibo Liu
 }

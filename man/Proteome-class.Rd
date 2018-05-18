@@ -3,7 +3,7 @@
 \docType{class}
 \name{Proteome-class}
 \alias{Proteome-class}
-\title{Class Proteome.}
+\title{Class \code{\link{Proteome}}.}
 \description{
 An S4 class to represent a whole proteome for DAGlogo analysis.
 }
@@ -12,7 +12,7 @@ An S4 class to represent a whole proteome for DAGlogo analysis.
 \describe{
 \item{\code{proteome}}{A data frame.}
 
-\item{\code{type}}{A character vector of length 1. Available options :"Uniprot", and 
+\item{\code{type}}{A character vector of length 1. Available options :"UniProt", and 
 "fasta".}
 
 \item{\code{species}}{A character vector of length 1, a conventional Latin name for 

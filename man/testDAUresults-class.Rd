@@ -3,7 +3,7 @@
 \docType{class}
 \name{testDAUresults-class}
 \alias{testDAUresults-class}
-\title{Class testDAUresults.}
+\title{Class \code{\link{testDAUresults}}.}
 \description{
 An S4 class to represent a DAU statistical test result from DAGlogo analysis.
 }
@@ -30,10 +30,10 @@ background set of aligned, formatted peptides at each position.}
 
 \item{\code{motif}}{A numeric matrix consisting of proportions for DAGLogo.}
 
-\item{\code{upstreamOffset}}{A positive integer between (0, 20): the upstream offset
+\item{\code{upstreamOffset}}{A positive integer, the upstream offset
 relative to the anchoring position.}
 
-\item{\code{downstreamOffset}}{A positive integer between (0, 20): the upstream offset
+\item{\code{downstreamOffset}}{A positive integer, the upstream offset
 relative to the anchoring position.}
 }}
 

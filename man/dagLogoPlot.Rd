@@ -11,13 +11,13 @@ dagLogoPlot(testDAUresults, type = c("diff", "zscore"), pvalueCutoff = 0.05,
   gscmd = Sys.getenv("R_GSCMD"), labels = NULL)
 }
 \arguments{
-\item{testDAUresults}{An object of \code{testDAUresults} (results of testing 
-differential amino acid uasage).}
+\item{testDAUresults}{An object of \code{\link{testDAUresults}} (results of
+testing differential amino acid uasage).}
 
 \item{type}{A character vector of length 1. Type of statistics to display 
 on y-axis, available choices are "diff" or "zscore".}
 
-\item{pvalueCutoff}{A numeric vector of length 1. A cutoff of p-value.}
+\item{pvalueCutoff}{A numeric vector of length 1. A cutoff of p-values.}
 
 \item{groupingSymbol}{A named character vector.}
 

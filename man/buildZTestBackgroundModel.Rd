@@ -9,7 +9,7 @@ buildZTestBackgroundModel(dagPeptides, matches, numSubsamples = 30L,
   replacement = FALSE)
 }
 \arguments{
-\item{dagPeptides}{An object of \code{\link{dagPeptides}} class containing 
+\item{dagPeptides}{An object of \code{\link{dagPeptides}} Class containing 
 peptide sequences as the input set.}
 
 \item{matches}{A character vector with the matched subsequences.}
@@ -25,7 +25,7 @@ are included in a background model.}
 is allowed for random sampling.}
 }
 \value{
-An object of \code{\link{dagBackground}} class.
+An object of \code{\link{dagBackground}} Class.
 }
 \description{
 Build a background model for Z-test.

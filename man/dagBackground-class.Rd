@@ -3,16 +3,16 @@
 \docType{class}
 \name{dagBackground-class}
 \alias{dagBackground-class}
-\title{Class dagBackground.}
+\title{Class \code{\link{dagBackground}}.}
 \description{
-An S4 class to represent a background of a formatted, aligned peptide for 
+An S4 class to represent a background of a formatted, aligned peptides for 
 dagoLogo analysis.
 }
 \section{Slots}{
 
 \describe{
 \item{\code{background}}{A list of data frame. Within each n-by-1 dataframe is a the 
-aligned pedtide of same length.}
+aligned pedtides of same length.}
 
 \item{\code{numSubsamples}}{An integer. That is the length of the \code{background} list}
 }}

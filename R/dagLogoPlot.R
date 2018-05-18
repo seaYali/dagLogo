@@ -1,20 +1,20 @@
 #' Visualize daglogo using a heatmap.
 #' 
-#' Using a heat map to visualize results of testing differential amino acid uasage.
+#' Using a heatmap to visualize results of testing differential amino acid usage.
 #' 
-#' @param testDAUresults An object of \code{testDAUresults} (results of testing 
-#' differential amino acid uasage).
+#' @param testDAUresults An object of \code{\link{testDAUresults}} (results of 
+#' testing differential amino acid uasage).
 #' @param type A character vector of length 1, the type of metrics to display 
 #' on y-axis. The available options are "diff" and "statistics", which are 
 #' differences in amino acide usage at each position between the inputSet and 
 #' the backgroundSet, and the Z-scores or odds ratios when Z-test or Fisher's 
 #' exact test is performed to test the differential uasge of amino acid at each 
 #' position between the two sets.
-#' @param ... Other parameters passed to \code{pheatmap} function.
+#' @param ... other parameters passed to the\code{\link{pheatmap}} function.
 #' @import pheatmap
-#' @return The output from \code{pheatmap}
+#' @return The output from the \code{\link{pheatmap}} function.
 #' @export
-#' @author Jianhong Ou
+#' @author Jianhong Ou, Haibo Liu
 #' @examples
 #' data("seq.example")
 #' data("proteome.example")
@@ -43,7 +43,7 @@ dagHeatmap <-function(testDAUresults, type = c("diff", "statistics"), ...)
 
 #' Get the data for visualization.
 #'
-#' A helper function to Get the data and it lable for visualization.
+#' A helper function to get the data and it lable for visualization.
 #' 
 #' @param type A character vector of length 1, the type of metrics to display 
 #' on y-axis. The available options are "diff" and "statistics", which are 
@@ -51,8 +51,8 @@ dagHeatmap <-function(testDAUresults, type = c("diff", "statistics"), ...)
 #' the backgroundSet, and the Z-scores or odds ratios when Z-test or Fisher's 
 #' exact test is performed to test the differential uasge of amino acid at each 
 #' position between the two sets.
-#' @param testDAUresults An object of \code{testDAUresults} (results of testing 
-#' differential amino acid uasage).
+#' @param testDAUresults An object of \code{\link{testDAUresults}} Class (results
+#' of testing differential amino acid usage).
 #'
 #' @return A list containing the following compoenets:
 #' label A character vector of length 1. The type of data for visualization.
@@ -86,29 +86,35 @@ getData <- function(type, testDAUresults)
 }
 
 
-
 #' Color sets for visualization.
 #' 
 #' Create color encoding for visualization of a peptide sequence logo.
 #'
 #' @param colorScheme A character vecto of length 1, determining the color scheme
-#' based on amino acid classification methods. The available \code{colorScheme} are "no",
-#' "classic", "charge", "chemistry", "hydrophobicity", "BLOSM50_L1", "BLOSM50_L2", 
-#' "BLOSM50_L3", "BLOSM50_L4", "BLOSM50_L5", "BLOSM50_L6", "BLOSM50_L7", 
-#' "BLOSM50_L8", "chemistry_property_Mahler", "contact_potential_Maiorov", 
-#' "protein_blocks_Rogov", "sequence_alignment_Dayhoff", "structure_alignments_Mirny",
-#' and "custom". If "custom" is used, users must define a grouping scheme using a
-#' a list containing sublist named as "color", "symbol" and "group" using the 
-#' function addGroupingScheme. 
+#' based on amino acid classification methods. The available \code{colorScheme} 
+#' are ""no","bulkiness_Zimmerman","hydrophobicity_KD", "hydrophobicity_HW", 
+#' "isoelectric_point_Zimmerman", "contact_potential_Maiorov",
+#' "chemistry_property_Mahler", "consensus_similarity_SF", 
+#' "volume_Bigelow", "structure_alignments_Mirny", "polarity_Grantham", 
+#' "sequence_alignment_Dayhoff", "bulkiness_Zimmerman_group", "hydrophobicity_KD_group",
+#' "hydrophobicity_HW_group", "charge_group", "contact_potential_Maiorov_group",
+#' "chemistry_property_Mahler_group", "consensus_similarity_SF_group", 
+#' "volume_Bigelow_group", "structure_alignments_Mirny_group", "polarity_Grantham_group",  
+#' "sequence_alignment_Dayhoff_group", "custom" and "custom_group". If "custom" or
+#' "custom_group" are used, users must define a grouping scheme using a list 
+#' containing sublist named as "color", and "symbol" using the function
+#' addScheme, with group set as "NULL" or a list with same names as those of \code{color} 
+#' and \code{symbol}. No grouping was applied for the first 12 schemes. It is used to 
+#' color AAs based on similarities or group amino acids into groups of similarities.. 
 #'
-#' @seealso {\code{\link{addGroupingScheme}}}
+#' @seealso {\code{\link{addScheme}}}
 #' @return A named character vector of colors
 #' @export
 #' @keywords internal
 #' 
 #' @author Jianhong Ou, Haibo Liu
 #' @examples
-#' colorsets("classic")
+#' colorsets("polarity_Grantham_group")
 
 colorsets <-function(colorScheme = ls(envir = cachedEnv)) 
 {
@@ -134,12 +140,13 @@ colorsets <-function(colorScheme = ls(envir = cachedEnv))
 #' "volume_Bigelow_group", "structure_alignments_Mirny_group", "polarity_Grantham_group",  
 #' "sequence_alignment_Dayhoff_group", and "custom". If "custom" is used, users 
 #' must define a grouping scheme using a list containing sublist named as "color",
-#' "symbol" and "group" using the function addGroupingScheme. No grouping was applied
-#' for the first 12 schemes. 
+#' "symbol" and "group" using the function \code{\link{addScheme}}. No grouping 
+#' was applied for the first 12 schemes. 
 #'
-#' @seealso {\code{\link{addGroupingScheme}}}
+#' @seealso {\code{\link{addScheme}}}
 #'
-#' @return A named character vector of character symbols
+#' @return A named character vector of character symbols if grouping is applied;
+#' otherwise NULL.
 #' @export
 #' @keywords internal
 #' @author Jianhong Ou, Haibo Liu
@@ -168,11 +175,11 @@ getGroupingSymbol <-function(groupingScheme = ls(envir = cachedEnv))
 #' Create sequence logos for visualizing results of testing differential usage 
 #' of amino acids.
 #'
-#' @param testDAUresults An object of \code{testDAUresults} (results of testing 
-#' differential amino acid uasage).
+#' @param testDAUresults An object of \code{\link{testDAUresults}} (results of
+#' testing differential amino acid uasage).
 #' @param type A character vector of length 1. Type of statistics to display 
 #' on y-axis, available choices are "diff" or "zscore".
-#' @param pvalueCutoff A numeric vector of length 1. A cutoff of p-value.
+#' @param pvalueCutoff A numeric vector of length 1. A cutoff of p-values.
 #' @param groupingSymbol A named character vector.
 #' @param font A character vector of length 1. Font type for displaying sequence
 #' Logo.
@@ -259,7 +266,8 @@ dagLogoPlot <- function(testDAUresults,
     rname <- rownames(dat)
     if (max(nchar(rname)) > 1) 
     {
-        stop("Please using the groupingSymbol to convert the symbols into single letters.",
+        stop("Please using the groupingSymbol to convert",
+            " the symbols into single letters.",
              call. = FALSE)
     }
     key <- paste("x",
@@ -476,13 +484,15 @@ dagLogoPlot <- function(testDAUresults,
                 x = (npos+2)*dw,
                 y = .95 - i * 0.1 * lwd/2,
                 just = c(.5, .5),
-                gp = gpar(col = colset[groupingSymbol[i]], fontsize=fontsize, fontface = fontface))
+                gp = gpar(col = colset[groupingSymbol[i]], fontsize=fontsize, 
+                          fontface = fontface))
             grid.text(
                 names(groupingSymbol)[i],
                 x = (npos+2)*dw + 0.1 * lwd/2,
                 y = .95 - i * 0.1 * lwd/2,
                 just = c(0, .5),
-                gp = gpar(col = colset[groupingSymbol[i]], fontsize=fontsize, fontface = fontface))
+                gp = gpar(col = colset[groupingSymbol[i]], fontsize=fontsize, 
+                          fontface = fontface))
         }
     }
 }
