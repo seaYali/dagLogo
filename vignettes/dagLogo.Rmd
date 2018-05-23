@@ -5,7 +5,7 @@ date: "`r doc_date()`"
 package: "`r pkg_ver('dagLogo')`"
 bibliography: bibliography.bib
 abstract: >
-  A sequence logo has been widely used as a graphical representation of an alignment of multiple amino acid (AA) or nucleic acid sequences. Our R/Bioconductor package dagLogo can be used to visualize amino acids of significantly differential usage, with or without grouping based on their physical and chemical properties, among given sequence contexts compared to a background context.
+  A sequence logo has been widely used as a graphical representation of aligned multiple amino acid (AA) or nucleic acid sequences. Our R/Bioconductor package dagLogo can be used to visualize amino acids of significantly differential usage, with or without grouping based on their properties as individual AAs or within proteins, between experimental sets and background sets.
 vignette: >
   %\VignetteIndexEntry{dagLogo Vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -28,7 +28,7 @@ suppressPackageStartupMessages({
 # Introduction
 A sequence logo has been widely used as a graphical representation of an alignment of multiple amino acid (AA) or nucleic acid sequences.
 There is a package seqlogo[@Oliver2006] implemented in R to draw DNA sequence logos. 
-And another package motifStack[@Jianhong2012] was developed for drawing sequence logos for amino Acid, DNA and RNA sequences. motifStack also has the capability for graphical representation of multiple motifs.
+And another package motifStack[@Jianhong2012] was developed for drawing sequence logos for amino Acid, DNA and RNA sequences, which also has the capability for graphical representation of multiple motifs.
 
 IceLogo[@Colaert2009] is a tool developed in Java to visualize significantly conserved sequence patterns in
 an alignment of multiple peptide sequences against background sequences. Compare to 
@@ -68,13 +68,11 @@ if (interactive())
             useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
             dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
                                         package = "dagLogo"))
-            dat <- dat[1:5, ] ##subset to speed sample
-            seq <- fetchSequence(
-                                IDs = as.character(dat$entrez_geneid),
-                                anchorPos = as.character(dat$NCBI_site),
-                                mart = fly_mart,
-                                upstreamOffset = 7,
-                                downstreamOffset = 7)
+            seq <- fetchSequence(IDs = as.character(dat$entrez_geneid),
+                                 anchorPos = as.character(dat$NCBI_site),
+                                 mart = fly_mart,
+                                 upstreamOffset = 7,
+                                 downstreamOffset = 7)
             head(seq@peptides)
    })
 }
@@ -91,13 +89,12 @@ if (interactive())
             useDataset(mart = mart, dataset = "dmelanogaster_gene_ensembl")
             dat <- read.csv(system.file("extdata", "dagLogoTestData.csv",
                                         package = "dagLogo"))
-            seq <- fetchSequence(
-                                IDs = as.character(dat$entrez_geneid),
-                                anchorAA = "*",
-                                anchorPos = as.character(dat$peptide),
-                                mart = fly_mart,
-                                upstreamOffset = 7,
-                                downstreamOffset = 7)
+            seq <- fetchSequence(IDs = as.character(dat$entrez_geneid),
+                                 anchorAA = "*",
+                                 anchorPos = as.character(dat$peptide),
+                                 mart = fly_mart,
+                                 upstreamOffset = 7,
+                                 downstreamOffset = 7)
             head(seq@peptides)
     })
 }
@@ -153,13 +150,7 @@ Case 3 of Step 1 shows how to prepare a Proteome object from a fasta file. Here 
 Proteome via the UniProt database.
 
 ```{r prepareProteome0}
-if(interactive())
-{
-    try({
-        proteome <- prepareProteome(source = "UniProt", 
-                                    species = "Homo sapiens")
-    })
-}
+proteome <- prepareProteome(source = "UniProt", taxonID = "9606")
 ```
 
 Then the proteome is used for background model building for Fisher's exact test or *Z*-test as follows. 
@@ -177,34 +168,26 @@ Test can be done without making any change to the formatted, aligned amino acid 
 ```{r testDAU}
 ## no grouping
 t0 <- testDAU(seq, dagBackground = bg_ztest)
-## grouded classically: nonpolar_aliphatic = c("A", "G", "L", "M", "I", "V"), 
-## polar_uncharged = c("C", "P", "Q", "S", "T"), aromatic = c("F", "W", "Y"), 
-## positively_charged = c("H", "K", "N", "R"), negatively_charged = c("D", "E").
+
+## grouping based on properties of individual amino acids.
 t1 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest,
-              groupingScheme = "classic")
+              groupingScheme = "chemistry_property_Mahler_group")
 
-## grouded on the basis of charge: positive = c("H", "K", "R"), 
-## neutral = c("A", "C", "F", "G", "I", "L", "M", "N", "P", "Q", 
-## "S", "T", "V","W","Y"), negative = c("D", "E")
+## grouped on the basis of charge.
 t2 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-              groupingScheme = "charge")
+              groupingScheme = "charge_group")
 
-## grouped on the basis of their chemical property: 
-## hydrophobic = c("A", "F", "I", "L", "M", "P", "V", "W"), 
-## polar = c("C", "G", "S", "T", "Y"), basic = c("H", "K", "R"), 
-## neutral = c("N", "Q"), acidic = c("D", "E")
+## grouped on the basis of consensus similarity.
 t3 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-              groupingScheme = "chemistry")
+              groupingScheme = "consensus_similarity_SF_group")
 
-## grouped on the basis of hydrophobicity: hydrophilic = 
-## c("D", "E", "K", "N", "Q", "R"), neutral = c("A", "G", "H", "P", "S", "T"), 
-## hydrophobic = c("C", "F", "I", "L", "M", "V", "W", "Y")
+## grouped on the basis of hydrophobicity. 
 t4 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-              groupingScheme = "hydrophobicity")
+              groupingScheme = "hydrophobicity_KD")
 
-## in case users prefer to use their own grouping scheme, dagLogo allows users
-## to supply one as follows. The grouping scheme is named "custom" internally.
-## Add a grouping scheme based on the BLOSUM50 level 3 
+## In case users prefer to use their own grouping scheme, dagLogo allows users
+## to supply one as follows. The grouping scheme is named "custom_group" internally.
+## Add a grouping scheme based on the level 3 of BLOSUM50  
 color = c(LVIMC = "#33FF00", AGSTP = "#CCFF00",
           FYW = '#00FF66', EDNQKRH = "#FF0066")
 symbol = c(LVIMC = "L", AGSTP = "A", FYW = "F", EDNQKRH = "E")
@@ -213,9 +196,9 @@ group = list(
     AGSTP = c("A", "G", "S", "T", "P"),
     FYW = c("F", "Y", "W"),
     EDNQKRH = c("E", "D", "N", "Q", "K", "R", "H"))
-addGroupingScheme(color = color, symbol = symbol, group = group) 
+addScheme(color = color, symbol = symbol, group = group) 
 t5 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-              groupingScheme = "custom")
+              groupingScheme = "custom_group")
 ```
 
 ## Step 4: Visualizing test results
@@ -227,27 +210,27 @@ dagHeatmap(t0)
 ```
 
 ```{r dagLogo0,fig.cap="ungrouped results",fig.width=8,fig.height=6}
-##Plot a logo to show the ungrouped results
+## dagLogo showing ungrouped AAs differentially used
 dagLogo(t0) 
 ```
 
 ```{r dagLogo1,fig.cap="classic grouped",fig.width=8,fig.height=6}
-##Plot a logo to show the classic grouped results
+## dagLogo showing AA grouped based on properties of individual amino acids.
 dagLogo(t1, groupingSymbol = getGroupingSymbol(t1@group), legend = TRUE)
 ```
 
 ```{r dagLogo2,fig.cap="charge grouped",fig.width=8,fig.height=6}
-##Plot a logo to show the charge grouped results
+## grouped on the basis of charge.
 dagLogo(t2, groupingSymbol = getGroupingSymbol(t2@group), legend = TRUE)
 ```
 
 ```{r dagLogo3,fig.cap="chemistry grouped",fig.width=8,fig.height=6}
-##Plot a logo to show the chemistry grouped results
+## grouped on the basis of consensus similarity.
 dagLogo(t3, groupingSymbol = getGroupingSymbol(t3@group), legend = TRUE)
 ```
 
 ```{r dagLogo4,fig.cap="hydrophobicity grouped",fig.width=8,fig.height=6}
-##Plot a logo to show the hydrophobicity grouped results
+## grouped on the basis of hydrophobicity.
 dagLogo(t4, groupingSymbol = getGroupingSymbol(t4@group), legend = TRUE)
 ```
 
@@ -289,7 +272,7 @@ dagLogo(t0)
 Residuals at positions 10, 14, 16, 21 and 25 are partially or completely buried in the 3-D structure of CAPs are preferentially hydrophobic. Thee amino acids of the CAP DNA-binding motifs are grouped on the basis of their chemical properties and visualized using dagLogo as follows. This plot clearly displays those preferentially hydrophobic sites.
 ```{r CAPgroup,fig.cap="Catobolite Activator Protein Motif",fig.width=8,fig.height=6}
 ## The DNA-binding helix-turn-helix motif of the CAP family grouped by chemistry
-t1 <- testDAU(seq, bg, groupingScheme = "chemistry")
+t1 <- testDAU(seq, bg, groupingScheme = "hydrophobicity_HW_group")
 dagLogo(t1, groupingSymbol = getGroupingSymbol(t1@group), legend = TRUE)
 ```
 

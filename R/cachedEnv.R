@@ -70,7 +70,7 @@ hydrophobicity_KD <- list(
 # A Hopp, T.P. and Woods, K.R.
 # T Prediction of protein antigenic determinants from amino acid sequecces
 # J Proc. Natl. Acad. Sci. USA 78, 3824-3828 (1981)
-#### A hydrophilicity scale based on the water solubulity of individual amino 
+#### A hydrophilicity scale based on the water solubility of individual amino 
 #### acids 
 hydrophobicity_HW <- list(
     color = c("W" = "#0000FF", "F" = "#2200DC", "Y" = "#2B00D3",
