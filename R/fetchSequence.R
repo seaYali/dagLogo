@@ -1,12 +1,12 @@
-#' Fetch protein/peptide sequences and create a \code{\link{dagPeptides}} object.
+#' Fetch protein/peptide sequences and create a \code{\link{dagPeptides-class}} object.
 #'
 #' This function fetches protein/peptide sequences from a Biomart database or 
-#' from a \code{\link{Proteome}} object based on protein/peptide IDs and create 
-#' a \code{\link{dagPeptides}} object following restriction as specified by 
+#' from a \code{\link{Proteome-class}} object based on protein/peptide IDs and create 
+#' a \code{\link{dagPeptides-class}} object following restriction as specified by 
 #' parameters: anchorAA or anchorPos, upstreamOffset and downstreamOffset.
 #'
 #' @param IDs  A character vector containing protein/peptide IDs used to fetch 
-#' sequences from a Biomart database or a \code{\link{Proteome}} object.
+#' sequences from a Biomart database or a \code{\link{Proteome-class}} object.
 #' @param type A character vector of length 1. The available options are 
 #' "entrezgene" and "uniprotswissprot" if parameter \code{mart} is missing;
 #' otherwise it can be any type of IDs available in Biomart databases.
@@ -19,24 +19,26 @@
 #' at position 123 or the position of the anchoring amino acid in the target 
 #' peptide/protein sequence, for example, "123" for an amino acid at position 123; 
 #' or (2) a vector of subsequences containing the anchoring AAs.
-#' @param mart A Biomart database name you want to connect to. One of parameters 
-#' \code{mart} and \code{proteome} should be provided.
-#' @param proteome An object of \code{\link{Proteome} class. One of parameters 
-#' \code{mart} and \code{\link{Proteome} should be provided.
+#' @param mart A Biomart database name you want to connect to. Either of parameters 
+#' \code{mart} or \code{proteome} should be provided.
+#' @param proteome An object of \code{\link{Proteome-class}}. Either of parameters 
+#' \code{mart} or \code{\link{Proteome-class}} should be provided.
 #' @param upstreamOffset An integer, the upstream offset relative to
 #' the anchoring position.
 #' @param downstreamOffset An integer, the downstream offset relative
 #' to the anchoring position.
 #' @import biomaRt
 #' @importFrom BiocGenerics start
+#' @importFrom utils adist
+#' @importFrom Biostrings AAString matchPattern
 #' @import methods
-#' @return An object of class \code{\link{dagPetides}} 
+#' @return An object of class \code{\link{dagPeptides-class}} 
 #' @export
 #' 
 #' @examples
 #' ## Case 1: You have both positions of the anchoring AAs and the identifiers 
-#' of their enclosing peptide/protein sequences for fetching sequences using 
-#' the fetchSequence function via the Biomart.
+#' ## of their enclosing peptide/protein sequences for fetching sequences using 
+#' ## the fetchSequence function via the Biomart.
 #' 
 #' if (interactive())
 #' {
@@ -57,11 +59,11 @@
 #' }
 #' 
 #' 
-#' ## Case 2: You don't have the exactly postion infor, but You have the 
-#' interesting peptide subsequences and the identifiers of their enclosing 
-#' peptide/protein sequences for fetching sequences using the fetchSequence
-#' function via the Biomart. In the following examples, the anchoring AAs 
-#' are marked by asterisks. 
+#' ## Case 2: You don't have the exactly postion information, but You have the 
+#' ## interesting peptide subsequences and the identifiers of their enclosing 
+#' ## peptide/protein sequences for fetching sequences using the fetchSequence
+#' ## function via the Biomart. In the following examples, the anchoring AAs 
+#' ## are marked by asterisks. 
 #' if (interactive())
 #' {
 #'     try({
@@ -82,8 +84,8 @@
 #'     })
 #' }
 #' 
-#' ## In following example, the anchoring AAs are lower case "s" for amino acid 
-#' serine.
+#' ## In following example, the anchoring AAs are lower-case "s" for amino acid 
+#' ## serine.
 #' if(interactive())
 #' {
 #'    try({
@@ -105,7 +107,6 @@
 #' 
 #' 
 
-
 fetchSequence <-function(IDs,
                         type = "entrezgene",
                         anchorAA = NULL,
@@ -121,21 +122,21 @@ fetchSequence <-function(IDs,
     }
     if (!missing(mart) && class(mart) != "Mart") 
     {
-        stop("mart should be an object of Mart class", call. = FALSE)
+        stop("mart should be an object of the Mart class", call. = FALSE)
     }
     if (!missing(proteome) && class(proteome) != "Proteome") 
     {
         stop("proteome should be an object of Proteome class.",
-            "Try ?prepareProteome to get help", call. = FALSE)
+            "Try ?prepareProteome to get help.", call. = FALSE)
     }
     if (missing(upstreamOffset) || missing(downstreamOffset)) 
     {
-        stop("Please provide the upstreamOffset and downstreamOffset position 
+        stop("Please provide the upstreamOffset and downstreamOffset positions 
             relative to the anchoring amino acid", call. = FALSE)
     }
     if (upstreamOffset < 0 || downstreamOffset < 0) 
     {
-        stop("The upstreamOffset and downstreamOffset should be a positive integer",
+        stop("The upstreamOffset and downstreamOffset should be positive integers.",
              call. = FALSE)
     }
     # if (downstreamOffset > 20 || upstreamOffset > 20) 
@@ -167,13 +168,14 @@ fetchSequence <-function(IDs,
     }
    
     searchAnchor <- FALSE
+    anchor <- anchorPos
     if (class(anchorPos) == "character") 
     {
         ## removing leading and trailing "-"
         anchorPos <- gsub("^\\-+", "", anchorPos)
         anchorPos <- gsub("\\-+$", "", anchorPos)
         
-        ## non-typical anchorPos, for example, "*" in anchorPos
+        ## anchorPos eg. K135
         if (any(!grepl("^[A-Z]\\d+$", toupper(anchorPos)))) 
         {
              if (length(anchorAA) < 1 || any(grepl("[^*A-Z]", toupper(anchorPos)))) 
@@ -225,14 +227,35 @@ fetchSequence <-function(IDs,
             anchor <- anchorPos
         }
     }
-    inputs <- data.frame(IDs, anchorAA, anchorPos, anchor, oid = 1:length(anchorPos))
+    inputs <- data.frame(IDs, anchorAA, anchorPos, oid = seq_along(anchorPos))
+    if(is.list(anchor)){
+      ids <- lengths(anchor)
+      inputs <- inputs[rep(seq_along(anchorPos), ids), , drop=FALSE]
+      inputs$anchor <- unlist(anchor)
+    }else{
+      inputs$anchor <- anchor
+    }
     
     if (!missing(mart))  ## retreive sequence from biomart
     {
+        possibleTypeIds <- listFilters(mart = mart)
+        if(!type[1] %in% possibleTypeIds[, 1]){
+          if(type[1]=="entrezgene" && "entrezgene_id" %in% possibleTypeIds[, 1]){
+            type <- "entrezgene_id"
+          }else{
+            ad <- adist(as.character(possibleTypeIds[, 1]), type[1])
+            possibleType <- as.character(possibleTypeIds[which(ad==min(ad, na.rm = TRUE)), 1])
+            stop("Invalid type argument. Use the listFilters function to select a valid type argument.",
+                 paste("Do you mean", paste(possibleType, collapse = ", ")))
+          }
+        }
         protein <- getSequence(id = unique(as.character(IDs)),
                                type = type,
                                seqType = "peptide",
                                mart = mart)
+        
+        protein <- protein[!protein$peptide =="Sequence unavailable", ]
+        
         if (nrow(protein) < 1)
         {
             stop("Too few retrieved protein sequences from Ensembl Biomart.",
@@ -272,7 +295,7 @@ fetchSequence <-function(IDs,
         anchorPos <- mapply(function(.ele, .pep) {
             BiocGenerics::start(matchPattern(AAString(toupper(.ele)), .pep))
         }, dat$anchorPos, dat$peptide, SIMPLIFY = FALSE)
-        ## get the absolute index for the  anchoring amino acids in the first 
+        ## get the absolute index for the anchoring amino acids in the first 
         ## occurence of query peptide
         anchorPos <- mapply(function(.pos, .anchor) {
             if (length(.pos) == 0) 
@@ -283,8 +306,7 @@ fetchSequence <-function(IDs,
         }, anchorPos, dat$anchor, SIMPLIFY = FALSE)
         
         ## remove peptide without queryed "anchoring peptide"
-        ## It is hard to understand these lines of code
-        dat <- dat[rep(1:nrow(dat), sapply(anchorPos, length)),]
+        dat <- dat[rep(seq.int(nrow(dat)), lengths(anchorPos)), , drop=FALSE]
         
         ## replacing query peptide with the absolute index of anchoring amino acid
         dat$anchorPos <- unlist(anchorPos)
@@ -298,7 +320,7 @@ fetchSequence <-function(IDs,
     ## check sequence of NCBIsites
     if (!is.null(anchorAA)[1])
     {
-        dat <- dat[toupper(dat$anchorAA) == dat$anchor, ]
+        dat <- dat[toupper(dat$anchorAA) == dat$anchor, , drop=FALSE]
     }
     
     ## extract sequences for logo
@@ -308,6 +330,9 @@ fetchSequence <-function(IDs,
         paste0(rep.int("?", downstreamOffset), collapse = '')
     peptide.guarded <-
         paste0(upstreamGuard, dat$peptide, downstreamGuard)
+    if(length(dat$anchorPos)==0){
+      stop("Cannot find any sequence by given anchors.")
+    }
     dat$upstream <-
         substr(peptide.guarded,
                dat$anchorPos,

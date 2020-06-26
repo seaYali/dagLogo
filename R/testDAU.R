@@ -44,8 +44,8 @@ addScheme <- function(color = vector("character"),
             stop("Wrong grouping specification:", 
                  "The length of color, symbol and group should be the same!")
         }
-        if(names(color) != names(symbol) || names(color) != names(group) ||
-           names(symbol) != names(group))
+        if(any(names(color) != names(symbol)) || any(names(color) != names(group)) ||
+           any(names(symbol) != names(group)))
         {
             stop("The names of color, symbol and group should be the same!") 
         }
@@ -61,17 +61,14 @@ addScheme <- function(color = vector("character"),
     }
 }
 
+
 #' Differential usage test of amino acids or amino acid groups.
 #'
-#' Test differential usage of amino acids with or without grouping in
+#' Test differential usage of amino acids with or without grouping between
 #' experimental sets and background sets.
 #'
-#' @param dagPeptides An object of Class \code{\link{dagPeptides}}.
-#' @param dagBackground An object of Class \code{\link{dagBackground}}.
-#' @param testType A character vector of length 1. The available options are
-#' "fisher" and "z-test", that is "Fisher's exact test" and "Z-test". When the 
-#' the number of sequences in the background set is too small to perform non-
-#' replacement subsampling, "Fisher's exact test" is suggested.
+#' @param dagPeptides An object of Class \code{\link{dagPeptides-class}}.
+#' @param dagBackground An object of Class \code{\link{dagBackground-class}}.
 #' @param groupingScheme A character vector of length 1. Available choices are 
 #' "no","bulkiness_Zimmerman","hydrophobicity_KD", "hydrophobicity_HW", 
 #' "isoelectric_point_Zimmerman", "contact_potential_Maiorov",
@@ -91,15 +88,15 @@ addScheme <- function(color = vector("character"),
 #' @param bgNoise A numeric vector of length 1 if not NA. It should be in 
 #' the interval of (0, 1) when not NA.
 #'
-#' @return An object of Class \code{\link{testDAUresults}}.
-#' @import stats
+#' @return An object of Class \code{\link{testDAUresults-class}}.
+#' @importFrom stats pnorm rgamma sd fisher.test
 #' @import methods
 #' @export
 #' @author Jianhong Ou, Haibo Liu
 #' @examples
 #' dat <- unlist(read.delim(system.file(
 #'                                    "extdata", "grB.txt", package = "dagLogo"),
-#'                          header = F, as.is = TRUE))
+#'                          header = FALSE, as.is = TRUE))
 #'                          
 #' ##prepare an object of Proteome Class from a fasta file
 #' proteome <- prepareProteome(fasta = system.file("extdata",
@@ -127,7 +124,7 @@ addScheme <- function(color = vector("character"),
 #'               
 #' ## grouped on the basis of the chemical property of side chains.
 #' t3 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-#'               groupingScheme = "side_chain_chemistry_group")
+#'               groupingScheme = "chemistry_property_Mahler_group")
 #'               
 #' ## grouped on the basis of hydrophobicity (Kyte and Doolittle, 1982)
 #' t4 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
@@ -276,7 +273,7 @@ testDAU <- function(dagPeptides,
         diff_percent <- exp_percent - mu_percent
         diff_percent[is.na(diff_percent)] <- 0
         n <-  dagBackground@numSubsamples
-        std_percent <- mu_percent*(1-mu_percent)/n
+        std_percent <- sqrt(mu_percent*(1-mu_percent)/n)
         statistics <- diff_percent / std_percent
         pvalue <- 2 * pnorm(-abs(statistics))
     } else 

@@ -2,14 +2,22 @@
 % Please edit documentation in R/fetchSequence.R
 \name{fetchSequence}
 \alias{fetchSequence}
-\title{Fetch protein/peptide sequences and create a \code{\link{dagPeptides}} object.}
+\title{Fetch protein/peptide sequences and create a \code{\link{dagPeptides-class}} object.}
 \usage{
-fetchSequence(IDs, type = "entrezgene", anchorAA = NULL, anchorPos, mart,
-  proteome, upstreamOffset, downstreamOffset)
+fetchSequence(
+  IDs,
+  type = "entrezgene",
+  anchorAA = NULL,
+  anchorPos,
+  mart,
+  proteome,
+  upstreamOffset,
+  downstreamOffset
+)
 }
 \arguments{
 \item{IDs}{A character vector containing protein/peptide IDs used to fetch 
-sequences from a Biomart database or a \code{\link{Proteome}} object.}
+sequences from a Biomart database or a \code{\link{Proteome-class}} object.}
 
 \item{type}{A character vector of length 1. The available options are 
 "entrezgene" and "uniprotswissprot" if parameter \code{mart} is missing;
@@ -26,8 +34,11 @@ at position 123 or the position of the anchoring amino acid in the target
 peptide/protein sequence, for example, "123" for an amino acid at position 123; 
 or (2) a vector of subsequences containing the anchoring AAs.}
 
-\item{mart}{A Biomart database name you want to connect to. One of parameters 
-\code{mart} and \code{proteome} should be provided.}
+\item{mart}{A Biomart database name you want to connect to. Either of parameters 
+\code{mart} or \code{proteome} should be provided.}
+
+\item{proteome}{An object of \code{\link{Proteome-class}}. Either of parameters 
+\code{mart} or \code{\link{Proteome-class}} should be provided.}
 
 \item{upstreamOffset}{An integer, the upstream offset relative to
 the anchoring position.}
@@ -36,18 +47,18 @@ the anchoring position.}
 to the anchoring position.}
 }
 \value{
-An object of class \code{\link{dagPetides}}
+An object of class \code{\link{dagPeptides-class}}
 }
 \description{
 This function fetches protein/peptide sequences from a Biomart database or 
-from a \code{\link{Proteome}} object based on protein/peptide IDs and create 
-a \code{\link{dagPeptides}} object following restriction as specified by 
+from a \code{\link{Proteome-class}} object based on protein/peptide IDs and create 
+a \code{\link{dagPeptides-class}} object following restriction as specified by 
 parameters: anchorAA or anchorPos, upstreamOffset and downstreamOffset.
 }
 \examples{
 ## Case 1: You have both positions of the anchoring AAs and the identifiers 
-of their enclosing peptide/protein sequences for fetching sequences using 
-the fetchSequence function via the Biomart.
+## of their enclosing peptide/protein sequences for fetching sequences using 
+## the fetchSequence function via the Biomart.
 
 if (interactive())
 {
@@ -68,11 +79,11 @@ if (interactive())
 }
 
 
-## Case 2: You don't have the exactly postion infor, but You have the 
-interesting peptide subsequences and the identifiers of their enclosing 
-peptide/protein sequences for fetching sequences using the fetchSequence
-function via the Biomart. In the following examples, the anchoring AAs 
-are marked by asterisks. 
+## Case 2: You don't have the exactly postion information, but You have the 
+## interesting peptide subsequences and the identifiers of their enclosing 
+## peptide/protein sequences for fetching sequences using the fetchSequence
+## function via the Biomart. In the following examples, the anchoring AAs 
+## are marked by asterisks. 
 if (interactive())
 {
     try({
@@ -93,8 +104,8 @@ if (interactive())
     })
 }
 
-## In following example, the anchoring AAs are lower case "s" for amino acid 
-serine.
+## In following example, the anchoring AAs are lower-case "s" for amino acid 
+## serine.
 if(interactive())
 {
    try({

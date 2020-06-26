@@ -9,7 +9,7 @@ formatSequence(seq, proteome, upstreamOffset, downstreamOffset)
 \arguments{
 \item{seq}{A vector of aligned peptide sequences of the same length}
 
-\item{proteome}{An object of \code{\link{Proteome}} Class.}
+\item{proteome}{An object of \code{\link{Proteome-class}}.}
 
 \item{upstreamOffset}{An integer, the upstream offset relative to
 the anchoring position.}
@@ -18,26 +18,28 @@ the anchoring position.}
 to the anchoring position.}
 }
 \value{
-An object of \code{\link{dagPeptides}} Class
+An object of \code{\link{dagPeptides-class}} Class
 }
 \description{
 Convert already aligned peptide sequences into an object of 
-\code{\link{dagPeptides}} Class.
+\code{\link{dagPeptides-class}}.
 }
 \examples{
-## You already have the aligned peptides sequences in hand. Then you can use 
-the formatSequence function to prepare an object of dagPeptides. Befor doing 
-that, you need prepare a Proteome object by the prepareProteome function.
+## Suppose you already have the aligned peptides sequences at hands. Then you can use 
+## the formatSequence function to prepare an object of dagPeptides. Befor doing 
+## that, you need prepare a Proteome object by the prepareProteome function.
 
 dat <- unlist(read.delim(system.file(
                                    "extdata", "grB.txt", package = "dagLogo"),
-                         header = F, as.is = TRUE))
-##prepare an object of Proteome Class from a fasta file
+                         header = FALSE, as.is = TRUE))
+                         
+## prepare an object of Proteome Class from a fasta file
 proteome <- prepareProteome(fasta = system.file("extdata",
                                                 "HUMAN.fasta",
                                                 package = "dagLogo"), 
                             species = "Homo sapiens")
-##prepare an object of dagPeptides
+                            
+## prepare an object of dagPeptides Class from a Proteome object
 seq <- formatSequence(seq = dat, proteome = proteome, upstreamOffset = 14,
                      downstreamOffset = 15)
 

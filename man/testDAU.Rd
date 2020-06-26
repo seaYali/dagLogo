@@ -4,13 +4,17 @@
 \alias{testDAU}
 \title{Differential usage test of amino acids or amino acid groups.}
 \usage{
-testDAU(dagPeptides, dagBackground, groupingScheme = ls(envir = cachedEnv),
-  bgNoise = NA)
+testDAU(
+  dagPeptides,
+  dagBackground,
+  groupingScheme = ls(envir = cachedEnv),
+  bgNoise = NA
+)
 }
 \arguments{
-\item{dagPeptides}{An object of Class \code{\link{dagPeptides}}.}
+\item{dagPeptides}{An object of Class \code{\link{dagPeptides-class}}.}
 
-\item{dagBackground}{An object of Class \code{\link{dagBackground}}.}
+\item{dagBackground}{An object of Class \code{\link{dagBackground-class}}.}
 
 \item{groupingScheme}{A character vector of length 1. Available choices are 
 "no","bulkiness_Zimmerman","hydrophobicity_KD", "hydrophobicity_HW", 
@@ -30,23 +34,18 @@ color AAs based on similarities or group amino acids into groups of similarities
 
 \item{bgNoise}{A numeric vector of length 1 if not NA. It should be in 
 the interval of (0, 1) when not NA.}
-
-\item{testType}{A character vector of length 1. The available options are
-"fisher" and "z-test", that is "Fisher's exact test" and "Z-test". When the 
-the number of sequences in the background set is too small to perform non-
-replacement subsampling, "Fisher's exact test" is suggested.}
 }
 \value{
-An object of Class \code{\link{testDAUresults}}.
+An object of Class \code{\link{testDAUresults-class}}.
 }
 \description{
-Test differential usage of amino acids with or without grouping in
+Test differential usage of amino acids with or without grouping between
 experimental sets and background sets.
 }
 \examples{
 dat <- unlist(read.delim(system.file(
                                    "extdata", "grB.txt", package = "dagLogo"),
-                         header = F, as.is = TRUE))
+                         header = FALSE, as.is = TRUE))
                          
 ##prepare an object of Proteome Class from a fasta file
 proteome <- prepareProteome(fasta = system.file("extdata",
@@ -74,7 +73,7 @@ t2 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest,
               
 ## grouped on the basis of the chemical property of side chains.
 t3 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
-              groupingScheme = "side_chain_chemistry_group")
+              groupingScheme = "chemistry_property_Mahler_group")
               
 ## grouped on the basis of hydrophobicity (Kyte and Doolittle, 1982)
 t4 <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 

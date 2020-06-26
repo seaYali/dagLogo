@@ -4,33 +4,35 @@
 \alias{buildZTestBackgroundModel}
 \title{Build a background model for Z-test.}
 \usage{
-buildZTestBackgroundModel(dagPeptides, matches, numSubsamples = 30L,
-  rand.seed = 1, testType = testType, uniqueSeq = TRUE,
-  replacement = FALSE)
+buildZTestBackgroundModel(
+  dagPeptides,
+  matches,
+  numSubsamples = 30L,
+  rand.seed = 1,
+  testType = "ztest",
+  replacement = FALSE
+)
 }
 \arguments{
-\item{dagPeptides}{An object of \code{\link{dagPeptides}} Class containing 
+\item{dagPeptides}{An object of \code{\link{dagPeptides-class}} containing 
 peptide sequences as the input set.}
 
 \item{matches}{A character vector with the matched subsequences.}
 
 \item{numSubsamples}{An integer, the number of random sampling.}
 
-\item{rand.seed}{An integer, the seed used to perform random sampling}
-
-\item{uniqueSeq}{A logical vector indicating whether only unique peptide sequences
-are included in a background model.}
+\item{rand.seed}{An integer, the seed used to perform random sampling.}
 
 \item{replacement}{A logical vector of length 1, indicating whether replacement 
 is allowed for random sampling.}
 }
 \value{
-An object of \code{\link{dagBackground}} Class.
+An object of \code{\link{dagBackground-class}}.
 }
 \description{
 Build a background model for Z-test.
 }
-\examples{
-
+\author{
+Jianhong Ou, Haibo Liu
 }
 \keyword{internal}

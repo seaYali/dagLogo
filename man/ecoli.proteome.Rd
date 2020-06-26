@@ -3,8 +3,22 @@
 \docType{data}
 \name{ecoli.proteome}
 \alias{ecoli.proteome}
-\title{An object of \code{\link{Proteome}} representing the E. coli proteome.}
-\format{A object of \code{\link{Proteome}} Class}
+\title{An object of \code{\link{Proteome-class}} representing the 
+\emph{Escherichia coli} proteome.}
+\format{
+An object of  \code{\link{Proteome-class}} for Escherichia coli proteome. 
+The format is: A list with one data frame and an character.
+
+*`proteome`: 'data.frame':    13780 obs. of  4 variables
+*`type`: 'character':   "UniProt"
+*`species`: 'character': "Escherichia coli"
+
+The format of proteome is
+*`ENTREZ_GENE`: a character vector, records entrez gene id
+*`SEQUENCE`: a character vector, peptide sequences
+*`ID`: a character vector, Uniprot ID
+*`LEN`: a character vector, length of peptides
+}
 \source{
 \url{http://www.uniprot.org/}
 }
@@ -12,14 +26,22 @@
 ecoli.proteome
 }
 \description{
-A dataset containing the E. coli proteome. The variables are as follows:
+A dataset containing the \emph{E. coli} proteome.
 }
 \details{
-\itemize{
-  \item proteome. A data frame containing ENTREZ_GENE IDs, protein SEQUENCES, 
-                  and UniProtKB IDs and length of the sequences
-  \item type. The data source: Uniprot
-  \item species. Escherichia coli
+used as an example dataset
+
+Annotation data obtained by:
+
+  library(UniProt.ws)
+  
+  taxId(UniProt.ws) <- 562
+  
+  proteome <- prepareProteome(UniProt.ws, species="Escherichia coli")
 }
+\examples{
+ data(ecoli.proteome)
+ head(ecoli.proteome@proteome)
+ ecoli.proteome@type
 }
 \keyword{datasets}

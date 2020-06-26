@@ -4,29 +4,36 @@
 \alias{buildBackgroundModel}
 \title{Build background models for DAU tests}
 \usage{
-buildBackgroundModel(dagPeptides, background = c("wholeProteome", "inputSet",
-  "nonInputSet"), model = c("any", "anchored"), targetPosition = c("any",
-  "Nterminus", "Cterminus"), uniqueSeq = TRUE, numSubsamples = 300L,
-  rand.seed = 1, replacement = FALSE, testType = c("ztest", "fisher"),
-  proteome)
+buildBackgroundModel(
+  dagPeptides,
+  background = c("wholeProteome", "inputSet", "nonInputSet"),
+  model = c("any", "anchored"),
+  targetPosition = c("any", "Nterminus", "Cterminus"),
+  uniqueSeq = FALSE,
+  numSubsamples = 300L,
+  rand.seed = 1,
+  replacement = FALSE,
+  testType = c("ztest", "fisher"),
+  proteome
+)
 }
 \arguments{
-\item{dagPeptides}{An object of \code{\link{dagPeptides}} Class containing 
+\item{dagPeptides}{An object of \code{\link{dagPeptides-class}} containing 
 peptide sequences as the input set.}
 
-\item{background}{A character vector with defaults: "wholeProteome" and "inputSet", 
-"nonInputSet", indicating what set of peptide sequences should be considered to 
+\item{background}{A character vector with options: "wholeProteome", "inputSet", 
+and "nonInputSet", indicating what set of peptide sequences should be considered to 
 generate a background model.}
 
-\item{model}{A character vector with defaults: "any" and "anchored", indicating 
+\item{model}{A character vector with options: "any" and "anchored", indicating 
 whether an anchoring position should be applied to generate a background model.}
 
-\item{targetPosition}{A character vector with defaults: "any", "Nterminus" and 
-"Cterminus", indicating whether which part of protein sequences of choice should
+\item{targetPosition}{A character vector with options: "any", "Nterminus" and
+"Cterminus", indicating which part of protein sequences of choice should
 be used to generate a background model.}
 
 \item{uniqueSeq}{A logical vector indicating whether only unique peptide sequences
-are included in a background model.}
+are included in a background model for sampling.}
 
 \item{numSubsamples}{An integer, the number of random sampling.}
 
@@ -37,17 +44,50 @@ is allowed for random sampling.}
 
 \item{testType}{A character vector of length 1. Available options are "ztest" 
 and "fisher".}
+
+\item{proteome}{An object of Proteome, output of \code{\link{prepareProteome}}}
 }
 \value{
-An object of \code{\link{dagBackground}} Class.
+An object of \code{\link{dagBackground-class}}.
 }
 \description{
 A method used to build background models for testing differential amino acid usage
 }
+\details{
+The background could be generated from wholeProteome, inputSet or nonInputSet.
+Case 1: If background ="wholeProteome" and model = "any": The background set 
+is composed of randomly selected subsequences from the wholeProteome with
+each subsequence of the same length as input sequences.
+
+Case 2: If background ="wholeProteome and model = "anchored": The background
+set is composed of randomly selected subsequences from the wholeProteome
+with each subsequence of same length as input sequences.Additionally, the
+amino acids at the anchoring positions must be the same amino acid as that
+defined in the dagPeptides object,such as "K" for lysine.
+
+Case 3: If background ="inputSet" and model = "any": similar to Case 1, but
+the full length protein sequences matching the protein sequence IDs in the inputSet
+are used for build background model after excluding the subsequences specified
+in the inputSet from the full length sequences.
+
+Case 4: If background ="inputSet" and model = "anchored": similar to Case 2, but
+the full-length protein sequences matching the protein sequence IDs in the inputSet
+are used for build background model after excluding the subsequences specified
+in the inputSet from the full length sequences.
+ 
+Case 5: If background ="nonInputSet" and model = "any": The background set
+is composed of randomly selected subsequences from the wholeProteome, not
+including the sequences corresponding to the inpuSet sequencesm with each
+subsequence of same length as input sequences.
+
+Case 6: If background ="nonInputSet" and model = "anchored": similar to Case 5, but
+the amino acids at the anchoring positions must be the same amino acid as that 
+defined in the dagPeptides object, such as "K" for lysine.
+}
 \examples{
 dat <- unlist(read.delim(system.file(
                                    "extdata", "grB.txt", package = "dagLogo"),
-                         header = F, as.is = TRUE))
+                         header = FALSE, as.is = TRUE))
 ##prepare an object of Proteome Class from a fasta file
 proteome <- prepareProteome(fasta = system.file("extdata",
                                                 "HUMAN.fasta",

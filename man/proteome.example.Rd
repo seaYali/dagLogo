@@ -3,8 +3,23 @@
 \docType{data}
 \name{proteome.example}
 \alias{proteome.example}
-\title{An object of \code{\link{Proteome}} representing the E. coli proteome.}
-\format{A object of \code{\link{Proteome}} Class}
+\title{An object of \code{\link{Proteome-class}} representing the subset of 
+\emph{Drosophila melanogaster} proteome.}
+\format{
+An object of \code{\link{Proteome-class}} for fly subset proteome. 
+The format is: A list with one data frame and an character.
+
+*`proteome`: 'data.frame':    1406 obs. of  4 variables
+*`type`: 'character':   "UniProt"
+*`species`: 'character': "Drosophila melanogaster"
+
+ The format of proteome is
+ 
+*`ENTREZ_GENE`: a character vector, records entrez gene id
+*`SEQUENCE`: a character vector, peptide sequences
+*`ID`: a character vector, Uniprot ID
+*`LEN`: a character vector, length of peptides
+}
 \source{
 \url{http://www.uniprot.org/}
 }
@@ -12,14 +27,24 @@
 proteome.example
 }
 \description{
-A dataset containing the E. coli proteome. The variables are as follows:
+The subset \code{\link{Proteome-class}} of fruit fly.
 }
 \details{
-\itemize{
-  \item proteome. A data frame containing ENTREZ_GENE IDs, protein SEQUENCES, 
-                  and UniProtKB IDs and length of the sequences
-  \item type. The data source: Uniprot
-  \item species. Drosophila melanogaster
+used as an example dataset
+
+Annotation data obtained by:
+
+  library(UniProt.ws)
+  
+  taxId(UniProt.ws) <- 7227
+  
+  proteome <- prepareProteome(UniProt.ws)
+  
+  proteome@proteome <- proteome@proteome[sample(1:19902, 1406), ]
 }
+\examples{
+data(proteome.example)
+head(proteome.example@proteome)
+proteome.example@type
 }
 \keyword{datasets}
